@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ながたぶどう園｜信州須坂・日滝原のぶどう直販</title>
+  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。シャインマスカット、ナガノパープルなど贈答・ご自宅用の直販受付。栽培日誌や収穫カレンダーを掲載。" />
+  <meta name="theme-color" content="#5b7a59" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ながたぶどう園｜信州須坂・日滝原のぶどう直販" />
+  <meta property="og:description" content="信州須坂・日滝原の小さなぶどう農園。贈答にも喜ばれる旬のぶどうを産地直送。" />
+  <!-- 差し替え：公開時に実URLを指定してください -->
+  <meta property="og:url" content="https://example.jp/" />
+  <!-- 差し替え：SNSシェア用の画像（1200x630推奨） -->
+  <meta property="og:image" content="/assets/ogp.jpg" />
+  <link rel="icon" href="/assets/favicon.ico" />
+
+  <style>
+    :root{
+      --bg:#fafaf8;
+      --ink:#243226;
+      --sub:#4d6b4b;
+      --brand:#5b7a59; /* ロゴ/強調グリーン */
+      --brand-dark:#415a40;
+      --line:#e7e7e2;
+      --accent:#7aa36f;
+      --radius:16px;
+      --header-h:70px; /* 固定ヘッダーの高さ */
+      --content-w:1100px;
+    }
+
+    html{scroll-behavior:smooth;}
+    *{box-sizing:border-box}
+    body{
+      margin:0; color:var(--ink); background:var(--bg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      line-height:1.6;
+      padding-top: var(--header-h);
+    }
+    a{color:inherit}
+    img{max-width:100%; display:block}
+
+    /* ===== 固定ヘッダー ===== */
+    .site-header{position:fixed; inset:0 0 auto 0; height:var(--header-h); z-index:9999;}
+    .site-header .bar{
+      width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+      background: linear-gradient(180deg, #5b7a59, #4d6b4b);
+      color:#fff; box-shadow:0 2px 8px rgba(0,0,0,.08);
+    }
+    .inner{width:100%; max-width:var(--content-w); padding:0 20px; margin:0 auto;}
+    .brand{display:flex; align-items:center; gap:12px; margin:0;}
+    .brand__logo{width:32px; height:32px; display:inline-block;}
+    .brand__name{font-size:1.1rem; font-weight:700; letter-spacing:.04em;}
+
+    nav.primary{margin-left:auto; display:flex; align-items:center; gap:18px;}
+    nav.primary a{color:#fff; text-decoration:none; font-weight:600; padding:6px 8px; border-radius:10px;}
+    nav.primary a:hover, nav.primary a:focus-visible{background:rgba(255,255,255,.14); outline:none}
+
+    /* ハンバーガー */
+    .nav-toggle{display:none; margin-left:auto; background:transparent; border:none; color:#fff; padding:8px; border-radius:10px}
+    .nav-toggle:focus-visible{outline:2px solid #fff}
+
+    @media (max-width: 900px){
+      :root{ --header-h:64px; }
+      nav.primary{position:fixed; top:var(--header-h); left:0; right:0; display:none; flex-direction:column; gap:0; background:linear-gradient(180deg, #5b7a59, #4d6b4b); padding:8px 12px 16px; border-bottom:1px solid rgba(255,255,255,.15)}
+      nav.primary a{display:block; width:100%; padding:12px 10px; border-radius:8px}
+      nav.primary.open{display:flex}
+      .nav-toggle{display:block}
+    }
+
+    /* ===== 共通 ===== */
+    .section{scroll-margin-top: calc(var(--header-h) + 12px);}
+    .container{max-width:var(--content-w); margin:0 auto; padding:56px 20px;}
+    .section-title{font-size:1.6rem; margin:0 0 14px;}
+    .section-lead{color:#4a5a4a; margin:0 0 28px;}
+    .btn{display:inline-block; padding:12px 18px; border-radius:999px; background:#fff; color:var(--brand-dark); text-decoration:none; font-weight:700; border:1px solid rgba(0,0,0,.08); box-shadow:0 1px 0 rgba(0,0,0,.05);}
+    .btn:hover{filter:brightness(0.97)}
+    .btn--fill{background:var(--accent); color:#fff; border:none}
+
+    /* ===== ヒーロー ===== */
+    .hero{position:relative; min-height:64vh; display:grid; place-items:center; color:#fff;}
+    .hero::before{
+      content:""; position:absolute; inset:0; background:
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.35)),
+        url('/assets/hero.jpg') center/cover no-repeat; /* 差し替え：ヒーロー画像 */
+      filter:saturate(1.05);
+    }
+    .hero__content{position:relative; width:100%}
+    .hero .container{padding:84px 20px}
+    .kicker{display:inline-block; background:rgba(255,255,255,.2); padding:6px 10px; border-radius:999px; font-weight:700; letter-spacing:.06em;}
+    .hero h1{font-size:clamp(28px, 5vw, 44px); line-height:1.25; margin:12px 0 12px;}
+    .hero p{max-width:800px; margin:0 0 22px; font-size:1.05rem}
+    .cta{display:flex; gap:12px; flex-wrap:wrap}
+
+    /* ===== 農園紹介 ===== */
+    .two-col{display:grid; grid-template-columns:1.2fr 1fr; gap:24px; align-items:center}
+    .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:0 2px 10px rgba(0,0,0,.03)}
+    @media (max-width: 900px){ .two-col{grid-template-columns:1fr} }
+
+    /* ===== 品種カード ===== */
+    .grid{display:grid; gap:18px}
+    .grid-3{grid-template-columns:repeat(3, 1fr)}
+    @media (max-width: 900px){ .grid-3{grid-template-columns:1fr 1fr} }
+    @media (max-width: 640px){ .grid-3{grid-template-columns:1fr} }
+    .variety{overflow:hidden}
+    .variety__img{height:180px; border-radius:12px; overflow:hidden;}
+    .variety__img img{width:100%; height:100%; object-fit:cover}
+    .variety h3{margin:12px 0 6px; font-size:1.1rem}
+    .meta{color:#6a6a64; font-size:.9rem}
+
+    /* ===== 直販 ===== */
+    .shop-banner{background:linear-gradient(180deg, #f6faf4, #eef6ed); border:1px solid var(--line);}
+
+    /* ===== カレンダー ===== */
+    .calendar-embed{aspect-ratio: 16 / 9; width:100%; border:0; border-radius:12px; background:#fff}
+
+    /* ===== ブログ ===== */
+    .post{display:flex; gap:14px; align-items:stretch}
+    .post img{width:140px; height:100px; object-fit:cover; border-radius:10px}
+    .post h4{margin:4px 0 6px; font-size:1rem}
+    .post time{color:#75756d; font-size:.9rem}
+    @media (max-width:640px){ .post{flex-direction:column} .post img{width:100%; height:160px}}
+
+    /* ===== フッター ===== */
+    footer{background:linear-gradient(180deg, #4d6b4b, #415a40); color:#eaf1e9; margin-top:40px}
+    .footer-inner{display:grid; grid-template-columns:1.3fr 1fr; gap:22px}
+    .footer-inner a{color:#eaf1e9; opacity:.9; text-decoration:none}
+    .footer-inner a:hover{opacity:1}
+    .copyright{border-top:1px solid rgba(255,255,255,.15); margin-top:12px; padding-top:12px; font-size:.9rem; color:#dfe6dd}
+
+    /* アクセシビリティ：スキップリンク */
+    .skip-link{position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden}
+    .skip-link:focus{position:fixed; left:10px; top:10px; width:auto; height:auto; background:#fff; color:#000; padding:10px 12px; border-radius:8px; z-index:10000}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== ヘッダー ===== -->
+  <header class="site-header" role="banner">
+    <div class="bar">
+      <div class="inner" style="display:flex; align-items:center; gap:16px;">
+        <h1 class="brand" aria-label="ながたぶどう園">
+          <!-- シンプルなロゴ（差し替え推奨） -->
+          <svg class="brand__logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="9" cy="8" r="3" fill="#fff" opacity="0.9"/>
+            <circle cx="14.5" cy="6.5" r="2.3" fill="#fff" opacity="0.85"/>
+            <circle cx="13" cy="10.5" r="2.6" fill="#fff" opacity="0.92"/>
+            <path d="M15 3c2 .3 2.8 1.4 3.3 2.4" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="brand__name">ながたぶどう園</span>
+        </h1>
+
+        <button class="nav-toggle" id="navToggle" aria-label="メニュー" aria-controls="primaryNav" aria-expanded="false">
+          ☰ メニュー
+        </button>
+
+        <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
+          <a href="#home">ホーム</a>
+          <a href="#about">農園紹介</a>
+          <a href="#varieties">品種紹介</a>
+          <a href="#shop">オンライン直販</a>
+          <a href="#calendar">収穫カレンダー</a>
+          <a href="#blog">ぶどう日誌</a>
+          <a href="#policy">プライバシーポリシー</a>
+          <a href="#law">特定商取引法</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== ヒーロー ===== -->
+    <section id="home" class="hero section" aria-label="メインビジュアル">
+      <div class="container hero__content">
+        <span class="kicker">Nagata Budou-en</span>
+        <h1>信州・須坂 日滝原から、心を込めて育てたぶどうをお届けします。</h1>
+        <p>寒暖差のある気候と清らかな水に恵まれた日滝原。シャインマスカット、ナガノパープル、富士の輝きなど、旬の味を産地直送でお届けします。</p>
+        <div class="cta">
+          <a class="btn btn--fill" href="#shop">🍇 直販ページへ</a>
+          <a class="btn" href="https://instagram.com/" target="_blank" rel="noopener">📷 Instagram</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 農園紹介 ===== -->
+    <section id="about" class="section">
+      <div class="container two-col">
+        <div class="card">
+          <h2 class="section-title">ながたぶどう園について</h2>
+          <p class="section-lead">自然の力と手仕事で、食べた人が笑顔になるぶどうを育てたい。医療職で培った丁寧さを畑の隅々まで。安全で誠実な栽培を心がけています。</p>
+          <ul>
+            <li>所在地：長野県須坂市 日滝原地区（標高 約○○m）</li>
+            <li>栽培品種：シャインマスカット、ナガノパープル、富士の輝き ほか</li>
+            <li>販売形態：贈答用・ご自宅用の産地直送、イベント販売</li>
+          </ul>
+          <p style="margin-top:10px; color:#5a6a5a">※ 見学・取材は事前にお問い合わせください。</p>
+        </div>
+        <div>
+          <div class="variety__img" style="height:260px; border-radius:16px; overflow:hidden;">
+            <!-- 差し替え：農園風景の写真 -->
+            <img src="/assets/about.jpg" alt="畑の風景（棚仕立てのぶどう）" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 品種紹介 ===== -->
+    <section id="varieties" class="section">
+      <div class="container">
+        <h2 class="section-title">品種紹介</h2>
+        <p class="section-lead">旬の時期にいちばん美味しい状態でお届けします。収穫時期は天候により前後します。</p>
+        <div class="grid grid-3">
+          <article class="card variety">
+            <div class="variety__img"><img src="/assets/var_shine.jpg" alt="シャインマスカットの房" /></div>
+            <h3>シャインマスカット</h3>
+            <div class="meta">収穫目安：9月上旬〜中旬</div>
+            <p>パリッとした果皮と上品な香り。贈答にも人気の定番品種です。</p>
+          </article>
+          <article class="card variety">
+            <div class="variety__img"><img src="/assets/var_nagano.jpg" alt="ナガノパープルの房" /></div>
+            <h3>ナガノパープル</h3>
+            <div class="meta">収穫目安：9月中旬</div>
+            <p>皮ごと食べられる濃厚な甘み。信州生まれの黒系大粒ぶどう。</p>
+          </article>
+          <article class="card variety">
+            <div class="variety__img"><img src="/assets/var_fuji.jpg" alt="富士の輝きの房" /></div>
+            <h3>富士の輝き</h3>
+            <div class="meta">収穫目安：9月下旬</div>
+            <p>鮮やかな紅色と高糖度。希少品種のため数量限定での販売です。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 直販 ===== -->
+    <section id="shop" class="section">
+      <div class="container">
+        <div class="card shop-banner">
+          <h2 class="section-title">オンライン直販</h2>
+          <p class="section-lead">以下のボタンからご注文フォームにお進みください。ご入力内容は安全に管理され、確認メールを自動送信します。</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <!-- 差し替え：GASの公開URL -->
+            <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec">ご注文フォームを開く</a>
+            <a class="btn" href="#policy">プライバシーポリシー</a>
+          </div>
+          <ul style="margin-top:14px; color:#546454">
+            <li>お支払い：銀行振込／PayPay（予定）</li>
+            <li>送料：地域別・クール便（詳細はフォーム内に記載）</li>
+            <li>発送：収穫後、受注順に順次発送します</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== カレンダー ===== -->
+    <section id="calendar" class="section">
+      <div class="container">
+        <h2 class="section-title">収穫カレンダー</h2>
+        <p class="section-lead">おおよその作業・販売スケジュールです（天候で前後します）。</p>
+        <!-- 差し替え：Googleカレンダー埋め込みURL。PC/スマホでの視認性を考慮し aspect-ratio でレイアウト。 -->
+        <iframe class="calendar-embed" title="ながたぶどう園 収穫カレンダー" src="https://calendar.google.com/calendar/embed?src=example%40gmail.com&ctz=Asia%2FTokyo"></iframe>
+      </div>
+    </section>
+
+    <!-- ===== ブログ（ダイジェスト） ===== -->
+    <section id="blog" class="section">
+      <div class="container">
+        <h2 class="section-title">ぶどう日誌</h2>
+        <div class="grid grid-3">
+          <article class="card post">
+            <img src="/assets/blog_1.jpg" alt="芽吹きの写真">
+            <div>
+              <h4>芽吹きの季節がやってきました</h4>
+              <time datetime="2025-04-10">2025.04.10</time>
+              <p>今年も芽吹き。誘引と新梢管理をしながら、健やかな生育を目指します。</p>
+            </div>
+          </article>
+          <article class="card post">
+            <img src="/assets/blog_2.jpg" alt="房作りの写真">
+            <div>
+              <h4>房作りと摘粒が完了しました</h4>
+              <time datetime="2025-06-20">2025.06.20</time>
+              <p>一房一房の姿を整え、味と見栄えの土台づくり。暑さ対策も進めています。</p>
+            </div>
+          </article>
+          <article class="card post">
+            <img src="/assets/blog_3.jpg" alt="初収穫の写真">
+            <div>
+              <h4>初収穫。いよいよ出荷開始です</h4>
+              <time datetime="2025-09-05">2025.09.05</time>
+              <p>糖度・見た目・香りを確かめながら、順次発送を進めています。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ポリシー ===== -->
+    <section id="policy" class="section">
+      <div class="container">
+        <h2 class="section-title">プライバシーポリシー</h2>
+        <p class="section-lead">個人情報の取扱いについての方針を掲載しています。直販のご利用前にご確認ください。</p>
+        <!-- 差し替え：別ページ化する場合はリンクに変更 -->
+        <a class="btn" href="/privacy.html">ポリシーを読む</a>
+      </div>
+    </section>
+
+    <!-- ===== 特商法 ===== -->
+    <section id="law" class="section">
+      <div class="container">
+        <h2 class="section-title">特定商取引法に基づく表記</h2>
+        <p class="section-lead">販売事業者情報・返品条件・送料などを記載しています。</p>
+        <a class="btn" href="/law.html">特商法表記を見る</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== フッター ===== -->
+  <footer role="contentinfo">
+    <div class="container footer-inner">
+      <div>
+        <h3 style="margin:0 0 8px">ながたぶどう園</h3>
+        <p style="margin:0 0 6px">長野県須坂市 日滝原</p>
+        <p style="margin:0 0 6px">お問い合わせ：<a href="mailto:info@example.jp">info@example.jp</a></p>
+        <p style="margin:0">Instagram / YouTube / LINE 公式</p>
+      </div>
+      <div>
+        <p style="margin:0 0 6px">営業時間：9:00-17:00（季節により変動）</p>
+        <p style="margin:0 0 6px">※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
+      </div>
+      <div class="copyright">© 2025 ながたぶどう園</div>
+    </div>
+  </footer>
+
+  <script>
+    // モバイルナビ開閉
+    const navToggle = document.getElementById('navToggle');
+    const primaryNav = document.getElementById('primaryNav');
+    navToggle?.addEventListener('click', () => {
+      const open = primaryNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // メニュークリックで自動クローズ（モバイル）
+    primaryNav?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      if (window.matchMedia('(max-width: 900px)').matches) {
+        primaryNav.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    }));
+  </script>
+
+  <!-- 構造化データ（任意） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "ながたぶどう園",
+    "address": {"@type":"PostalAddress","addressRegion":"長野県","addressLocality":"須坂市 日滝原"},
+    "image": "https://example.jp/assets/ogp.jpg",
+    "url": "https://example.jp/",
+    "description": "信州須坂・日滝原の小さなぶどう農園。シャインマスカット、ナガノパープル等の直販。",
+    "telephone": "",
+    "areaServed": "JP",
+    "sameAs": ["https://instagram.com/"]
+  }
+  </script>
+</body>
+</html>
