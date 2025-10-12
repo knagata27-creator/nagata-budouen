@@ -4,18 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>農園紹介（About）｜ながたぶどう園</title>
-  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。" />
+
+  <meta name="description" content="ながたぶどう園のストーリー／圃場環境／栽培方針／品質管理／チーム紹介。信州須坂・日滝原から、旬のぶどうを誠実にお届けします。" />
   <meta name="theme-color" content="#5b7a59" />
+
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="ながたぶどう園" />
-  <meta property="og:description" content="信州須坂・日滝原の小さなぶどう農園。贈答にも喜ばれる旬のぶどうを産地直送。" />
-  <meta property="og:url" content="https://example.jp/" />
-  <meta property="og:image" content="/assets/img/ogp.png" />
-  <link rel="icon" href="/assets/img/ogp.png" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <meta property="og:title" content="農園紹介（About）｜ながたぶどう園" />
+  <meta property="og:description" content="圃場環境・栽培方針・品質管理。日滝原の小さなぶどう園のものづくり。" />
+  <meta property="og:url" content="https://example.jp/about.html" />
+  <meta property="og:image" content="assets/img/ogp.png" />
+
+  <link rel="icon" href="assets/img/ogp.png" />
+  <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== Header / Global Nav ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -34,59 +39,94 @@
         </button>
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
-          <a href="/index.html#shop" class="">注文する</a>
-          <a href="/gift.html" class="">ギフト</a>
-          <a href="/calendar.html" class="">収穫カレンダー</a>
-          <a href="/guide.html" class="">はじめての方</a>
-          <a href="/about.html" class="is-active">農園紹介</a>
-          <a href="/blog.html" class="">ぶどう日誌</a>
-          <a href="/contact.html" class="">お問い合わせ</a>
+          <a href="index.html#shop">注文する</a>
+          <a href="gift.html">ギフト</a>
+          <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="about.html" class="is-active">農園紹介</a>
+          <a href="blog.html">ぶどう日誌</a>
+          <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </div>
   </header>
+
+  <!-- ===== Fixed Status Bar ===== -->
   <div class="status" role="status" aria-live="polite">
     <div class="inner">
       <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">読み込み中...</span>
+      <span id="statusMsg">ただいまの状況を読み込み中…</span>
       <span class="sep">|</span>
-      <a id="statusLink" href="#news">最新のお知らせ</a>
+      <a id="statusLink" href="index.html#news">最新のお知らせ</a>
     </div>
   </div>
 
   <main id="main">
+    <!-- ===== Page Header (Hero-lite) ===== -->
     <section class="section reveal">
-      <div class="container">
-        <h1 class="section-title deco">農園紹介（About）</h1>
-        
-<p class="section-lead">信州・須坂 日滝原の小さなぶどう農園。寒暖差の大きい気候と清らかな水に恵まれ、上品な香りと食感を大切に育てています。</p>
-<h3>圃場・環境</h3>
-<p>標高・土壌・水源・風の抜けなど、栽培に適したロケーションです。</p>
-<h3>栽培方針</h3>
-<p>丁寧な房作り、過度な輸送を避ける出荷設計、温度管理を徹底。</p>
-<h3>チーム・メディア掲載</h3>
-<p>プロフィール、メディア、受賞歴などを掲載予定。</p>
-
+      <div class="container two-col">
+        <div class="card lift">
+          <h1 class="section-title deco" style="margin-top:0">農園紹介（About）</h1>
+          <p class="section-lead">
+            私たちは、信州・須坂 日滝原の小さなぶどう農園です。<br>
+            寒暖差のある気候と清らかな水に恵まれた土地で、房づくりと温度管理を丁寧に――
+            「贈って嬉しい、届いて笑顔」のぶどうを目指しています。
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--fill" href="index.html#shop">🍇 いまの販売商品を見る</a>
+            <a class="btn" href="gift.html">🎁 ギフトのご案内</a>
+          </div>
+        </div>
+        <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
+          <img src="assets/img/hero.svg" alt="日滝原の畑と棚仕立てのぶどう">
+        </div>
       </div>
     </section>
-  </main>
 
-  <footer role="contentinfo">
-    <div class="container footer-inner">
-      <div>
-        <h3 class="footer-title">ながたぶどう園</h3>
-        <p>長野県須坂市 日滝原</p>
-        <p>お問い合わせ：<a href="mailto:info@example.jp">info@example.jp</a></p>
-        <p>Instagram / YouTube / LINE 公式</p>
+    <!-- ===== Story ===== -->
+    <section class="section reveal">
+      <div class="container">
+        <h2 class="section-title deco">Story｜はじまりと想い</h2>
+        <div class="grid grid-2">
+          <div class="card lift">
+            <h3>小さな畑から</h3>
+            <p>
+              医療職で培った「衛生・記録・観察」の視点をそのまま畑へ。
+              手をかける箇所・かけない箇所を見極め、果実にとって最適な負荷と休息を設計します。
+              規模は大きくなくても、品質で選ばれる農園でありたいと考えています。
+            </p>
+          </div>
+          <div class="card lift">
+            <h3>“贈答品質”を日常に</h3>
+            <p>
+              贈り物として恥ずかしくない見た目・食味・香り。
+              同時に、ご家庭で気軽に楽しめる規格や詰合せも用意し、
+              「旬のうれしさ」を日常へ届けます。
+            </p>
+          </div>
+        </div>
       </div>
-      <div>
-        <p>営業時間：9:00-17:00（季節により変動）</p>
-        <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p><a href="/law.html">特定商取引法に基づく表記</a> ／ <a href="/privacy.html">プライバシーポリシー</a></p>
-      </div>
-      <div class="copyright">© 2025 ながたぶどう園</div>
-    </div>
-  </footer>
+    </section>
 
-  <script src="/assets/js/main.js"></script>
-</body></html>
+    <!-- ===== Terroir / Environment ===== -->
+    <section class="section reveal">
+      <div class="container two-col">
+        <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
+          <img src="assets/img/calendar.svg" alt="ぶどう棚と日射のイメージ">
+        </div>
+        <div class="card lift">
+          <h2 class="section-title deco">Terroir｜圃場環境</h2>
+          <ul class="list muted">
+            <li><strong>所在地：</strong>長野県須坂市 日滝原</li>
+            <li><strong>気候：</strong>昼夜の寒暖差が大きく、香りと糖の乗りが良い地域</li>
+            <li><strong>土壌・水：</strong>水はけの良い土質と山麓の清らかな水</li>
+            <li><strong>風：</strong>風通しを活かした棚面づくりで病害のリスクを低減</li>
+          </ul>
+          <p class="note">※ 詳細な圃場データはシーズンノートで随時公開予定です。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Growing Policy ===== -->
+    <section class="section reveal">
+      <div class="container">
