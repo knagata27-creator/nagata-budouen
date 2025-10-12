@@ -48,7 +48,7 @@ if ('IntersectionObserver' in window) {
   const msgEl  = document.getElementById('statusMsg');
   const linkEl = document.getElementById('statusLink');
   try {
-    const res = await fetch('/assets/data/status.json', { cache: 'no-store' });
+    const res = await fetch('assets/data/status.json', { cache: 'no-store' });
     const data = await res.json();
     const map = { preorder: '予約受付前', inseason: '受付中', ended: '今季終了' };
     modeEl.textContent = map[data.mode] || '受付状況';
