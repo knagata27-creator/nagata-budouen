@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600">
+  <defs>
+    <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#627d62"/>
+      <stop offset="100%" stop-color="#2f4630"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#g)"/>
+  <g fill="#ffffff" font-family="system-ui, -apple-system, 'Noto Sans JP', sans-serif" text-anchor="middle">
+    <text x="500.0" y="290.0" font-size="75" font-weight="700">Budou Diary</text>
+    <text x="500.0" y="328.0" font-size="37" opacity="0.85">ながたぶどう園</text>
+  </g>
+</svg>
