@@ -68,3 +68,21 @@ function applyParams(selector, params) {
     a.href = url.toString();
   });
 }
+
+// Reveal animation
+const revealEls = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  document.documentElement.classList.add('has-io'); // ← これを追加
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(ent => {
+      if (ent.isIntersecting) {
+        ent.target.classList.add('in');
+        io.unobserve(ent.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+  revealEls.forEach(el => io.observe(el));
+} else {
+  // 非対応環境はアニメ無しで常時表示
+  revealEls.forEach(el => el.classList.add('in'));
+}
