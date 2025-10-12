@@ -286,12 +286,15 @@ footer{
 }
 
 /* ---------------- Reveal Animation ---------------- */
-.reveal{ opacity:0; transform:translateY(12px); transition:opacity .5s ease, transform .5s ease; }
-.reveal.in{ opacity:1; transform:none; }
+
+.reveal{ opacity:1; transform:none; transition:opacity .5s ease, transform .5s ease; }
+
+/* JSが動作し IntersectionObserver が有効な環境だけ、初期状態を非表示にする */
+.js.has-io .reveal{ opacity:0; transform:translateY(12px); }
+.js.has-io .reveal.in{ opacity:1; transform:none; }
 
 @media (prefers-reduced-motion: reduce){
-  html{ scroll-behavior:auto; }
-  .lift, .reveal{ transition:none; }
+  .reveal{ transition:none; }    /* 動きを最小化 */
 }
 
 /* ---------------- Responsive ---------------- */
