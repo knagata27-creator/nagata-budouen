@@ -88,6 +88,7 @@
     <section id="news" class="section reveal">
       <div class="container">
         <h2 class="section-title deco">最新情報</h2>
+        <div class="grid grid-3" id="newsGrid"><!-- ←空の入れ物だけ残す --></div>
       </div>
     </section>
     
@@ -385,9 +386,9 @@
     // cfg-json から webAppUrl を読む
     const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
     if (!cfg.webAppUrl) return;
-  
-    const wrap = document.querySelector('#news .grid');
-    if (!wrap) return;
+
+    let wrap = document.getElementById('newsGrid') || document.querySelector('#news .grid');
+    if (!wrap) return; 
   
     // 表示件数・文字数の調整はここで。必要なら数字だけ変えてOK
     const LIMIT = 3;          // ← 最新3件を表示
