@@ -7,7 +7,6 @@
 
   <meta name="description" content="ながたぶどう園のオンライン直販。シャインマスカット・ナガノパープル・詰合せ・訳あり。価格・規格・のし対応・出荷目安を明記し、フォームからご注文いただけます。" />
   <meta name="theme-color" content="#5b7a59" />
-
   <meta property="og:type" content="website" />
   <meta property="og:title" content="オンライン直販（Shop）｜ながたぶどう園" />
   <meta property="og:description" content="旬のぶどうを産地直送。ギフト・のし無料、クール便でお届け。" />
@@ -16,9 +15,106 @@
 
   <link rel="icon" href="assets/img/ogp.png" />
   <link rel="stylesheet" href="assets/css/style.css?v=20251013" />
-  <!-- JS有効検出（reveal安全化用） -->
+  <!-- JS検出（reveal安全化） -->
   <script>document.documentElement.classList.add('js');</script>
+
+  <!-- ▼ GASから埋め込む設定（未定義でも動作） -->
+  <script type="application/json" id="cfg-json">
+  <?!= JSON.stringify(deployConfig) ?>
+  </script>
+
+  <!-- ▼ GAS版UIのCSSを #shopApp にスコープ -->
+  <style>
+    #shopApp { --gap:14px; --radius:16px; }
+
+    /* カード */
+    #shopApp .card{position:relative;border:1px solid #e8e8e8;border-radius:var(--radius);background:#fff;overflow:hidden;display:flex;flex-direction:column}
+    #shopApp .card img{width:100%;object-fit:cover;background:#f2f2f2;aspect-ratio:4/3}
+    @media (min-width:900px){ #shopApp .card img{height:360px} }
+    @media (max-width:767px){ #shopApp .card img{aspect-ratio:16/10} #shopApp .card .body{font-size:15px} }
+    #shopApp .card .body{padding:12px;display:grid;gap:8px}
+    #shopApp .name{font-weight:700;font-size:22px}
+    #shopApp .meta{color:#666;font-size:15px;line-height:1.6}
+
+    /* 行・数量・ボタン */
+    #shopApp .row{display:flex;align-items:center;gap:12px;margin-top:8px}
+    #shopApp .qty select.qty-select{width:110px;height:44px;font-size:16px;border:1px solid #ddd;border-radius:10px;background:#fff;padding:0 8px}
+    #shopApp #grid .qty-select{flex:0 0 auto}
+    #shopApp #grid .btn.btn--wide{flex:1 1 auto;min-width:auto}
+    @media (max-width:600px){ #shopApp .qty select.qty-select{width:120px;height:48px;font-size:17px} }
+    #shopApp .btn{cursor:pointer;border:0;background:#111;color:#fff;padding:12px 18px;border-radius:12px;font-size:16px;min-height:44px;transition:background .2s ease}
+    #shopApp .btn:hover:enabled{background:#333}
+    #shopApp .btn:disabled{background:#aaa;cursor:not-allowed}
+    #shopApp .btn--wide{align-self:flex-end;min-width:160px}
+
+    /* 売切れ */
+    #shopApp .card.soldout{filter:grayscale(.2) brightness(.85);pointer-events:none}
+    #shopApp .card.soldout::after{content:"売り切れ";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;letter-spacing:.08em;color:#fff;background:rgba(20,20,20,.55);text-shadow:0 2px 8px rgba(0,0,0,.45)}
+
+    /* 下固定カートバー */
+    #shopApp .cart-sticky{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0));background:#111;color:#fff;box-shadow:0 -8px 24px rgba(0,0,0,.22);z-index:9999;transition:background .2s ease,transform .08s ease}
+    #shopApp .cart-sticky:hover{background:#333}
+    #shopApp .cart-sticky:active{transform:translateY(1px)}
+    #shopApp .cart-sticky__left{display:flex;align-items:center;gap:10px;font-size:16px}
+    #shopApp .cart-sticky__icon{font-size:20px}
+    #shopApp .cart-sticky__badge{display:inline-block;min-width:26px;text-align:center;padding:4px 8px;border-radius:999px;background:#e53935;color:#fff;font-weight:700}
+    #shopApp .cart-sticky__cta{display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;background:#fff;color:#111;border-radius:999px;font-size:16px;font-weight:800;min-width:160px;box-shadow:0 3px 10px rgba(0,0,0,.15);transition:transform .08s ease,background .2s ease}
+    #shopApp .cart-sticky:hover .cart-sticky__cta{background:#f2f2f2}
+    #shopApp .cart-sticky:active .cart-sticky__cta{transform:scale(.98)}
+
+    /* トースト */
+    #shopApp .toast{position:fixed;right:12px;bottom:12px;background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;transform:translateY(8px);transition:.3s;z-index:10000}
+    #shopApp .toast.show{opacity:1;transform:translateY(0)}
+
+    /* モーダル */
+    #shopApp .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;z-index:9998}
+    #shopApp .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid #ddd;border-radius:16px;width:min(960px,92vw);max-height:90vh;overflow:auto;padding:16px;z-index:9999;display:none;scroll-padding-bottom:calc(120px + env(safe-area-inset-bottom,0))}
+    #shopApp .modal header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+    #shopApp .modal table{width:100%;border-collapse:collapse;margin-top:8px}
+    #shopApp .modal th,#shopApp .modal td{border-bottom:1px solid #eee;padding:8px;font-size:14px;text-align:left;white-space:nowrap}
+    #shopApp .modal tfoot td{font-weight:700}
+    #shopApp .modal .form{display:grid;gap:10px;margin-top:14px}
+    #shopApp .modal input,#shopApp .modal textarea,#shopApp .modal select{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;font-size:16px;scroll-margin-bottom:120px}
+    #shopApp .modal .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:12px}
+
+    /* カルーセル */
+    #shopApp .carousel{position:relative;overflow:auto;scroll-snap-type:x mandatory;display:grid;grid-auto-flow:column;grid-auto-columns:100%;border-bottom:1px solid #eee}
+    #shopApp .carousel img{width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;scroll-snap-align:start;background:#f2f2f2}
+    @media (min-width:900px){ #shopApp .carousel img{aspect-ratio:4/3;height:360px} }
+    #shopApp .carousel-dots{position:absolute;left:0;right:0;bottom:8px;display:flex;justify-content:center;gap:6px}
+    #shopApp .carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.65);box-shadow:0 1px 4px rgba(0,0,0,.25)}
+    #shopApp .carousel-dot.is-active{background:#fff}
+
+    /* タグバッジ */
+    #shopApp .badges{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap}
+    #shopApp .badge-chip{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:#111;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+    #shopApp .badge-chip.is-new{background:#13b981}
+    #shopApp .badge-chip.is-hit{background:#ef4444}
+    #shopApp .badge-chip.is-season{background:#3b82f6}
+
+    /* 商品グリッド */
+    #shopApp #grid.product-grid{display:grid;grid-template-columns:1fr;gap:var(--gap)}
+    @media (min-width:700px){ #shopApp #grid.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+    @media (min-width:1100px){ #shopApp #grid.product-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px} }
+
+    /* スケルトン */
+    #shopApp .skeleton{background:linear-gradient(90deg,#eee 25%,#ddd 37%,#eee 63%);background-size:400% 100%;animation:skeleton-loading 1.4s ease infinite;border-radius:8px}
+    @keyframes skeleton-loading{0%{background-position:100% 50%}100%{background-position:0 50%}}
+    #shopApp .skel-card{border:1px solid #e8e8e8;border-radius:var(--radius);background:#fff;overflow:hidden;display:flex;flex-direction:column}
+    #shopApp .skel-card .body{padding:12px;display:grid;gap:8px}
+
+    /* 押下フィードバック */
+    #shopApp .pressable{position:relative;transition:transform .08s ease,filter .12s ease,box-shadow .12s ease,background-color .12s ease;will-change:transform}
+    #shopApp .pressable:active,#shopApp .pressable.is-pressed{transform:translateY(1px) scale(.985);filter:brightness(.96)}
+    #shopApp .btn.pressable{box-shadow:0 3px 10px rgba(0,0,0,.15)}
+    #shopApp .btn.pressable.is-pressed{box-shadow:inset 0 2px 6px rgba(0,0,0,.12)}
+    #shopApp .cart-sticky.pressable,#shopApp .cart-btn.pressable,#shopApp .cart-sticky__cta.pressable{transition:transform .08s ease,background .12s ease,box-shadow .12s ease}
+    #shopApp .cart-sticky.pressable.is-pressed,#shopApp .cart-btn.pressable.is-pressed,#shopApp .cart-sticky__cta.pressable.is-pressed{transform:translateY(1px) scale(.99)}
+    #shopApp .pressable:focus-visible{outline:3px solid #99c2ff;outline-offset:2px;border-radius:12px}
+    @media (prefers-reduced-motion:reduce){ #shopApp .pressable{transition:none} }
+  </style>
 </head>
+
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
 
@@ -65,16 +161,16 @@
 
   <main id="main">
     <!-- ===== Hero（販売状況×最短導線） ===== -->
-    <section class="section reveal">
+    <section class="section">
       <div class="container two-col">
         <div class="card lift">
           <h1 class="section-title deco" style="margin-top:0">オンライン直販（Shop）</h1>
           <p class="section-lead" id="heroLead">
-            [受付状況] 本日17時までのご注文は <strong id="shipEta">2–4日で出荷</strong>。
+            <b id="heroMode">受付中</b>｜本日17時までのご注文は <strong id="shipEta">2–4日で出荷</strong>。
           </p>
           <ul class="list muted">
             <li>クール便／のし・名入れ無料（ギフト）</li>
-            <li>数量・お届け先は注文フォームで指定できます</li>
+            <li>送料：<b><span id="ship">–</span> 円</b>（地域により加算あり）</li>
           </ul>
           <div class="btn-row">
             <a class="btn btn--fill" href="#catalog">商品一覧へ</a>
@@ -88,132 +184,74 @@
       </div>
     </section>
 
-    <!-- ===== カテゴリ切替（フィルター） ===== -->
-    <section class="section reveal" id="catalog">
+    <!-- ===== GAS商品UI（スコープ：#shopApp） ===== -->
+    <section class="section" id="catalog">
       <div class="container">
-        <div class="card lift" role="tablist" aria-label="商品カテゴリ">
-          <div class="btn-row">
-            <a class="btn btn--fill" href="#all" data-filter="all" role="tab" aria-selected="true">すべて</a>
-            <a class="btn" href="#single" data-filter="single" role="tab">単品（品種別）</a>
-            <a class="btn" href="#assort" data-filter="assort" role="tab">詰合せ</a>
-            <a class="btn" href="#imperfect" data-filter="imperfect" role="tab">訳あり</a>
-            <a class="btn" href="gift.html">ギフト</a>
+        <div id="shopApp">
+          <header style="display:flex;justify-content:space-between;align-items:center;margin:0 0 10px">
+            <div style="font-weight:700">商品一覧</div>
+            <button id="openCart" class="btn cart-btn" type="button" aria-label="カートを開く">
+              <span aria-hidden="true">🛒</span> カート
+              <span id="cartCountHead" class="cart-sticky__badge">0</span>
+            </button>
+          </header>
+
+          <div id="grid" class="product-grid">
+            <!-- JSが商品を描画。起動直後はスケルトン表示 -->
           </div>
-        </div>
 
-        <!-- ===== 商品グリッド ===== -->
-        <div class="grid grid-3" id="productGrid" style="margin-top:18px">
-          <!-- シャイン 2房 -->
-          <article class="card product-card lift reveal" data-cat="single,gift" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/grape_shine.svg" alt="シャインマスカットの房" loading="lazy" itemprop="image">
-            </div>
-            <h3 itemprop="name">シャインマスカット（2房）</h3>
-            <p class="meta" itemprop="description">約900g／クール便｜のし可｜出荷目安：ご入金後2–4日</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="badge">在庫：○</span>
-              <span class="price">¥3,980〜</span>
-              <link itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="3980" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
-              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=shine_2&qty=1" itemprop="url" aria-label="シャインマスカット（2房）を注文する">注文する</a>
-            </div>
-            <details class="note"><summary>規格の詳細</summary>粒張り・房形は作柄により差があります。見た目の個体差はご了承ください。</details>
-          </article>
+          <!-- 画面下の固定カートバー -->
+          <button id="stickyCart" class="cart-sticky" type="button" aria-label="カートを開く">
+            <span class="cart-sticky__left">
+              <span class="cart-sticky__icon" aria-hidden="true">🛒</span>
+              <span class="cart-sticky__label">カート</span>
+              <span id="cartCountSticky" class="cart-sticky__badge">0</span>
+            </span>
+            <span class="cart-sticky__cta">レジに進む ➜</span>
+          </button>
 
-          <!-- ナガノパープル 2房 -->
-          <article class="card product-card lift reveal" data-cat="single,gift" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/grape_nagano.svg" alt="ナガノパープルの房" loading="lazy" itemprop="image">
-            </div>
-            <h3 itemprop="name">ナガノパープル（2房）</h3>
-            <p class="meta" itemprop="description">約900g／クール便｜のし可｜出荷目安：ご入金後2–4日</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="badge">在庫：◎</span>
-              <span class="price">¥4,480〜</span>
-              <link itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="4480" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
-              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=nagano_2&qty=1" itemprop="url" aria-label="ナガノパープル（2房）を注文する">注文する</a>
-            </div>
-            <details class="note"><summary>規格の詳細</summary>皮ごと食べられる黒系大粒。贈答向けの「見た目基準」を満たしたロットを優先出荷します。</details>
-          </article>
+          <!-- モーダル（カート＋お客様情報） -->
+          <div id="checkoutOverlay" class="modal-overlay"></div>
+          <div id="checkoutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+            <header>
+              <h2 id="checkoutTitle" style="margin:0;font-size:18px;">ご注文内容</h2>
+              <button class="btn" type="button" id="m-close">閉じる</button>
+            </header>
 
-          <!-- 詰合せギフト 2〜3房 -->
-          <article class="card product-card lift reveal" data-cat="assort,gift" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/gift.svg" alt="詰合せギフトの化粧箱" loading="lazy" itemprop="image">
-            </div>
-            <h3 itemprop="name">詰合せギフト（2〜3房）</h3>
-            <p class="meta" itemprop="description">化粧箱／のし・名入れ無料｜出荷目安：2–4日</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="badge">在庫：○</span>
-              <span class="price">¥5,980〜</span>
-              <link itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="5980" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
-              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1" itemprop="url" aria-label="詰合せギフト（2〜3房）を注文する">注文する</a>
-            </div>
-            <details class="note"><summary>内容について</summary>品種の組合せは時期により変わります（例：シャイン／ナガノP／他）。</details>
-          </article>
+            <section>
+              <table id="modalCartTable">
+                <thead>
+                  <tr><th>商品名</th><th>数量</th><th style="width:120px">小計</th><th style="width:72px"></th></tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                  <tr><td>小計</td><td></td><td id="m-subtotal">0</td><td></td></tr>
+                  <tr><td>送料</td><td></td><td id="m-shipping">0</td><td></td></tr>
+                  <tr><td>合計</td><td></td><td id="m-total">0</td><td></td></tr>
+                </tfoot>
+              </table>
+            </section>
 
-          <!-- 訳ありミックス 2房 -->
-          <article class="card product-card lift reveal" data-cat="imperfect" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/blog1.svg" alt="訳あり品のイメージ" loading="lazy" itemprop="image">
-            </div>
-            <h3 itemprop="name">訳ありミックス（2房）</h3>
-            <p class="meta" itemprop="description">外観難あり／味は正規品相当｜クール便</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="badge">在庫：△</span>
-              <span class="price">¥2,980〜</span>
-              <link itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="2980" />
-              <meta itemprop="availability" content="https://schema.org/LimitedAvailability" />
-              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=imperfect_mix_2&qty=1" itemprop="url" aria-label="訳ありミックス（2房）を注文する">注文する</a>
-            </div>
-            <details class="note"><summary>訳あり基準</summary>房形不揃い・日焼け・軽微な脱粒など。贈答には不向きですが味は遜色ありません。</details>
-          </article>
-        </div>
-
-        <p class="note" style="margin-top:14px">
-          価格は作柄・サイズにより変動します。最新の在庫と出荷目安はステータスバーおよび商品カードをご確認ください。
-        </p>
-      </div>
-    </section>
-
-    <!-- ===== ご案内（ギフト／はじめての方） ===== -->
-    <section class="section reveal">
-      <div class="container two-col">
-        <div class="card lift">
-          <h2 class="section-title deco">ギフトのし・包装</h2>
-          <p class="section-lead">のし・名入れ無料。化粧箱・手提げ袋に対応します。法人・複数配送もご相談ください。</p>
-          <p><a class="btn btn--fill" href="gift.html">ギフトの詳細を見る</a></p>
-        </div>
-        <div class="card lift">
-          <h2 class="section-title deco">はじめての方へ</h2>
-          <ul class="list">
-            <li>注文 → お支払い（銀行振込／PayPay予定）→ 出荷</li>
-            <li>クール便でお届け。到着当日の破損は写真とともにご連絡ください（再送・返金対応）。</li>
-          </ul>
-          <p><a class="btn" href="guide.html">送料・支払い・FAQ</a></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== CTA ===== -->
-    <section class="section reveal" aria-label="ご注文CTA">
-      <div class="container">
-        <div class="card lift" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap">
-          <div>
-            <h2 class="section-title" style="margin:0">旬を産地直送で。</h2>
-            <p class="section-lead" style="margin:6px 0 0">のし・名入れ無料。最短の出荷目安をご案内します。</p>
+            <section class="form">
+              <h3 style="margin:6px 0 0;">お客様情報</h3>
+              <input required type="text"  id="m-name"    placeholder="氏名">
+              <input required type="email" id="m-email"   placeholder="メール">
+              <input type="text"          id="m-tel"     placeholder="電話">
+              <input type="text"          id="m-addr"    placeholder="住所">
+              <textarea id="m-note" rows="3" placeholder="備考（のし等あれば）"></textarea>
+              <select id="m-pay">
+                <option value="銀行振込">銀行振込</option>
+                <option value="代金引換">代金引換</option>
+                <option value="店頭支払">店頭支払</option>
+              </select>
+              <div class="actions">
+                <button class="btn" type="button" id="m-back">戻る</button>
+                <button id="m-submit" class="btn" type="button">注文を確定する</button>
+              </div>
+            </section>
           </div>
-          <div class="btn-row">
-            <a class="btn btn--fill" href="#catalog">商品一覧へ</a>
-            <a class="btn" href="gift.html">ギフトを見る</a>
-            <a class="btn" href="contact.html">LINEで入荷通知</a>
-          </div>
+
+          <div id="toast" class="toast" role="status" aria-live="polite"></div>
         </div>
       </div>
     </section>
@@ -237,10 +275,10 @@
     </div>
   </footer>
 
-  <!-- ===== Scripts ===== -->
+  <!-- ===== Base Scripts ===== -->
   <script src="assets/js/main.js"></script>
   <script>
-    // ステータスバー＆ヒーロー文言 同期
+    // ステータスバー＆ヒーロー同期
     (async () => {
       try {
         const res = await fetch('assets/data/status.json', { cache: 'no-store' });
@@ -250,86 +288,314 @@
         document.getElementById('statusMsg').textContent  = data.message || '';
         if (data.ship_eta) document.getElementById('shipEta').textContent = data.ship_eta;
         if (data.notice_url) document.getElementById('statusLink').href = data.notice_url;
+        document.getElementById('heroMode').textContent = map[data.mode] || '受付状況';
       } catch(e) {/* silent */}
-    })();
-
-    // カテゴリフィルター（JSなしでも全件表示）
-    (function(){
-      const grid = document.getElementById('productGrid');
-      const cards = Array.from(grid.querySelectorAll('.product-card'));
-      const btns = Array.from(document.querySelectorAll('[data-filter]'));
-      const setActive = (cat) => {
-        btns.forEach(b => b.classList.toggle('btn--fill', b.dataset.filter === cat));
-      };
-      const apply = (cat) => {
-        cards.forEach(c => {
-          const cats = (c.dataset.cat || '').split(',');
-          c.hidden = (cat !== 'all' && !cats.includes(cat));
-        });
-        setActive(cat);
-      };
-      btns.forEach(b => {
-        b.addEventListener('click', (e) => {
-          e.preventDefault();
-          apply(b.dataset.filter);
-          history.replaceState(null, '', '#'+b.dataset.filter);
-        });
-      });
-      // 初期化（ハッシュがあれば反映）
-      const initCat = location.hash?.replace('#','');
-      if (['single','assort','imperfect'].includes(initCat)) apply(initCat); else setActive('all');
     })();
   </script>
 
-  <!-- JSON-LD: ItemList + Products -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"ItemList",
-    "name":"ながたぶどう園オンライン直販",
-    "itemListElement":[
-      {
-        "@type":"ListItem","position":1,
-        "item":{
-          "@type":"Product",
-          "name":"シャインマスカット（2房）",
-          "image":"https://example.jp/assets/img/grape_shine.svg",
-          "description":"約900g／クール便｜のし可｜出荷目安：2–4日",
-          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"3980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=shine_2&qty=1"}
-        }
-      },
-      {
-        "@type":"ListItem","position":2,
-        "item":{
-          "@type":"Product",
-          "name":"ナガノパープル（2房）",
-          "image":"https://example.jp/assets/img/grape_nagano.svg",
-          "description":"約900g／クール便｜のし可｜出荷目安：2–4日",
-          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"4480","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=nagano_2&qty=1"}
-        }
-      },
-      {
-        "@type":"ListItem","position":3,
-        "item":{
-          "@type":"Product",
-          "name":"詰合せギフト（2〜3房）",
-          "image":"https://example.jp/assets/img/gift.svg",
-          "description":"化粧箱／のし・名入れ無料｜出荷目安：2–4日",
-          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
-        }
-      },
-      {
-        "@type":"ListItem","position":4,
-        "item":{
-          "@type":"Product",
-          "name":"訳ありミックス（2房）",
-          "image":"https://example.jp/assets/img/blog1.svg",
-          "description":"外観難あり／味は正規品相当｜クール便",
-          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"2980","availability":"https://schema.org/LimitedAvailability","url":"https://script.google.com/macros/s/XXXXX/exec?product=imperfect_mix_2&qty=1"}
-        }
+  <!-- ===== GAS版 ロジック統合（スコープ不要：IDで参照） ===== -->
+  <script>
+    // ===== 設定の読み出し =====
+    let CFG = {};
+    try { CFG = JSON.parse(document.getElementById('cfg-json').textContent || '{}'); } catch(_) { CFG = {}; }
+    const API_BASE = CFG.webAppUrl || 'https://script.google.com/macros/s/XXXXX/exec'; // 予備
+    document.getElementById('ship').textContent = ((CFG.shippingFee || 0) >>> 0).toLocaleString();
+
+    // ===== 状態 =====
+    const state = { products: [], cart: [] };
+
+    // ===== ユーティリティ =====
+    const yen = (n)=> (n||0).toLocaleString();
+    function toast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(()=> t.classList.remove('show'), 2200);
+    }
+    const calcPricePerBox = (p)=> Math.round((Number(p['g単価'])||0) * (Number(p['基準重量g'])||0));
+
+    function updateCartBadge(){
+      const n = state.cart.reduce((a,b)=> a + (Number(b.数量)||0), 0);
+      ['cartCountHead', 'cartCountSticky'].forEach(id=>{
+        const el = document.getElementById(id); if(!el) return;
+        el.textContent = n;
+        el.animate([{transform:'scale(1)'},{transform:'scale(1.25)'},{transform:'scale(1)'}],{duration:300,easing:'ease-out'});
+      });
+    }
+
+    // 押下エフェクト
+    function attachPressEffects(scope = document) {
+      const targets = scope.querySelectorAll('#shopApp button, #shopApp .btn, #shopApp .cart-sticky, #shopApp .cart-sticky__cta');
+      targets.forEach(el => {
+        if (el.classList.contains('pressable')) return;
+        el.classList.add('pressable');
+        let pressed = false;
+        const down = () => { pressed = true; el.classList.add('is-pressed'); };
+        const up   = () => { if(!pressed) return; pressed = false; el.classList.remove('is-pressed'); };
+        el.addEventListener('pointerdown', down, { passive:true });
+        ['pointerup','pointerleave','pointercancel','blur'].forEach(ev=> el.addEventListener(ev, up, { passive:true }));
+        el.addEventListener('keydown', e=>{ if(e.code==='Space'||e.code==='Enter') down(); });
+        el.addEventListener('keyup',   e=>{ if(e.code==='Space'||e.code==='Enter') up(); });
+      });
+    }
+
+    // スケルトン
+    function showSkeletons(n = 6){
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      for (let i = 0; i < n; i++){
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="sk-image" style="height:200px;background:linear-gradient(90deg,#eee,#f5f5f5,#eee);background-size:200% 100%;animation:sk 1.2s linear infinite;"></div>
+          <div style="padding:12px">
+            <div class="sk-line" style="height:14px;margin:10px 0;width:80%;background:#eee;"></div>
+            <div class="sk-line" style="height:12px;margin:8px 0;width:60%;background:#f0f0f0;"></div>
+            <div class="sk-line" style="height:12px;margin:8px 0;width:90%;background:#f0f0f0;"></div>
+          </div>`;
+        grid.appendChild(card);
       }
-    ]
-  }
+      attachPressEffects(grid);
+    }
+
+    // 商品描画
+    function renderProducts(){
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+
+      state.products.forEach(p=>{
+        const stock   = Number(p['在庫箱数'])||0;
+        const soldout = stock <= 0;
+
+        const imgs = String(p['画像URL']||'').split(',').map(s=>s.trim()).filter(Boolean);
+        const images = imgs.length ? imgs : ['https://placehold.co/1200x900?text=No+Image'];
+
+        const tags = String(p['タグ']||'').split(',').map(s=>s.trim()).filter(Boolean);
+        const tagHtml = tags.map(t=>{
+          const key = t.includes('新') ? 'is-new' : t.includes('人気') ? 'is-hit' : t.includes('今') ? 'is-season' : '';
+          return `<span class="badge-chip ${key}">${t}</span>`;
+        }).join('');
+
+        const card = document.createElement('div');
+        card.className = 'card' + (soldout?' soldout':'');
+
+        card.innerHTML = `
+          <div class="media" style="position:relative">
+            <div class="badges">${tagHtml}</div>
+            <div class="carousel" tabindex="0" aria-label="商品画像">
+              ${images.map(src => `<img loading="lazy" src="${src}" alt="${p['商品名']}">`).join('')}
+            </div>
+            <div class="carousel-dots">
+              ${images.map((_,i)=>`<span class="carousel-dot ${i===0?'is-active':''}"></span>`).join('')}
+            </div>
+          </div>
+
+          <div class="body">
+            <div class="name">${p['商品名']}</div>
+            <div class="meta">基準重量: ${p['基準重量g']}g（目安: ${p['重量目安']||'-'}）</div>
+            <div class="meta">価格/箱: ¥${(Math.round((+p['g単価']||0) * (+p['基準重量g']||0))).toLocaleString()}</div>
+            <div class="meta">在庫: ${stock} 箱</div>
+
+            <div class="row">
+              <div class="qty">
+                <select class="qty-select">
+                  ${Array.from({length: Math.max(0, Math.min(stock, 20))}, (_,i)=>`<option value="${i+1}">${i+1}</option>`).join('') || '<option value="0">0</option>'}
+                </select>
+              </div>
+              <button class="btn btn--wide" ${soldout?'disabled':''}>カートに追加</button>
+            </div>
+          </div>
+        `;
+
+        // ドット連動
+        const rail = card.querySelector('.carousel');
+        const dots = [...card.querySelectorAll('.carousel-dot')];
+        rail?.addEventListener('scroll', ()=>{
+          const idx = Math.round(rail.scrollLeft / rail.clientWidth);
+          dots.forEach((d,i)=> d.classList.toggle('is-active', i===idx));
+        }, {passive:true});
+
+        // 追加
+        const qtySelect = card.querySelector('.qty-select');
+        card.querySelector('.btn')?.addEventListener('click', ()=>{
+          const q = Number(qtySelect?.value)||1;
+          if (q <= 0 || soldout) return;
+          addToCart(p, q);
+          toast('カートに追加しました');
+        });
+
+        grid.appendChild(card);
+      });
+
+      attachPressEffects(grid);
+    }
+
+    // カート
+    function addToCart(product, qty){
+      const id = product['商品ID'];
+      const exist = state.cart.find(x=> x.商品ID === id);
+      if (exist) exist.数量 += qty;
+      else state.cart.push({ 商品ID:id, 商品名:product['商品名'], 単価:calcPricePerBox(product), 基準重量g:product['基準重量g'], 数量:qty });
+      updateCartBadge();
+    }
+
+    // モーダル開閉
+    function openCheckoutModal(){
+      __lockBodyScroll();
+      renderCartTableInModal();
+      document.getElementById('checkoutOverlay').style.display = 'block';
+      document.getElementById('checkoutModal').style.display = 'block';
+      setTimeout(()=> document.getElementById('m-name').focus(), 50);
+    }
+    function closeCheckoutModal(){
+      document.getElementById('checkoutOverlay').style.display = 'none';
+      document.getElementById('checkoutModal').style.display = 'none';
+      __unlockBodyScroll();
+    }
+    document.getElementById('m-close').addEventListener('click', closeCheckoutModal);
+    document.getElementById('m-back').addEventListener('click', closeCheckoutModal);
+    document.getElementById('openCart')?.addEventListener('click', openCheckoutModal);
+    document.getElementById('stickyCart')?.addEventListener('click', openCheckoutModal);
+
+    // モーダル内テーブル
+    function renderCartTableInModal(){
+      const tbody = document.querySelector('#modalCartTable tbody'); tbody.innerHTML = '';
+      let subtotal = 0;
+      (state.cart||[]).forEach(it=>{
+        const line = it.単価 * it.数量; subtotal += line;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${it.商品名}</td>
+          <td><input type="number" min="1" value="${it.数量}" style="width:80px"></td>
+          <td>¥${yen(line)}</td>
+          <td><button class="btn" data-remove>削除</button></td>`;
+        tr.querySelector('input').addEventListener('change', (e)=>{
+          it.数量 = Math.max(1, Number(e.target.value)||1);
+          renderCartTableInModal(); updateCartBadge();
+        });
+        tr.querySelector('[data-remove]').addEventListener('click', ()=>{
+          const i = state.cart.findIndex(x=> x.商品ID === it.商品ID);
+          if(i>=0){ state.cart.splice(i,1); renderCartTableInModal(); updateCartBadge(); }
+        });
+        tbody.appendChild(tr);
+      });
+      document.getElementById('m-subtotal').textContent = yen(subtotal);
+      const baseShip = CFG.shippingFee||0;
+      document.getElementById('m-shipping').textContent = yen(baseShip);
+      document.getElementById('m-total').textContent = yen(subtotal + baseShip);
+    }
+
+    // 送信
+    async function submitOrderFromModal(){
+      if((state.cart||[]).length === 0){ alert('カートが空です'); return; }
+      const btn = document.getElementById('m-submit');
+      const orig = btn.textContent; btn.disabled = true; btn.textContent = '送信中...';
+      try {
+        const payload = {
+          items: state.cart.map(({商品ID, 数量})=> ({商品ID, 数量})),
+          customer: {
+            氏名:  document.getElementById('m-name').value.trim(),
+            メール: document.getElementById('m-email').value.trim(),
+            電話:  document.getElementById('m-tel').value.trim(),
+            住所:  document.getElementById('m-addr').value.trim(),
+            備考:  document.getElementById('m-note').value.trim(),
+            支払方法: document.getElementById('m-pay').value
+          },
+          送料: CFG.shippingFee||0
+        };
+        let errors = [];
+        if(!payload.customer.氏名) errors.push("氏名");
+        if(!payload.customer.住所) errors.push("住所");
+        if(!payload.customer.メール && !payload.customer.電話) errors.push("メールまたは電話番号");
+        if(errors.length){ showThanks("❌ " + errors.join("・") + " が入力されていません"); btn.disabled=false; btn.textContent=orig; return; }
+
+        const res = await fetch(`${API_BASE}?api=order`, { method:'POST', body: JSON.stringify(payload) });
+        const data = await res.json();
+        if(!data.ok){ showThanks("❌ エラー: " + (data.error||'送信失敗')); btn.disabled=false; btn.textContent=orig; return; }
+
+        state.cart = []; updateCartBadge(); closeCheckoutModal();
+        showThanks(`✅ ご注文ありがとうございます！<br>注文番号：<b>${data.orderId}</b><br>合計：¥${(data.total||0).toLocaleString()}`);
+      } catch(e){
+        console.error(e); showThanks("❌ 通信エラー");
+      } finally {
+        btn.disabled=false; btn.textContent=orig;
+      }
+    }
+    document.getElementById('m-submit').addEventListener('click', submitOrderFromModal);
+
+    // Thanks
+    function showThanks(html){
+      const ov = document.createElement('div');
+      ov.className = 'modal-overlay'; ov.style.display='block'; ov.style.zIndex=9998;
+      const box = document.createElement('div');
+      box.className='modal'; box.style.display='block';
+      box.innerHTML = `
+        <div style="padding:6px 0;text-align:center;">${html}</div>
+        <div class="actions" style="justify-content:center">
+          <button class="btn" id="t-ok">閉じる</button>
+        </div>`;
+      document.body.appendChild(ov); document.body.appendChild(box);
+      document.getElementById('t-ok').addEventListener('click', ()=>{ box.remove(); ov.remove(); });
+    }
+
+    // iOS スクロール固定ヘルパ
+    (function(){
+      const isiOS = /iP(hone|ad|od)/.test(navigator.userAgent);
+      let savedScrollY = 0;
+      window.__lockBodyScroll = function(){
+        savedScrollY = window.scrollY || document.documentElement.scrollTop;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${savedScrollY}px`;
+        document.body.style.left = '0'; document.body.style.right = '0'; document.body.style.width = '100%';
+      };
+      window.__unlockBodyScroll = function(){
+        document.body.style.position = ''; document.body.style.top = ''; document.body.style.left = ''; document.body.style.right = ''; document.body.style.width = '';
+        window.scrollTo(0, savedScrollY);
+      };
+      if (isiOS) {
+        document.addEventListener('focusin', (e) => {
+          if (!e.target.matches('input, textarea, select')) return;
+          setTimeout(() => {
+            e.target.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' });
+          }, 50);
+        });
+      }
+    })();
+
+    // 住所入力で送料計算（フロント簡易版）
+    function calcShippingFeeFront(addr){
+      if(!addr) return CFG.shippingFee || 500;
+      if(addr.includes("北海道")) return 1200;
+      if(addr.includes("沖縄")) return 1500;
+      if(addr.includes("離島")) return 2000;
+      return CFG.shippingFee || 500;
+    }
+    document.getElementById('m-addr').addEventListener('input', ()=>{
+      const addr = document.getElementById('m-addr').value;
+      const newFee = calcShippingFeeFront(addr);
+      document.getElementById('m-shipping').textContent = newFee.toLocaleString();
+      const subtotal = state.cart.reduce((sum,it)=> sum + it.単価 * it.数量, 0);
+      document.getElementById('m-total').textContent = (subtotal + newFee).toLocaleString();
+    });
+
+    // 商品取得
+    async function fetchProducts(){
+      const res = await fetch(`${API_BASE}?api=products`, { cache: 'no-store' });
+      const data = await res.json();
+      if(!data.ok) throw new Error(data.error || "商品取得失敗");
+      state.products = data.products || [];
+      renderProducts();
+    }
+
+    // 起動
+    updateCartBadge();
+    showSkeletons(6);
+    fetchProducts().catch(err=>{
+      console.error(err);
+      document.getElementById('grid').innerHTML = '<div class="card" style="padding:16px">商品を取得できませんでした。</div>';
+    });
+
+    // カートボタンの押下エフェクト付与
+    attachPressEffects(document.getElementById('shopApp'));
   </script>
 </body>
 </html>
