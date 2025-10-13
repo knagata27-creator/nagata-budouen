@@ -20,7 +20,10 @@
 
   <!-- ▼ GASから埋め込む設定（未定義でも動作） -->
   <script type="application/json" id="cfg-json">
-  <?!= JSON.stringify(deployConfig) ?>
+  {
+    "webAppUrl": "https://script.google.com/macros/s/AKfycbxYourDeployId/exec",
+    "shippingFee": 500
+  }
   </script>
 
   <!-- ▼ GAS版UIのCSSを #shopApp にスコープ（※既存と同じ） -->
