@@ -20,9 +20,9 @@
   <link rel="stylesheet" href="assets/css/style.css" />
 
   <!-- head 内に1回だけ -->
-    <script type="application/json" id="cfg-json">
-    { "webAppUrl": "https://script.google.com/macros/s/AKfycbytACqss-IJgznIjBg7_DltrKFJKbnHonuVkdv9reJiqT4NC6bQ1yxPvkxcGN2C8rUinQ/exec" }
-    </script>
+  <script type="application/json" id="cfg-json">
+  { "webAppUrl": "https://script.google.com/macros/s/AKfycbytACqss-IJgznIjBg7_DltrKFJKbnHonuVkdv9reJiqT4NC6bQ1yxPvkxcGN2C8rUinQ/exec" }
+  </script>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
@@ -47,7 +47,7 @@
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
           <a href="index.html">ホーム</a>
-          <a href="#shop">注文する</a>
+          <a href="shop.html">注文する</a>
           <a href="gift.html">ギフト</a>
           <a href="calendar.html">収穫カレンダー</a>
           <a href="guide.html">はじめての方</a>
@@ -75,7 +75,7 @@
       <div class="container hero__content">
         <span class="kicker">Nagata Budou-en</span>
         <h1>信州・須坂 日滝原から、旬のぶどうを産地直送。</h1>
-        <p id="heroLead">[受付状況] 本日17時までのご注文は<span id="heroShip">2–4日で出荷</span>。</p>
+        <p id="heroLead">[受付状況] 本日17時までのご注文は <span id="heroShip">2–4日で出荷</span>。</p>
         <div class="cta">
           <a class="btn btn--fill" href="#shop">🍇 注文する</a>
           <a class="btn" href="gift.html">🎁 ギフトを見る</a>
@@ -191,7 +191,7 @@
             <p>収穫後クール便で発送。出荷予定日→出荷完了をメール/LINEでお知らせ。</p>
           </div>
         </div>
-        <p style="margin-top:16px"><a class="btn" href="guide.html">送料・支払い方法・FAQ</a></p>
+        <p style="margin-top:16px"><a class="btn" href="guide.html">送料・お支払い・FAQ</a></p>
       </div>
     </section>
 
@@ -306,20 +306,62 @@
   <!-- Scripts -->
   <script src="assets/js/main.js"></script>
 
-  <!-- Heroテキストをステータスに同期（status.json を利用） -->
+  <!-- ▼▼▼ GAS or ローカルJSONから受付状況を読み込み（統合版） ▼▼▼ -->
   <script>
     (async () => {
+      const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
+
+      // cfg-jsonの取得
+      const cfg = (() => {
+        try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); }
+        catch(_) { return {}; }
+      })();
+
+      async function fetchStatus() {
+        // 1) GAS（あれば優先）
+        if (cfg.webAppUrl) {
+          try {
+            const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-store' });
+            if (r.ok) return await r.json();
+          } catch(_) {}
+        }
+        // 2) ローカルJSON（フェイルバック）
+        const r2 = await fetch('assets/data/status.json', { cache:'no-store' });
+        return await r2.json();
+      }
+
       try {
-        const res = await fetch('assets/data/status.json', { cache: 'no-store' });
-        const data = await res.json();
+        const data = await fetchStatus();
+
+        // ステータスバー
+        const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
+        setText('statusMode', (map[data.mode] || '受付状況'));
+        setText('statusMsg',  data.message || '');
+
+        const link = document.getElementById('statusLink');
+        if (link && data.notice_url) link.href = data.notice_url;
+
+        // ヒーロー：角括弧内の文言と出荷目安のspanを置換
         const heroLead = document.getElementById('heroLead');
-        if (!heroLead) return;
-        const modeMap = { preorder: '予約受付前', inseason: '受付中', ended: '今季終了' };
-        const mode = modeMap[data.mode] || '受付状況';
-        heroLead.innerHTML = `[${mode}] ${data.message || '最新状況をご確認ください。'}`;
-      } catch(e) { /* フォールバック不要 */ }
+        const heroShip = document.getElementById('heroShip');
+        if (heroLead) {
+          const modeTxt = map[data.mode] || '受付状況';
+          // 先頭の [xxx] を差し替え（無ければ先頭に付ける）
+          if (/\[.*?\]/.test(heroLead.innerHTML)) {
+            heroLead.innerHTML = heroLead.innerHTML.replace(/\[.*?\]/, `[${modeTxt}]`);
+          } else {
+            heroLead.innerHTML = `[${modeTxt}] ` + heroLead.innerHTML;
+          }
+        }
+        if (heroShip && data.ship_eta) {
+          heroShip.textContent = data.ship_eta; // 例： "2–4日で出荷"
+        }
+      } catch(e) {
+        // 失敗時はそのまま（初期テキストを表示）
+      }
     })();
   </script>
+  <!-- ▲▲▲ ここだけ差し替え／1本化。重複していた旧スクリプトは削除 ▲▲▲ -->
 
   <!-- 構造化データ（LocalBusiness） -->
   <script type="application/ld+json">
@@ -360,43 +402,5 @@
     "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
   }]
   </script>
-
-    <script>
-    (async () => {
-      const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
-      const cfg = (() => {
-        try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); }
-        catch(_) { return {}; }
-      })();
-    
-      async function fetchStatus() {
-        // 1) GAS（あれば）
-        if (cfg.webAppUrl) {
-          try {
-            const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-store' });
-            if (r.ok) return await r.json();
-          } catch(_) {}
-        }
-        // 2) ローカルJSON（フェイルバック）
-        const r2 = await fetch('assets/data/status.json', { cache:'no-store' });
-        return await r2.json();
-      }
-    
-      try {
-        const data = await fetchStatus();
-        const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
-    
-        set('statusMode', (map[data.mode] || '受付状況'));
-        set('statusMsg',  data.message || '');
-        if (data.ship_eta) set('shipEta', data.ship_eta);
-    
-        const link = document.getElementById('statusLink');
-        if (link && data.notice_url) link.href = data.notice_url;
-    
-        set('heroMode', (map[data.mode] || '受付状況')); // ヒーローがある頁だけ反映
-      } catch(e) { /* silent */ }
-    })();
-    </script>
-
 </body>
 </html>
