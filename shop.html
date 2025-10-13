@@ -591,30 +591,46 @@
     document.getElementById('m-submit').addEventListener('click', submitOrderFromModal);
 
     function showThanks(html){
-      // 既存を掃除（多重表示防止）
-      document.querySelectorAll('#shopApp .modal-overlay, #shopApp .modal')
-        .forEach(el=> el.remove());
+      // 1) 既存の「Thanksだけ」を掃除（注文モーダルは触らない！）
+      document.querySelectorAll('#shopApp .overlay--thanks, #shopApp .modal--thanks')
+        .forEach(el => el.remove());
 
+      // 2) Thanks用の要素を作成（専用クラスを付ける）
       const ov = document.createElement('div');
-      ov.className = 'modal-overlay'; ov.style.display='block'; ov.style.zIndex=9998;
-
+      ov.className = 'modal-overlay overlay--thanks';
+      ov.style.display = 'block';
+      ov.style.zIndex = 10020; // 注文モーダルより前面に
+    
       const box = document.createElement('div');
-      box.className='modal'; box.style.display='block';
+      box.className = 'modal modal--thanks';
+      box.style.display = 'block';
+      box.style.zIndex = 10021;
       box.innerHTML = `
         <div style="padding:6px 0;text-align:center;">${html}</div>
         <div class="actions" style="justify-content:center">
-          <button class="btn" id="t-ok">閉じる</button>
+          <button class="btn" id="t-ok" type="button">閉じる</button>
         </div>`;
 
+      // 3) #shopApp 配下に挿入（スコープCSSが効く）
       const host = document.getElementById('shopApp') || document.body;
-      host.appendChild(ov); host.appendChild(box);
+      host.appendChild(ov);
+      host.appendChild(box);
 
-      const close = ()=>{ box.remove(); ov.remove(); };
-      document.getElementById('t-ok').addEventListener('click', close);
-      ov.addEventListener('click', close);
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); }, { once:true });
+      // 4) 閉じる動き
+      const closeThanks = () => {
+        box.remove(); ov.remove();
+
+        // 【保険】注文モーダルが存在しない＆bodyがロック状態なら解除
+        const hasCheckout = document.getElementById('checkoutModal')?.style.display === 'block';
+        const isBodyFixed = getComputedStyle(document.body).position === 'fixed';
+        if (!hasCheckout && isBodyFixed && typeof window.__unlockBodyScroll === 'function') {
+          window.__unlockBodyScroll();
+        }
+      };
+      document.getElementById('t-ok').addEventListener('click', closeThanks);
+      ov.addEventListener('click', closeThanks);
+      document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeThanks(); }, { once:true });
     }
-
 
     (function(){
       const isiOS = /iP(hone|ad|od)/.test(navigator.userAgent);
