@@ -94,6 +94,27 @@
     #shopApp .carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.65);box-shadow:0 1px 4px rgba(0,0,0,.25)}
     #shopApp .carousel-dot.is-active{background:#fff}
 
+    /* --- Carousel: Grid→Flex で確実に横スワイプ可能に --- */
+    #shopApp .carousel{
+      display: flex !important;         /* ← ここを flex に */
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      gap: 0;
+      -webkit-overflow-scrolling: touch; /* iOS で慣性スクロール */
+      touch-action: pan-x;               /* 横スワイプを優先 */
+      scrollbar-width: none;             /* Firefox のスクロールバー非表示 */
+    }
+    #shopApp .carousel::-webkit-scrollbar{ display:none; } /* Chrome/Safari のバー非表示 */
+
+    #shopApp .carousel > img{
+      flex: 0 0 100%;                    /* 1枚＝ちょうど1画面幅 */
+      width: 100%;
+      height: auto;
+      scroll-snap-align: start;
+      object-fit: cover;
+    }
+    
     /* タグバッジ */
     #shopApp .badges{position:absolute;top:10px;left:10px;display:flex;gap:6px;flex-wrap:wrap}
     #shopApp .badge-chip{padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;color:#fff;background:#111;box-shadow:0 2px 6px rgba(0,0,0,.25)}
