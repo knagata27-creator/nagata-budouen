@@ -331,3 +331,20 @@ footer{
   body{ padding-top:0; background:#fff; }
   .card{ box-shadow:none; border-color:#ddd; }
 }
+
+/* 画面下にぴったり固定 */
+.cart-sticky{
+  position: fixed;       /* ← これがキモ */
+  left: 0;
+  right: 0;
+  bottom: 0;             /* iPhone のホームバー分の余白も考慮 */
+  padding-bottom: calc(14px + env(safe-area-inset-bottom, 0));
+  z-index: 10010;        /* フッターより前面に */
+  transform: translateZ(0);  /* iOSのガタつき防止 */
+}
+
+/* 固定バーに隠れないよう下に余白を付ける（約100px） */
+body.has-sticky-cart{
+  padding-bottom: 110px;
+}
+
