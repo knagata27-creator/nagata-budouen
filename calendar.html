@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -23,7 +24,7 @@
   { "webAppUrl": "https://script.google.com/macros/s/AKfycbxFU43FHo-7Hj_3HhrONhdH19ChT9oloaQUoHEACqGsedIR5-m-uCR2f4MtNnLXhFWd/exec" }
   </script>
 
-  <!-- ページ専用の軽いCSS -->
+  <!-- ページ専用の軽いCSS（競合を整理済み） -->
   <style>
     /* コンパクトヒーロー */
     .page-hero{
@@ -50,10 +51,12 @@
     }
     .cal__months{
       display:grid;
-      grid-template-columns: 200px repeat(12, 1fr);
+      grid-template-columns: 220px repeat(12, minmax(56px, 1fr)); /* 下限幅つき */
       gap:0;
       background:#fafafa;
       border-bottom:1px solid #eee;
+      position: sticky; top: 64px; /* ヘッダー高さに合わせて調整 */
+      z-index: 5;
     }
     .cal__months div{
       padding:.6em .7em;
@@ -64,7 +67,7 @@
     }
     .cal__row{
       display:grid;
-      grid-template-columns: 200px repeat(12, 1fr);
+      grid-template-columns: 220px repeat(12, minmax(56px, 1fr));
       border-bottom:1px solid #f1f1f1;
     }
     .cal__name{
@@ -73,6 +76,8 @@
       font-weight:600;
       border-right:1px solid #f1f1f1;
       background:#fff;
+      position: sticky; left: 0; z-index: 4;
+      box-shadow: 1px 0 0 #f1f1f1;
     }
     .pill{
       display:inline-block; padding:.2em .55em; border-radius:999px;
@@ -80,27 +85,20 @@
       border:1px solid #dde7dd;
     }
     .pill--hot{ background:#fff3e6; border-color:#ffe1bf; color:#9a5a00; }
-    .pill--end{ background:#f4f4f6; border-color:#e6e6ea; color:#666; }
 
     .cal__cell{
-      height:38px;
+      height:44px;                         /* 太く */
       border-right:1px solid #f1f1f1;
       position:relative;
       background:#fff;
     }
     .cal__bar{
-      position:absolute; inset:6px 6px;
+      position:absolute; inset:8px 8px;    /* 太く */
       border-radius:12px;
-      background: linear-gradient(0deg, rgba(91,122,89,.12), rgba(91,122,89,.12));
-      border:1px solid rgba(91,122,89,.28);
+      background: rgba(91,122,89,.28);
+      border:1px solid rgba(91,122,89,.45);
     }
-    .cal__cell--on .cal__bar{
-      background: linear-gradient(0deg, rgba(91,122,89,.22), rgba(91,122,89,.22));
-      border-color: rgba(91,122,89,.42);
-    }
-    .cal__cell--now .cal__bar{
-      box-shadow: 0 0 0 2px rgba(91,122,89,.25);
-    }
+    .cal__cell--now .cal__bar{ box-shadow: 0 0 0 2px rgba(91,122,89,.35); }
     .cal__empty{ text-align:center; padding:18px; color:#667; }
 
     .legend{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:.95em; color:#556; }
@@ -109,64 +107,18 @@
     .legend i.is-on{ background:rgba(91,122,89,.28); }
     .legend i.is-now{ outline:2px solid rgba(91,122,89,.35); }
 
-    @media (max-width: 960px){
-      .cal__months, .cal__row{ grid-template-columns: 140px repeat(12, 1fr); }
-    }
+    /* デスクトップではミニ行を隠す（スマホだけ表示） */
+    .cal__row--mini,
+    .cal__months--mini,
+    .cal__cells--mini { display: none; }
+
+    /* スマホは2段（名前＋12ヶ月スクロール） */
     @media (max-width: 720px){
-      /* スマホは2段（名前＋12ヶ月スクロール） */
       .cal{ border:none; background:transparent; }
       .cal__months{ display:none; }
       .cal__row{ grid-template-columns: 1fr; border:none; margin-bottom:12px; }
       .cal__name{ border:1px solid #eee; border-radius:14px 14px 0 0; }
-      .cal__months--mini, .cal__cells--mini{
-        display:grid; grid-template-columns: repeat(12, 1fr);
-        border:1px solid #eee; border-top:none; border-radius:0 0 14px 14px; overflow:hidden; background:#fff;
-      }
-      .cal__months--mini div{
-        text-align:center; font-size:.85em; padding:.45em 0; color:#667; border-right:1px solid #f1f1f1;
-      }
-      .cal__cells--mini .cal__cell{ height:28px; }
-    }
-    .cal__row--mini,
-    .cal__months--mini,
-    .cal__cells--mini { display: none; }
-  
-    /* 2) ヘッダー行＆品種列をsticky化（必要ならtop調整） */
-    .cal__months{
-      position: sticky; top: 64px; /* ヘッダーの高さに合わせて調整 */
-      z-index: 5;
-      background: #fafafa;
-      border-bottom: 1px solid #eee;
-    }
-    .cal__name{
-      position: sticky; left: 0; z-index: 4;
-      background: #fff;
-      box-shadow: 1px 0 0 #f1f1f1;
-    }
-  
-    /* 3) セルとバーの視認性強化 */
-    .cal__cell{ height: 44px; }
-    .cal__bar{
-      inset: 8px 8px;                 /* 太く */
-      background: rgba(91,122,89,.28);
-      border: 1px solid rgba(91,122,89,.45);
-    }
-    .cal__cell--now .cal__bar{
-      box-shadow: 0 0 0 2px rgba(91,122,89,.35);  /* 今月ハイライト */
-    }
-  
-    /* 4) グリッド幅の下限（詰まり防止） */
-    .cal__months,
-    .cal__row{
-      grid-template-columns: 220px repeat(12, minmax(56px, 1fr));
-    }
-  
-    /* 5) スマホ時のみミニレイアウトを使う */
-    @media (max-width: 720px){
-      .cal{ border:none; background:transparent; }
-      .cal__months{ display:none; }
-      .cal__row{ grid-template-columns: 1fr; border:none; margin-bottom:12px; }
-      .cal__row--mini{ display:block; }                 /* ←ここで表示 */
+      .cal__row--mini{ display:block; }
       .cal__months--mini, .cal__cells--mini{
         display:grid; grid-template-columns: repeat(12, minmax(36px, 1fr));
         border:1px solid #eee; border-top:none; border-radius:0 0 14px 14px; overflow:hidden; background:#fff;
@@ -309,7 +261,7 @@
           if (Array.isArray(d2)) return d2;
         }
       } catch(_){}
-      // 3) 最小サンプル（シャイン/ナガノ/詰合せ）
+      // 3) 最小サンプル
       return [
         { variety:'シャインマスカット', start:'2025-08-25', end:'2025-10-10', note:'冷蔵便・のし可' },
         { variety:'ナガノパープル',   start:'2025-09-01', end:'2025-10-05', note:'皮ごと食べられます' },
@@ -332,7 +284,7 @@
       const s = parseDate(item.start);
       const e = parseDate(item.end);
       if (!s || !e) return false;
-      const year = (e < s) ? THIS_Y : s.getFullYear(); // ほぼ同年想定。跨ぎに弱いがブドウならOK
+      const year = (e < s) ? THIS_Y : s.getFullYear(); // ほぼ同年想定
       const first = new Date(year, m1to12 - 1, 1);
       const last  = new Date(year, m1to12, 0, 23, 59, 59);
       return (e >= first && s <= last);
@@ -364,26 +316,26 @@
       render();
     }
 
-    // 追加：ツールチップ用フォーマッタ
+    // ツールチップ用フォーマッタ（8/25 – 10/10）
     function fmtMD_(d){
       if (!d || isNaN(d)) return '';
-      const m = String(d.getMonth()+1).padStart(1,'0');
+      const m = String(d.getMonth()+1);
       const day = String(d.getDate());
       return `${m}/${day}`;
     }
-  
+
     function render(){
       if (!filtered.length){
         wrap.innerHTML = `<div class="cal__empty">該当する品種がありません。</div>`;
         return;
       }
       const monthsHead = Array.from({length:12}, (_,i)=>`<div>${i+1}月</div>`).join('');
-  
+
       const rows = filtered.map((it) => {
         const s = parseDate(it.start);
         const e = parseDate(it.end);
         const tooltip = (s && e) ? `${fmtMD_(s)} – ${fmtMD_(e)}` : '';
-  
+
         const now = isNow(it);
         const nameHtml = `
           <div class="cal__name">
@@ -391,7 +343,7 @@
             ${ now ? '<span class="pill pill--hot">受付中</span>' : '' }
             ${ it.note ? `<span class="pill">${escapeHtml_(it.note)}</span>` : '' }
           </div>`;
-  
+
         const cells = Array.from({length:12}, (_,i)=>{
           const m = i+1;
           const on = monthOverlap(it, m);
@@ -400,64 +352,17 @@
           const bar = on ? `<div class="cal__bar" title="${tooltip}"></div>` : '';
           return `<div class="${cls}" aria-label="${m}月 ${on?'収穫期':'対象外'}">${bar}</div>`;
         }).join('');
-  
+
         return `
           <div class="cal__row">
             ${nameHtml}
             ${cells}
           </div>
-  
+
           <!-- スマホ用（名前＋12ヶ月） -->
           <div class="cal__row cal__row--mini" aria-hidden="true">
             <div class="cal__months--mini">${monthsHead}</div>
             <div class="cal__cells--mini">${cells}</div>
-          </div>
-        `;
-      }).join('');
-  
-      wrap.innerHTML = `
-        <div class="cal__months" aria-hidden="false">
-          <div>品種</div>
-          ${monthsHead}
-        </div>
-        ${rows}
-      `;
-    }
-    
-      // PC：ヘッダー行＋各行、SP：各行にミニヘッダー
-      const monthsHead = Array.from({length:12}, (_,i)=>`<div>${i+1}月</div>`).join('');
-
-      const rows = filtered.map(it => {
-        const now = isNow(it);
-        const nameHtml = `
-          <div class="cal__name">
-            <span>${escapeHtml_(it.variety || '品種')}</span>
-            ${ now ? '<span class="pill pill--hot">受付中</span>' : '' }
-            ${ it.note ? `<span class="pill">${escapeHtml_(it.note)}</span>` : '' }
-          </div>`;
-
-        const cells = Array.from({length:12}, (_,i)=>{
-          const m = i+1;
-          const on = monthOverlap(it, m);
-          const nowMonth = (m === THIS_M);
-          const cls = `cal__cell ${on?'cal__cell--on':''} ${nowMonth?'cal__cell--now':''}`;
-          return `<div class="${cls}" aria-label="${m}月 ${on?'収穫期':'対象外'}">${on?'<div class="cal__bar"></div>':''}</div>`;
-        }).join('');
-
-        return `
-          <div class="cal__row">
-            ${nameHtml}
-            ${cells}
-          </div>
-
-          <!-- スマホ用（名前＋12ヶ月） -->
-          <div class="cal__row" aria-hidden="true">
-            <div class="cal__months--mini">
-              ${monthsHead}
-            </div>
-            <div class="cal__cells--mini">
-              ${cells}
-            </div>
           </div>
         `;
       }).join('');
@@ -506,3 +411,4 @@
   </script>
 </body>
 </html>
+```
