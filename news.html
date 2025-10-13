@@ -25,15 +25,6 @@
 
   <!-- news.html 専用：ヒーローを小さく -->
   <style>
-    .hero--compact{
-      height: auto ;
-      min-height: 0 ;
-      padding: clamp(24px, 4vw, 48px) 0 clamp(12px, 3vw, 24px) 0 ;
-      background: #f5f7f5; /* 少しだけ明るめ（任意） */
-    }
-    .hero--compact::before{ display:none ; } /* もし擬似要素のオーバーレイがある場合の保険 */
-    .hero--compact .hero__content{ max-width: 960px; margin: 0 auto; }
-    .hero--compact .kicker{ margin-bottom: .5rem; }
     @media (max-width: 480px){
       .hero--compact{ padding: 20px 0 12px ; }
     }
