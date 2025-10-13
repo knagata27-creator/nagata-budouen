@@ -128,6 +128,13 @@
       }
       .cal__cells--mini .cal__cell{ height:30px; }
     }
+    /* 追加：ヘッダー高さぶんのスペーサ（PCのみ有効） */
+    :root{ --cal-header-h: 46px; }      /* ヘッダーの実高さに合わせて微調整OK */
+    .cal__spacer{ height: var(--cal-header-h); }
+    
+    @media (max-width: 720px){
+      .cal__spacer{ display:none; }     /* スマホはヘッダー自体非表示のため不要 */
+    }
   </style>
 </head>
 <body>
@@ -368,12 +375,13 @@
       }).join('');
 
       wrap.innerHTML = `
-        <div class="cal__months" aria-hidden="false">
-          <div>品種</div>
-          ${monthsHead}
-        </div>
-        ${rows}
-      `;
+      <div class="cal__months" aria-hidden="false">
+        <div>品種</div>
+        ${monthsHead}
+      </div>
+      <div class="cal__spacer" aria-hidden="true"></div>   <!-- ★ 追加：かぶり防止 -->
+      ${rows}
+    `;
     }
 
     function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
