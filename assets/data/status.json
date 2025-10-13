@@ -1,11 +1,7 @@
 {
   "mode": "inseason",
-  "message": "ただいまナガノパープル受付中。本日17時までのご注文は2-4日で出荷。",
-  "inventory": {
-    "シャインマスカット": "△",
-    "ナガノパープル": "◎",
-    "詰合せ": "○"
-  },
-  "notice_url": "#news",
-  "updated_at": "2025-10-12T18:29:18"
+  "message": "ただいまナガノパープル受付中。17時までのご注文は2–4日で出荷。",
+  "ship_eta": "2–4日で出荷",
+  "notice_url": "https://www.instagram.com/p/XXXX",
+  "updated_at": "2025-10-13T09:00:00"
 }
