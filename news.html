@@ -22,6 +22,22 @@
   <script type="application/json" id="cfg-json">
   { "webAppUrl": "https://script.google.com/macros/s/AKfycbwgPifNleBMNq84pnrfezOd9aNm1LZc86XAqdvkXCj1Qbuqkbd2XIFrDl-9REwg7l4/exec" }
   </script>
+
+  <!-- news.html 専用：ヒーローを小さく -->
+  <style>
+    .hero--compact{
+      height: auto !important;
+      min-height: 0 !important;
+      padding: clamp(24px, 4vw, 48px) 0 clamp(12px, 3vw, 24px) 0 !important;
+      background: #f5f7f5; /* 少しだけ明るめ（任意） */
+    }
+    .hero--compact::before{ display:none !important; } /* もし擬似要素のオーバーレイがある場合の保険 */
+    .hero--compact .hero__content{ max-width: 960px; margin: 0 auto; }
+    .hero--compact .kicker{ margin-bottom: .5rem; }
+    @media (max-width: 480px){
+      .hero--compact{ padding: 20px 0 12px !important; }
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
@@ -61,7 +77,7 @@
 
   <main id="main">
     <!-- ===== ページ見出し ===== -->
-    <section class="section hero reveal" aria-label="最新情報ヒーロー">
+    <section class="section hero hero--compact reveal" aria-label="最新情報ヒーロー">
       <div class="container hero__content">
         <span class="kicker">News & Updates</span>
         <h1>最新情報</h1>
