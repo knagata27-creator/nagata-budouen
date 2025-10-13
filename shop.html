@@ -121,6 +121,27 @@
     #shopApp .cart-sticky.pressable.is-pressed,#shopApp .cart-btn.pressable.is-pressed,#shopApp .cart-sticky__cta.pressable.is-pressed{transform:translateY(1px) scale(.99)}
     #shopApp .pressable:focus-visible{outline:3px solid #99c2ff;outline-offset:2px;border-radius:12px}
     @media (prefers-reduced-motion:reduce){ #shopApp .pressable{transition:none} }
+
+    /* ▼ 画面下に常時固定（全幅） */
+    #shopApp .cart-sticky,
+    #stickyCart{
+      position: fixed !important;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      margin: 0;
+      border-radius: 0;                 /* 全幅なので角はフラットに */
+      z-index: 10010;                   /* フッターより前面 */
+      padding: 14px 16px calc(14px + env(safe-area-inset-bottom, 0));
+      transform: translateZ(0);         /* iOS のガタつき防止 */
+    }    
+
+    /* 固定バーの下にコンテンツが隠れない余白を付与 */
+    body.has-sticky-cart{ padding-bottom: 110px; }
+    
+    #shopApp .cart-sticky, #stickyCart { max-width: none !important; }
+
   </style>
 
   <!-- ▼ 追加：固定バーに隠れない余白（該当箇所の最小修正） -->
