@@ -27,8 +27,8 @@
   <style>
     /* ========== ヒーロー（小さく・高コントラスト） ========== */
     .page-hero{
-      padding: 16px 0 10px;
-      background:#f6f8f5;
+      padding: 12px 0 8px;
+      background:#cce0cf;
       border-bottom:1px solid #e9ece8;
     }
     .page-hero .hero__content{ max-width:880px; margin:0 auto; }
@@ -89,6 +89,38 @@
     :root{ color-scheme:light; }
     body, .container{ color:#222; }              /* 全体の基本色を濃く */
     .page-hero *{ text-shadow:none !important; } /* 影やフィルタを消す */
+    /* ===== BLOG：カードを広く＆本文を切らない ===== */
+
+    /* 3列 → 2列（幅を確保）。スマホ1列、PC以降は2列固定 */
+    .blog-page #blogList.grid.grid-3{ grid-template-columns: 1fr; }
+    @media (min-width: 760px){
+      .blog-page #blogList.grid.grid-3{ grid-template-columns: 1fr 1fr; }
+    }
+    /* 行の高さは自動／上詰めに */
+    .blog-page #blogList{ align-items: start; grid-auto-rows: auto; }
+    
+    /* カード自身の高さ制限を外す */
+    .blog-page #blogList .card.post{ height:auto !important; }
+    
+    /* 画像が大きすぎて本文を圧迫しないよう上限を設置（必要なら数値調整） */
+    .blog-page #blogList .card.post img{
+      height:auto; max-height:220px; object-fit:cover;
+    }
+    
+    /* 他CSSにある行数制限（line-clamp）やmax-heightを完全に無効化 */
+    .blog-page #blogList .card.post h4,
+    .blog-page #blogList .card.post p{
+      display:block !important;
+      overflow:visible !important;
+      max-height:none !important;
+      -webkit-line-clamp:unset !important;
+      line-clamp:unset !important;
+      white-space:normal !important;
+      color:#1f2a1f; /* 文字が薄い場合の保険 */
+    }
+    
+    /* ボタンの間隔少し広げて読みやすく */
+    .blog-page #blogList .card.post .btn{ margin-top:10px; }
   </style>
 </head>
 <body>
