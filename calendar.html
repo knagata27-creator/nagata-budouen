@@ -4,18 +4,135 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>収穫カレンダー｜ながたぶどう園</title>
-  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。" />
+
+  <meta name="description" content="ながたぶどう園の収穫カレンダー。品種ごとの収穫・出荷目安を月別にご案内します（天候により前後）。" />
   <meta name="theme-color" content="#5b7a59" />
+
+  <!-- OGP（任意） -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="ながたぶどう園" />
-  <meta property="og:description" content="信州須坂・日滝原の小さなぶどう農園。贈答にも喜ばれる旬のぶどうを産地直送。" />
-  <meta property="og:url" content="https://example.jp/" />
-  <meta property="og:image" content="/assets/img/ogp.png" />
-  <link rel="icon" href="/assets/img/ogp.png" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <meta property="og:title" content="収穫カレンダー｜ながたぶどう園" />
+  <meta property="og:description" content="品種ごとの収穫・出荷目安。" />
+  <meta property="og:image" content="assets/img/ogp.png" />
+  <meta property="og:url" content="https://example.jp/calendar.html" />
+
+  <link rel="icon" href="assets/img/ogp.png" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- index と同じ /exec を入れてください -->
+  <script type="application/json" id="cfg-json">
+  { "webAppUrl": "https://script.google.com/macros/s/AKfycbyM6LVdLRLMoNthvm9jNpFdqV2bdRjdrg93JOKOxXmJw0F9CEic59A0YrR4aVelQpPq/exec" }
+  </script>
+
+  <!-- ページ専用の軽いCSS -->
+  <style>
+    /* コンパクトヒーロー */
+    .page-hero{
+      padding: clamp(20px, 4vw, 40px) 0 clamp(12px, 3vw, 24px);
+      background: #f5f7f5;
+    }
+    .page-hero .hero__content{ max-width: 1024px; margin: 0 auto; }
+    .page-hero .kicker{ margin-bottom: .5rem; }
+
+    /* ツールバー */
+    .cal-toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px; }
+    .cal-toolbar select, .cal-toolbar input[type="search"]{
+      padding:.55em .8em; border:1px solid #ddd; border-radius:12px; background:#fff;
+    }
+    .cal-toolbar label{ display:flex; align-items:center; gap:.4em; font-size:.95em; color:#556; }
+
+    /* カレンダー表 */
+    .cal{
+      width:100%;
+      border:1px solid #eee;
+      border-radius:16px;
+      overflow:hidden;
+      background:#fff;
+    }
+    .cal__months{
+      display:grid;
+      grid-template-columns: 200px repeat(12, 1fr);
+      gap:0;
+      background:#fafafa;
+      border-bottom:1px solid #eee;
+    }
+    .cal__months div{
+      padding:.6em .7em;
+      font-weight:600;
+      font-size:.95em;
+      color:#556;
+      border-right:1px solid #eee;
+    }
+    .cal__row{
+      display:grid;
+      grid-template-columns: 200px repeat(12, 1fr);
+      border-bottom:1px solid #f1f1f1;
+    }
+    .cal__name{
+      padding:.75em .7em;
+      display:flex; align-items:center; gap:.5em;
+      font-weight:600;
+      border-right:1px solid #f1f1f1;
+      background:#fff;
+    }
+    .pill{
+      display:inline-block; padding:.2em .55em; border-radius:999px;
+      font-size:.78em; background:#eef4ee; color:#456;
+      border:1px solid #dde7dd;
+    }
+    .pill--hot{ background:#fff3e6; border-color:#ffe1bf; color:#9a5a00; }
+    .pill--end{ background:#f4f4f6; border-color:#e6e6ea; color:#666; }
+
+    .cal__cell{
+      height:38px;
+      border-right:1px solid #f1f1f1;
+      position:relative;
+      background:#fff;
+    }
+    .cal__bar{
+      position:absolute; inset:6px 6px;
+      border-radius:12px;
+      background: linear-gradient(0deg, rgba(91,122,89,.12), rgba(91,122,89,.12));
+      border:1px solid rgba(91,122,89,.28);
+    }
+    .cal__cell--on .cal__bar{
+      background: linear-gradient(0deg, rgba(91,122,89,.22), rgba(91,122,89,.22));
+      border-color: rgba(91,122,89,.42);
+    }
+    .cal__cell--now .cal__bar{
+      box-shadow: 0 0 0 2px rgba(91,122,89,.25);
+    }
+    .cal__empty{ text-align:center; padding:18px; color:#667; }
+
+    .legend{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:.95em; color:#556; }
+    .legend span{ display:inline-flex; gap:.5em; align-items:center; }
+    .legend i{ width:14px; height:14px; display:inline-block; border-radius:6px; border:1px solid rgba(91,122,89,.35); background:rgba(91,122,89,.18); }
+    .legend i.is-on{ background:rgba(91,122,89,.28); }
+    .legend i.is-now{ outline:2px solid rgba(91,122,89,.35); }
+
+    @media (max-width: 960px){
+      .cal__months, .cal__row{ grid-template-columns: 140px repeat(12, 1fr); }
+    }
+    @media (max-width: 720px){
+      /* スマホは2段（名前＋12ヶ月スクロール） */
+      .cal{ border:none; background:transparent; }
+      .cal__months{ display:none; }
+      .cal__row{ grid-template-columns: 1fr; border:none; margin-bottom:12px; }
+      .cal__name{ border:1px solid #eee; border-radius:14px 14px 0 0; }
+      .cal__months--mini, .cal__cells--mini{
+        display:grid; grid-template-columns: repeat(12, 1fr);
+        border:1px solid #eee; border-top:none; border-radius:0 0 14px 14px; overflow:hidden; background:#fff;
+      }
+      .cal__months--mini div{
+        text-align:center; font-size:.85em; padding:.45em 0; color:#667; border-right:1px solid #f1f1f1;
+      }
+      .cal__cells--mini .cal__cell{ height:28px; }
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== ヘッダー ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -34,38 +151,59 @@
         </button>
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
-          <a href="/index.html#shop" class="">注文する</a>
-          <a href="/gift.html" class="">ギフト</a>
-          <a href="/calendar.html" class="is-active">収穫カレンダー</a>
-          <a href="/guide.html" class="">はじめての方</a>
-          <a href="/about.html" class="">農園紹介</a>
-          <a href="/blog.html" class="">ぶどう日誌</a>
-          <a href="/contact.html" class="">お問い合わせ</a>
+          <a href="index.html">ホーム</a>
+          <a class="nav-cta" href="shop.html">注文する</a>
+          <a href="gift.html">ギフト</a>
+          <a class="is-active" href="calendar.html" aria-current="page">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="news.html">最新情報</a>
+          <a href="blog.html">ぶどう日誌</a>
+          <a href="about.html">農園紹介</a>
+          <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </div>
   </header>
-  <div class="status" role="status" aria-live="polite">
-    <div class="inner">
-      <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">読み込み中...</span>
-      <span class="sep">|</span>
-      <a id="statusLink" href="#news">最新のお知らせ</a>
-    </div>
-  </div>
 
   <main id="main">
-    <section class="section reveal">
-      <div class="container">
-        <h1 class="section-title deco">収穫カレンダー</h1>
-        
-<p class="section-lead">今期スケジュール・販売休止日・直売所営業日を掲載します。天候により前後します。</p>
-<iframe class="calendar-embed" title="ながたぶどう園 収穫カレンダー" src="https://calendar.google.com/calendar/embed?src=example%40gmail.com&ctz=Asia%2FTokyo"></iframe>
+    <!-- ===== ページ見出し ===== -->
+    <section class="section page-hero reveal" aria-label="収穫カレンダー ヒーロー">
+      <div class="container hero__content">
+        <span class="kicker">Harvest Calendar</span>
+        <h1>収穫カレンダー</h1>
+        <p class="section-lead">品種ごとの収穫・出荷の目安です（天候で前後します）。</p>
 
+        <div class="cal-toolbar">
+          <select id="monthFilter" aria-label="月で絞り込み">
+            <option value="">すべての月</option>
+            <option value="now">今月</option>
+            <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
+            <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+            <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
+            <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+          </select>
+          <input id="searchBox" type="search" placeholder="品種名で検索（例：シャイン・ナガノ）" aria-label="品種名で検索">
+          <label><input id="onlyNow" type="checkbox"> 今季受付中のみ</label>
+          <a class="btn" href="shop.html">最短の出荷目安を確認</a>
+        </div>
+
+        <div class="legend" style="margin-top:8px">
+          <span><i class="is-on"></i> 収穫期（出荷目安）</span>
+          <span><i class="is-now"></i> 今月（ハイライト）</span>
+          <span>※ 実際の受付は「最新情報」をご確認ください</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== カレンダー表 ===== -->
+    <section class="section reveal" aria-label="収穫カレンダー一覧">
+      <div class="container">
+        <div id="calWrap" class="cal" aria-live="polite"></div>
       </div>
     </section>
   </main>
 
+  <!-- ===== フッター ===== -->
   <footer role="contentinfo">
     <div class="container footer-inner">
       <div>
@@ -77,11 +215,191 @@
       <div>
         <p>営業時間：9:00-17:00（季節により変動）</p>
         <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p><a href="/law.html">特定商取引法に基づく表記</a> ／ <a href="/privacy.html">プライバシーポリシー</a></p>
+        <p><a href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
       </div>
       <div class="copyright">© 2025 ながたぶどう園</div>
     </div>
   </footer>
 
-  <script src="/assets/js/main.js"></script>
-</body></html>
+  <script src="assets/js/main.js"></script>
+
+  <!-- ===== 収穫カレンダー取得＆描画 ===== -->
+  <script>
+  (async () => {
+    const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
+    const wrap  = document.getElementById('calWrap');
+    const sel   = document.getElementById('monthFilter');
+    const box   = document.getElementById('searchBox');
+    const only  = document.getElementById('onlyNow');
+
+    const today = new Date();
+    const THIS_Y = today.getFullYear();
+    const THIS_M = today.getMonth() + 1; // 1-12
+
+    let items = [];    // { variety, start, end, note?, link?, image_url? }
+    let filtered = [];
+
+    // --- 取得 ---
+    async function fetchCalendar(){
+      // 1) GAS
+      if (cfg.webAppUrl) {
+        try {
+          const r = await fetch(`${cfg.webAppUrl}?api=calendar`, { cache:'no-store' });
+          if (r.ok) {
+            const data = await r.json();
+            if (data && data.ok && Array.isArray(data.items)) return data.items;
+          }
+        } catch(_){}
+      }
+      // 2) ローカル
+      try {
+        const r2 = await fetch('assets/data/calendar.json', { cache:'no-store' });
+        if (r2.ok) {
+          const d2 = await r2.json();
+          if (Array.isArray(d2.items)) return d2.items;
+          if (Array.isArray(d2)) return d2;
+        }
+      } catch(_){}
+      // 3) 最小サンプル（シャイン/ナガノ/詰合せ）
+      return [
+        { variety:'シャインマスカット', start:'2025-08-25', end:'2025-10-10', note:'冷蔵便・のし可' },
+        { variety:'ナガノパープル',   start:'2025-09-01', end:'2025-10-05', note:'皮ごと食べられます' },
+        { variety:'詰合せギフト',     start:'2025-08-25', end:'2025-10-10', note:'化粧箱・名入れ無料' }
+      ];
+    }
+
+    function parseDate(s){
+      if (!s) return null;
+      const d = new Date(s);
+      if (!isNaN(d)) return d;
+      // "YYYY-MM-DD" fallback
+      const m = String(s).slice(0,10).split(/[-/.]/);
+      if (m.length === 3) return new Date(+m[0], (+m[1]-1), +m[2]);
+      return null;
+    }
+
+    function monthOverlap(item, m1to12){
+      // その月に一日でも収穫期間がかかっていれば true
+      const s = parseDate(item.start);
+      const e = parseDate(item.end);
+      if (!s || !e) return false;
+      const year = (e < s) ? THIS_Y : s.getFullYear(); // ほぼ同年想定。跨ぎに弱いがブドウならOK
+      const first = new Date(year, m1to12 - 1, 1);
+      const last  = new Date(year, m1to12, 0, 23, 59, 59);
+      return (e >= first && s <= last);
+    }
+
+    function isNow(item){
+      const s = parseDate(item.start), e = parseDate(item.end);
+      if (!s || !e) return false;
+      const t = today.getTime();
+      return (s.getTime() <= t && t <= e.getTime());
+    }
+
+    function applyFilter(){
+      const monthVal = sel.value;
+      const term = (box.value || '').trim().toLowerCase();
+      const nowOnly = !!only.checked;
+
+      filtered = items.filter(it => {
+        if (term && !String(it.variety || '').toLowerCase().includes(term)) return false;
+        if (monthVal === 'now') {
+          if (!monthOverlap(it, THIS_M)) return false;
+        } else if (monthVal) {
+          if (!monthOverlap(it, parseInt(monthVal,10))) return false;
+        }
+        if (nowOnly && !isNow(it)) return false;
+        return true;
+      });
+
+      render();
+    }
+
+    function render(){
+      if (!filtered.length){
+        wrap.innerHTML = `<div class="cal__empty">該当する品種がありません。</div>`;
+        return;
+      }
+
+      // PC：ヘッダー行＋各行、SP：各行にミニヘッダー
+      const monthsHead = Array.from({length:12}, (_,i)=>`<div>${i+1}月</div>`).join('');
+
+      const rows = filtered.map(it => {
+        const now = isNow(it);
+        const nameHtml = `
+          <div class="cal__name">
+            <span>${escapeHtml_(it.variety || '品種')}</span>
+            ${ now ? '<span class="pill pill--hot">受付中</span>' : '' }
+            ${ it.note ? `<span class="pill">${escapeHtml_(it.note)}</span>` : '' }
+          </div>`;
+
+        const cells = Array.from({length:12}, (_,i)=>{
+          const m = i+1;
+          const on = monthOverlap(it, m);
+          const nowMonth = (m === THIS_M);
+          const cls = `cal__cell ${on?'cal__cell--on':''} ${nowMonth?'cal__cell--now':''}`;
+          return `<div class="${cls}" aria-label="${m}月 ${on?'収穫期':'対象外'}">${on?'<div class="cal__bar"></div>':''}</div>`;
+        }).join('');
+
+        return `
+          <div class="cal__row">
+            ${nameHtml}
+            ${cells}
+          </div>
+
+          <!-- スマホ用（名前＋12ヶ月） -->
+          <div class="cal__row" aria-hidden="true">
+            <div class="cal__months--mini">
+              ${monthsHead}
+            </div>
+            <div class="cal__cells--mini">
+              ${cells}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      wrap.innerHTML = `
+        <div class="cal__months" aria-hidden="false">
+          <div>品種</div>
+          ${monthsHead}
+        </div>
+        ${rows}
+      `;
+    }
+
+    function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+    // ---- init ----
+    try {
+      items = await fetchCalendar();
+      // 正規化（キー名ゆれ対応：name→variety, start_date/end_dateなど）
+      items = items.map(it => ({
+        variety: it.variety || it.name || '',
+        start: it.start || it.start_date || it.harvest_start || '',
+        end:   it.end   || it.end_date   || it.harvest_end   || '',
+        note:  it.note  || it.notes || '',
+        link:  it.link  || '',
+        image_url: it.image_url || it.image || ''
+      }));
+      // 並び（開始月→品種名）
+      items.sort((a,b)=>{
+        const am = parseDate(a.start)?.getMonth() ?? 99;
+        const bm = parseDate(b.start)?.getMonth() ?? 99;
+        if (am !== bm) return am - bm;
+        return String(a.variety).localeCompare(String(b.variety),'ja');
+      });
+      filtered = items.slice();
+      render();
+
+      sel.addEventListener('change', applyFilter);
+      box.addEventListener('input', applyFilter);
+      only.addEventListener('change', applyFilter);
+    } catch(e){
+      console.warn('[calendar] fetch error:', e);
+      wrap.innerHTML = `<div class="cal__empty">読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
+    }
+  })();
+  </script>
+</body>
+</html>
