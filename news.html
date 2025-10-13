@@ -25,7 +25,7 @@
 
   <!-- news.html 専用：ヒーローを小さく -->
   <style>
-    /* コンパクトヒーロー */
+    /* ========== ヒーロー（blogと同じ） ========== */
     .page-hero{
       padding: 12px 0 8px;
       background:#cce0cf;
@@ -46,17 +46,68 @@
       margin:6px 0 0; color:#2e3a2e;
       font-size:clamp(14px, 1.7vw, 16px);
     }
-    @media (max-width: 480px){
-      .hero--compact{ padding: 20px 0 12px ; }
+  
+    /* ========== 一覧カード（blogと同じ比率・濃い文字） ========== */
+    #newsList{ gap:16px; }
+    #newsList .card.post{
+      display:grid; grid-template-columns:1fr; gap:10px;
+      padding:12px; border-radius:14px;
     }
-    /* news のヒーロー専用の軽い見出し */
-    .page-hero{
-      padding: clamp(20px, 4vw, 40px) 0 clamp(12px, 3vw, 24px);
-      background: #f5f7f5; /* 任意。灰色を薄く */
+    #newsList .card.post img{
+      width:100%; height:160px; object-fit:cover; border-radius:12px;
     }
-    .page-hero .hero__content{ max-width: 960px; margin: 0 auto; }
-    .page-hero .kicker{ margin-bottom: .5rem; }
+    @media (min-width:700px){
+      #newsList .card.post{ grid-template-columns:44% 1fr; align-items:stretch; }
+      #newsList .card.post img{ height:100%; }
+    }
+    #newsList .card.post h4{
+      margin:0 0 6px;
+      font-size:clamp(16px, 1.9vw, 18px);
+      color:#1f2a1f; line-height:1.45;
+    }
+    #newsList .card.post time{
+      display:block; margin-bottom:4px;
+      font-size:.9em; color:#6b746c;
+    }
+    #newsList .card.post p{
+      color:#263126; font-size:.975rem; line-height:1.7;
+    }
+    #newsList .card.post .btn{ margin-top:8px; }
+  
+    /* ========== 列数：3 → 2（blogと同様） ========== */
+    /* スマホ1列、760px以上は2列固定にして読みやすく */
+    #newsList.grid.grid-3{ grid-template-columns: 1fr; }
+    @media (min-width:760px){
+      #newsList.grid.grid-3{ grid-template-columns: 1fr 1fr; }
+    }
+    /* 行の高さは自動／上詰めに */
+    #newsList{ align-items: start; grid-auto-rows: auto; }
+  
+    /* カードの高さ制限を外して本文を切らない（blogと同様） */
+    #newsList .card.post{ height:auto !important; }
+    #newsList .card.post img{ height:auto; max-height:220px; object-fit:cover; }
+  
+    /* 他CSSの line-clamp / max-height を無効化（見切れ防止） */
+    #newsList .card.post h4,
+    #newsList .card.post p{
+      display:block !important;
+      overflow:visible !important;
+      max-height:none !important;
+      -webkit-line-clamp:unset !important;
+      line-clamp:unset !important;
+      white-space:normal !important;
+      color:#1f2a1f;
+    }
+  
+    /* もっと見るボタンもblogと同じタッチターゲット */
+    #loadMoreBtn.btn{ padding:.55em 1em; }
+  
+    /* ========== 安全網（高コントラスト） ========== */
+    :root{ color-scheme:light; }
+    body, .container{ color:#222; }
+    .page-hero *{ text-shadow:none !important; }
   </style>
+
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
