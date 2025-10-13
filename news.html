@@ -23,7 +23,7 @@
   { "webAppUrl": "https://script.google.com/macros/s/AKfycbwgPifNleBMNq84pnrfezOd9aNm1LZc86XAqdvkXCj1Qbuqkbd2XIFrDl-9REwg7l4/exec" }
   </script>
 
-    <style>
+  <style>
     /* ========== ヒーロー（小さく・高コントラスト） ========== */
     .page-hero{
       padding: 12px 0 8px;
@@ -88,7 +88,7 @@
     :root{ color-scheme:light; }
     body, .container{ color:#222; }              /* 全体の基本色を濃く */
 
-        /* ========== 列数：3 → 2（blogと同様） ========== */
+    /* ========== 列数：3 → 2（blogと同様） ========== */
     /* スマホ1列、760px以上は2列固定にして読みやすく */
     #newsList.grid.grid-3{ grid-template-columns: 1fr; }
     @media (min-width:760px){
@@ -114,6 +114,9 @@
     }
     /* ボタンの間隔少し広げて読みやすく */
     .blog-page #blogList .card.post .btn{ margin-top:10px; }
+
+    /* ★ 追加：ボタンがCSSで消されている場合の保険 */
+    .card.post .btn{ display:inline-block !important; visibility:visible !important; }
   </style>
 
 </head>
@@ -206,8 +209,8 @@
     const btn = document.getElementById('loadMoreBtn');
 
     // 表示設定
-    const FETCH_LIMIT = 100;   // 最大取得件数（必要に応じて増やせます）
-    const PAGE_SIZE   = 9;     // 1回で見せる枚数（「もっと見る」で追加）
+    const FETCH_LIMIT = 100;   // 最大取得件数
+    const PAGE_SIZE   = 9;     // 1回で見せる枚数
 
     let items = [];
     let shown = 0;
@@ -224,7 +227,7 @@
           }
         } catch(_){}
       }
-      // 2) ローカル（任意で assets/data/news.json を用意すると安心）
+      // 2) ローカル
       try {
         const r2 = await fetch('assets/data/news.json', { cache: 'no-store' });
         if (r2.ok) {
@@ -250,6 +253,30 @@
       return `${y}年${mm}月${dd}日`;
     }
 
+    /* ★ 追加：相対URL/slug/id/画像URL から“詳しく読む”リンクを解決 */
+    function resolveLink_(item, base){
+      const cand = [
+        item.link, item.url, item.page_url, item.href, item.permalink, item.path
+      ].map(v => String(v || '').trim()).filter(Boolean);
+      let raw = cand[0] || '';
+      const slug = String(item.slug || item.id || '').trim();
+
+      if (raw){
+        if (/^https?:\/\//i.test(raw)) return { url: raw, external: true };
+        if (/^\//.test(raw) || /^[A-Za-z0-9_\-\/]+(\.html?|\/)?$/i.test(raw)){
+          return { url: raw.startsWith('/') ? raw : `/${raw}`, external: false };
+        }
+      }
+      if (slug){
+        const b = String(base || '').replace(/^\/|\/$/g,'');
+        return { url: `/${b}/${encodeURIComponent(slug)}.html`, external: false };
+      }
+      const img = String(item.image_url || '').trim();
+      if (/^https?:\/\//i.test(img)) return { url: img, external: true };
+
+      return null;
+    }
+
     function renderChunk(){
       const next = items.slice(shown, shown + PAGE_SIZE);
       const html = next.map(item => {
@@ -257,10 +284,11 @@
         const dateLabel = formatJaDate_(item.date || '');
         const title = item.title || 'お知らせ';
         const excerpt = item.excerpt || '';
-        const linkUrl = item.link && /^https?:/.test(item.link) ? item.link : '';
 
-        const btnHtml = linkUrl
-          ? `<p style="margin-top:8px"><a class="btn" href="${linkUrl}" target="_blank" rel="noopener">詳しく読む</a></p>`
+        /* ★ 修正：ボタン生成を resolveLink_ に一本化 */
+        const L = resolveLink_(item, 'news');
+        const btnHtml = L
+          ? `<p style="margin-top:8px"><a class="btn" href="${L.url}" ${L.external ? 'target="_blank" rel="noopener"' : ''}>詳しく読む</a></p>`
           : '';
 
         return `
@@ -293,7 +321,7 @@
         btn.style.display = 'none';
         return;
       }
-      // 念のため日付降順に（API側でも並んでいるが二重で担保）
+      // 念のため日付降順に
       items.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
       renderChunk();
 
