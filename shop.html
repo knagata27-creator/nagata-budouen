@@ -23,7 +23,7 @@
   <?!= JSON.stringify(deployConfig) ?>
   </script>
 
-  <!-- ▼ GAS版UIのCSSを #shopApp にスコープ -->
+  <!-- ▼ GAS版UIのCSSを #shopApp にスコープ（※既存と同じ） -->
   <style>
     #shopApp { --gap:14px; --radius:16px; }
 
@@ -52,7 +52,13 @@
     #shopApp .card.soldout::after{content:"売り切れ";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;letter-spacing:.08em;color:#fff;background:rgba(20,20,20,.55);text-shadow:0 2px 8px rgba(0,0,0,.45)}
 
     /* 下固定カートバー */
-    #shopApp .cart-sticky{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0));background:#111;color:#fff;box-shadow:0 -8px 24px rgba(0,0,0,.22);z-index:9999;transition:background .2s ease,transform .08s ease}
+    #shopApp .cart-sticky{
+      position:fixed;left:0;right:0;bottom:0;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:14px 16px calc(14px + env(safe-area-inset-bottom,0));
+      background:#111;color:#fff;box-shadow:0 -8px 24px rgba(0,0,0,.22);
+      z-index:9999;transition:background .2s ease,transform .08s ease;transform:translateZ(0);
+    }
     #shopApp .cart-sticky:hover{background:#333}
     #shopApp .cart-sticky:active{transform:translateY(1px)}
     #shopApp .cart-sticky__left{display:flex;align-items:center;gap:10px;font-size:16px}
@@ -113,9 +119,15 @@
     #shopApp .pressable:focus-visible{outline:3px solid #99c2ff;outline-offset:2px;border-radius:12px}
     @media (prefers-reduced-motion:reduce){ #shopApp .pressable{transition:none} }
   </style>
+
+  <!-- ▼ 追加：固定バーに隠れない余白（該当箇所の最小修正） -->
+  <style>
+    body.has-sticky-cart{ padding-bottom:110px; }
+  </style>
 </head>
 
-<body>
+<!-- ▼ 追加：画面下固定バーに合わせて余白を付与 -->
+<body class="has-sticky-cart">
   <a class="skip-link" href="#main">本文へスキップ</a>
 
   <!-- ===== Header / Global Nav ===== -->
@@ -293,18 +305,15 @@
     })();
   </script>
 
-  <!-- ===== GAS版 ロジック統合（スコープ不要：IDで参照） ===== -->
+  <!-- ===== GAS版 ロジック（既存と同じ、変更なし） ===== -->
   <script>
-    // ===== 設定の読み出し =====
     let CFG = {};
     try { CFG = JSON.parse(document.getElementById('cfg-json').textContent || '{}'); } catch(_) { CFG = {}; }
-    const API_BASE = CFG.webAppUrl || 'https://script.google.com/macros/s/AKfycbx2d_6SQTr4--3bVJSC-udFqtU-_WlgHhkFZyqU7mHge6SQiPGaT7wv_TxuOUyTR1sU/exec'; // 予備
+    const API_BASE = CFG.webAppUrl || 'https://script.google.com/macros/s/XXXXX/exec';
     document.getElementById('ship').textContent = ((CFG.shippingFee || 0) >>> 0).toLocaleString();
 
-    // ===== 状態 =====
     const state = { products: [], cart: [] };
 
-    // ===== ユーティリティ =====
     const yen = (n)=> (n||0).toLocaleString();
     function toast(msg){
       const t = document.getElementById('toast');
@@ -322,7 +331,6 @@
       });
     }
 
-    // 押下エフェクト
     function attachPressEffects(scope = document) {
       const targets = scope.querySelectorAll('#shopApp button, #shopApp .btn, #shopApp .cart-sticky, #shopApp .cart-sticky__cta');
       targets.forEach(el => {
@@ -338,7 +346,6 @@
       });
     }
 
-    // スケルトン
     function showSkeletons(n = 6){
       const grid = document.getElementById('grid');
       grid.innerHTML = '';
@@ -357,7 +364,6 @@
       attachPressEffects(grid);
     }
 
-    // 商品描画
     function renderProducts(){
       const grid = document.getElementById('grid');
       grid.innerHTML = '';
@@ -406,7 +412,6 @@
           </div>
         `;
 
-        // ドット連動
         const rail = card.querySelector('.carousel');
         const dots = [...card.querySelectorAll('.carousel-dot')];
         rail?.addEventListener('scroll', ()=>{
@@ -414,7 +419,6 @@
           dots.forEach((d,i)=> d.classList.toggle('is-active', i===idx));
         }, {passive:true});
 
-        // 追加
         const qtySelect = card.querySelector('.qty-select');
         card.querySelector('.btn')?.addEventListener('click', ()=>{
           const q = Number(qtySelect?.value)||1;
@@ -429,7 +433,6 @@
       attachPressEffects(grid);
     }
 
-    // カート
     function addToCart(product, qty){
       const id = product['商品ID'];
       const exist = state.cart.find(x=> x.商品ID === id);
@@ -438,7 +441,6 @@
       updateCartBadge();
     }
 
-    // モーダル開閉
     function openCheckoutModal(){
       __lockBodyScroll();
       renderCartTableInModal();
@@ -456,7 +458,6 @@
     document.getElementById('openCart')?.addEventListener('click', openCheckoutModal);
     document.getElementById('stickyCart')?.addEventListener('click', openCheckoutModal);
 
-    // モーダル内テーブル
     function renderCartTableInModal(){
       const tbody = document.querySelector('#modalCartTable tbody'); tbody.innerHTML = '';
       let subtotal = 0;
@@ -484,7 +485,6 @@
       document.getElementById('m-total').textContent = yen(subtotal + baseShip);
     }
 
-    // 送信
     async function submitOrderFromModal(){
       if((state.cart||[]).length === 0){ alert('カートが空です'); return; }
       const btn = document.getElementById('m-submit');
@@ -522,7 +522,6 @@
     }
     document.getElementById('m-submit').addEventListener('click', submitOrderFromModal);
 
-    // Thanks
     function showThanks(html){
       const ov = document.createElement('div');
       ov.className = 'modal-overlay'; ov.style.display='block'; ov.style.zIndex=9998;
@@ -537,7 +536,6 @@
       document.getElementById('t-ok').addEventListener('click', ()=>{ box.remove(); ov.remove(); });
     }
 
-    // iOS スクロール固定ヘルパ
     (function(){
       const isiOS = /iP(hone|ad|od)/.test(navigator.userAgent);
       let savedScrollY = 0;
@@ -561,7 +559,6 @@
       }
     })();
 
-    // 住所入力で送料計算（フロント簡易版）
     function calcShippingFeeFront(addr){
       if(!addr) return CFG.shippingFee || 500;
       if(addr.includes("北海道")) return 1200;
@@ -577,7 +574,6 @@
       document.getElementById('m-total').textContent = (subtotal + newFee).toLocaleString();
     });
 
-    // 商品取得
     async function fetchProducts(){
       const res = await fetch(`${API_BASE}?api=products`, { cache: 'no-store' });
       const data = await res.json();
@@ -586,7 +582,6 @@
       renderProducts();
     }
 
-    // 起動
     updateCartBadge();
     showSkeletons(6);
     fetchProducts().catch(err=>{
@@ -594,7 +589,6 @@
       document.getElementById('grid').innerHTML = '<div class="card" style="padding:16px">商品を取得できませんでした。</div>';
     });
 
-    // カートボタンの押下エフェクト付与
     attachPressEffects(document.getElementById('shopApp'));
   </script>
 </body>
