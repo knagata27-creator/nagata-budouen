@@ -3,19 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shop（商品一覧）｜ながたぶどう園</title>
-  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。" />
+  <title>オンライン直販（Shop）｜ながたぶどう園</title>
+
+  <meta name="description" content="ながたぶどう園のオンライン直販。シャインマスカット・ナガノパープル・詰合せ・訳あり。価格・規格・のし対応・出荷目安を明記し、フォームからご注文いただけます。" />
   <meta name="theme-color" content="#5b7a59" />
+
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="ながたぶどう園" />
-  <meta property="og:description" content="信州須坂・日滝原の小さなぶどう農園。贈答にも喜ばれる旬のぶどうを産地直送。" />
-  <meta property="og:url" content="https://example.jp/" />
-  <meta property="og:image" content="/assets/img/ogp.png" />
-  <link rel="icon" href="/assets/img/ogp.png" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <meta property="og:title" content="オンライン直販（Shop）｜ながたぶどう園" />
+  <meta property="og:description" content="旬のぶどうを産地直送。ギフト・のし無料、クール便でお届け。" />
+  <meta property="og:url" content="https://example.jp/shop.html" />
+  <meta property="og:image" content="assets/img/ogp.png" />
+
+  <link rel="icon" href="assets/img/ogp.png" />
+  <link rel="stylesheet" href="assets/css/style.css?v=20251013" />
+  <!-- JS有効検出（reveal安全化用） -->
+  <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== Header / Global Nav ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -34,60 +41,185 @@
         </button>
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
-          <a href="/index.html#shop" class="is-active">注文する</a>
-          <a href="/gift.html" class="">ギフト</a>
-          <a href="/calendar.html" class="">収穫カレンダー</a>
-          <a href="/guide.html" class="">はじめての方</a>
-          <a href="/about.html" class="">農園紹介</a>
-          <a href="/blog.html" class="">ぶどう日誌</a>
-          <a href="/contact.html" class="">お問い合わせ</a>
+          <a href="index.html#shop" class="is-active">注文する</a>
+          <a href="gift.html">ギフト</a>
+          <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="about.html">農園紹介</a>
+          <a href="blog.html">ぶどう日誌</a>
+          <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </div>
   </header>
+
+  <!-- ===== Fixed Status Bar ===== -->
   <div class="status" role="status" aria-live="polite">
     <div class="inner">
       <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">読み込み中...</span>
+      <span id="statusMsg">読み込み中…</span>
       <span class="sep">|</span>
-      <a id="statusLink" href="#news">最新のお知らせ</a>
+      <a id="statusLink" href="index.html#news">最新のお知らせ</a>
     </div>
   </div>
 
   <main id="main">
+    <!-- ===== Hero（販売状況×最短導線） ===== -->
     <section class="section reveal">
-      <div class="container">
-        <h1 class="section-title deco">Shop（商品一覧）</h1>
-        
-<p class="section-lead">単品／詰合せ／贈答のカテゴリからお選びください。価格はシーズン・規格により変動します。</p>
-<div class="grid grid-3">
-  <article class="card product-card lift">
-    <div class="variety__img"><img src="/assets/img/grape_shine.svg" alt="シャインマスカット" /></div>
-    <h3>シャインマスカット（2房）</h3>
-    <p class="meta">クール便／のし可｜出荷目安：2–4日</p>
-    <div class="footer"><span class="price">¥3,980〜</span>
-      <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=shine_2">注文する</a></div>
-  </article>
-  <article class="card product-card lift">
-    <div class="variety__img"><img src="/assets/img/grape_nagano.svg" alt="ナガノパープル" /></div>
-    <h3>ナガノパープル（2房）</h3>
-    <p class="meta">クール便／のし可｜出荷目安：2–4日</p>
-    <div class="footer"><span class="price">¥4,480〜</span>
-      <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=nagano_2">注文する</a></div>
-  </article>
-  <article class="card product-card lift">
-    <div class="variety__img"><img src="/assets/img/gift.svg" alt="詰合せギフト" /></div>
-    <h3>詰合せギフト（2〜3房）</h3>
-    <p class="meta">化粧箱／のし名入れ可</p>
-    <div class="footer"><span class="price">¥5,980〜</span>
-      <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=assort_gift">注文する</a></div>
-  </article>
-</div>
+      <div class="container two-col">
+        <div class="card lift">
+          <h1 class="section-title deco" style="margin-top:0">オンライン直販（Shop）</h1>
+          <p class="section-lead" id="heroLead">
+            [受付状況] 本日17時までのご注文は <strong id="shipEta">2–4日で出荷</strong>。
+          </p>
+          <ul class="list muted">
+            <li>クール便／のし・名入れ無料（ギフト）</li>
+            <li>数量・お届け先は注文フォームで指定できます</li>
+          </ul>
+          <div class="btn-row">
+            <a class="btn btn--fill" href="#catalog">商品一覧へ</a>
+            <a class="btn" href="gift.html">ギフトのご案内</a>
+            <a class="btn" href="guide.html">送料・お支払い・FAQ</a>
+          </div>
+        </div>
+        <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
+          <img src="assets/img/hero.svg" alt="旬のぶどうを産地直送">
+        </div>
+      </div>
+    </section>
 
+    <!-- ===== カテゴリ切替（フィルター） ===== -->
+    <section class="section reveal" id="catalog">
+      <div class="container">
+        <div class="card lift" role="tablist" aria-label="商品カテゴリ">
+          <div class="btn-row">
+            <a class="btn btn--fill" href="#all" data-filter="all" role="tab" aria-selected="true">すべて</a>
+            <a class="btn" href="#single" data-filter="single" role="tab">単品（品種別）</a>
+            <a class="btn" href="#assort" data-filter="assort" role="tab">詰合せ</a>
+            <a class="btn" href="#imperfect" data-filter="imperfect" role="tab">訳あり</a>
+            <a class="btn" href="gift.html">ギフト</a>
+          </div>
+        </div>
+
+        <!-- ===== 商品グリッド ===== -->
+        <div class="grid grid-3" id="productGrid" style="margin-top:18px">
+          <!-- シャイン 2房 -->
+          <article class="card product-card lift reveal" data-cat="single,gift" itemscope itemtype="https://schema.org/Product">
+            <div class="variety__img">
+              <img src="assets/img/grape_shine.svg" alt="シャインマスカットの房" loading="lazy" itemprop="image">
+            </div>
+            <h3 itemprop="name">シャインマスカット（2房）</h3>
+            <p class="meta" itemprop="description">約900g／クール便｜のし可｜出荷目安：ご入金後2–4日</p>
+            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+              <span class="badge">在庫：○</span>
+              <span class="price">¥3,980〜</span>
+              <link itemprop="priceCurrency" content="JPY" />
+              <meta itemprop="price" content="3980" />
+              <meta itemprop="availability" content="https://schema.org/InStock" />
+              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=shine_2&qty=1" itemprop="url" aria-label="シャインマスカット（2房）を注文する">注文する</a>
+            </div>
+            <details class="note"><summary>規格の詳細</summary>粒張り・房形は作柄により差があります。見た目の個体差はご了承ください。</details>
+          </article>
+
+          <!-- ナガノパープル 2房 -->
+          <article class="card product-card lift reveal" data-cat="single,gift" itemscope itemtype="https://schema.org/Product">
+            <div class="variety__img">
+              <img src="assets/img/grape_nagano.svg" alt="ナガノパープルの房" loading="lazy" itemprop="image">
+            </div>
+            <h3 itemprop="name">ナガノパープル（2房）</h3>
+            <p class="meta" itemprop="description">約900g／クール便｜のし可｜出荷目安：ご入金後2–4日</p>
+            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+              <span class="badge">在庫：◎</span>
+              <span class="price">¥4,480〜</span>
+              <link itemprop="priceCurrency" content="JPY" />
+              <meta itemprop="price" content="4480" />
+              <meta itemprop="availability" content="https://schema.org/InStock" />
+              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=nagano_2&qty=1" itemprop="url" aria-label="ナガノパープル（2房）を注文する">注文する</a>
+            </div>
+            <details class="note"><summary>規格の詳細</summary>皮ごと食べられる黒系大粒。贈答向けの「見た目基準」を満たしたロットを優先出荷します。</details>
+          </article>
+
+          <!-- 詰合せギフト 2〜3房 -->
+          <article class="card product-card lift reveal" data-cat="assort,gift" itemscope itemtype="https://schema.org/Product">
+            <div class="variety__img">
+              <img src="assets/img/gift.svg" alt="詰合せギフトの化粧箱" loading="lazy" itemprop="image">
+            </div>
+            <h3 itemprop="name">詰合せギフト（2〜3房）</h3>
+            <p class="meta" itemprop="description">化粧箱／のし・名入れ無料｜出荷目安：2–4日</p>
+            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+              <span class="badge">在庫：○</span>
+              <span class="price">¥5,980〜</span>
+              <link itemprop="priceCurrency" content="JPY" />
+              <meta itemprop="price" content="5980" />
+              <meta itemprop="availability" content="https://schema.org/InStock" />
+              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1" itemprop="url" aria-label="詰合せギフト（2〜3房）を注文する">注文する</a>
+            </div>
+            <details class="note"><summary>内容について</summary>品種の組合せは時期により変わります（例：シャイン／ナガノP／他）。</details>
+          </article>
+
+          <!-- 訳ありミックス 2房 -->
+          <article class="card product-card lift reveal" data-cat="imperfect" itemscope itemtype="https://schema.org/Product">
+            <div class="variety__img">
+              <img src="assets/img/blog1.svg" alt="訳あり品のイメージ" loading="lazy" itemprop="image">
+            </div>
+            <h3 itemprop="name">訳ありミックス（2房）</h3>
+            <p class="meta" itemprop="description">外観難あり／味は正規品相当｜クール便</p>
+            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+              <span class="badge">在庫：△</span>
+              <span class="price">¥2,980〜</span>
+              <link itemprop="priceCurrency" content="JPY" />
+              <meta itemprop="price" content="2980" />
+              <meta itemprop="availability" content="https://schema.org/LimitedAvailability" />
+              <a class="btn btn--fill" href="https://script.google.com/macros/s/XXXXX/exec?product=imperfect_mix_2&qty=1" itemprop="url" aria-label="訳ありミックス（2房）を注文する">注文する</a>
+            </div>
+            <details class="note"><summary>訳あり基準</summary>房形不揃い・日焼け・軽微な脱粒など。贈答には不向きですが味は遜色ありません。</details>
+          </article>
+        </div>
+
+        <p class="note" style="margin-top:14px">
+          価格は作柄・サイズにより変動します。最新の在庫と出荷目安はステータスバーおよび商品カードをご確認ください。
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== ご案内（ギフト／はじめての方） ===== -->
+    <section class="section reveal">
+      <div class="container two-col">
+        <div class="card lift">
+          <h2 class="section-title deco">ギフトのし・包装</h2>
+          <p class="section-lead">のし・名入れ無料。化粧箱・手提げ袋に対応します。法人・複数配送もご相談ください。</p>
+          <p><a class="btn btn--fill" href="gift.html">ギフトの詳細を見る</a></p>
+        </div>
+        <div class="card lift">
+          <h2 class="section-title deco">はじめての方へ</h2>
+          <ul class="list">
+            <li>注文 → お支払い（銀行振込／PayPay予定）→ 出荷</li>
+            <li>クール便でお届け。到着当日の破損は写真とともにご連絡ください（再送・返金対応）。</li>
+          </ul>
+          <p><a class="btn" href="guide.html">送料・支払い・FAQ</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="section reveal" aria-label="ご注文CTA">
+      <div class="container">
+        <div class="card lift" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap">
+          <div>
+            <h2 class="section-title" style="margin:0">旬を産地直送で。</h2>
+            <p class="section-lead" style="margin:6px 0 0">のし・名入れ無料。最短の出荷目安をご案内します。</p>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn--fill" href="#catalog">商品一覧へ</a>
+            <a class="btn" href="gift.html">ギフトを見る</a>
+            <a class="btn" href="contact.html">LINEで入荷通知</a>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- ===== Footer ===== -->
   <footer role="contentinfo">
     <div class="container footer-inner">
       <div>
@@ -99,11 +231,105 @@
       <div>
         <p>営業時間：9:00-17:00（季節により変動）</p>
         <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p><a href="/law.html">特定商取引法に基づく表記</a> ／ <a href="/privacy.html">プライバシーポリシー</a></p>
+        <p><a href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
       </div>
       <div class="copyright">© 2025 ながたぶどう園</div>
     </div>
   </footer>
 
-  <script src="/assets/js/main.js"></script>
-</body></html>
+  <!-- ===== Scripts ===== -->
+  <script src="assets/js/main.js"></script>
+  <script>
+    // ステータスバー＆ヒーロー文言 同期
+    (async () => {
+      try {
+        const res = await fetch('assets/data/status.json', { cache: 'no-store' });
+        const data = await res.json();
+        const map = { preorder: '予約受付前', inseason: '受付中', ended: '今季終了' };
+        document.getElementById('statusMode').textContent = map[data.mode] || '受付状況';
+        document.getElementById('statusMsg').textContent  = data.message || '';
+        if (data.ship_eta) document.getElementById('shipEta').textContent = data.ship_eta;
+        if (data.notice_url) document.getElementById('statusLink').href = data.notice_url;
+      } catch(e) {/* silent */}
+    })();
+
+    // カテゴリフィルター（JSなしでも全件表示）
+    (function(){
+      const grid = document.getElementById('productGrid');
+      const cards = Array.from(grid.querySelectorAll('.product-card'));
+      const btns = Array.from(document.querySelectorAll('[data-filter]'));
+      const setActive = (cat) => {
+        btns.forEach(b => b.classList.toggle('btn--fill', b.dataset.filter === cat));
+      };
+      const apply = (cat) => {
+        cards.forEach(c => {
+          const cats = (c.dataset.cat || '').split(',');
+          c.hidden = (cat !== 'all' && !cats.includes(cat));
+        });
+        setActive(cat);
+      };
+      btns.forEach(b => {
+        b.addEventListener('click', (e) => {
+          e.preventDefault();
+          apply(b.dataset.filter);
+          history.replaceState(null, '', '#'+b.dataset.filter);
+        });
+      });
+      // 初期化（ハッシュがあれば反映）
+      const initCat = location.hash?.replace('#','');
+      if (['single','assort','imperfect'].includes(initCat)) apply(initCat); else setActive('all');
+    })();
+  </script>
+
+  <!-- JSON-LD: ItemList + Products -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"ItemList",
+    "name":"ながたぶどう園オンライン直販",
+    "itemListElement":[
+      {
+        "@type":"ListItem","position":1,
+        "item":{
+          "@type":"Product",
+          "name":"シャインマスカット（2房）",
+          "image":"https://example.jp/assets/img/grape_shine.svg",
+          "description":"約900g／クール便｜のし可｜出荷目安：2–4日",
+          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"3980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=shine_2&qty=1"}
+        }
+      },
+      {
+        "@type":"ListItem","position":2,
+        "item":{
+          "@type":"Product",
+          "name":"ナガノパープル（2房）",
+          "image":"https://example.jp/assets/img/grape_nagano.svg",
+          "description":"約900g／クール便｜のし可｜出荷目安：2–4日",
+          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"4480","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=nagano_2&qty=1"}
+        }
+      },
+      {
+        "@type":"ListItem","position":3,
+        "item":{
+          "@type":"Product",
+          "name":"詰合せギフト（2〜3房）",
+          "image":"https://example.jp/assets/img/gift.svg",
+          "description":"化粧箱／のし・名入れ無料｜出荷目安：2–4日",
+          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
+        }
+      },
+      {
+        "@type":"ListItem","position":4,
+        "item":{
+          "@type":"Product",
+          "name":"訳ありミックス（2房）",
+          "image":"https://example.jp/assets/img/blog1.svg",
+          "description":"外観難あり／味は正規品相当｜クール便",
+          "offers":{"@type":"Offer","priceCurrency":"JPY","price":"2980","availability":"https://schema.org/LimitedAvailability","url":"https://script.google.com/macros/s/XXXXX/exec?product=imperfect_mix_2&qty=1"}
+        }
+      }
+    ]
+  }
+  </script>
+</body>
+</html>
