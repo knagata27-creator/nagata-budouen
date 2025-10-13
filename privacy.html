@@ -4,18 +4,49 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>プライバシーポリシー｜ながたぶどう園</title>
-  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。" />
+
+  <meta name="description" content="ながたぶどう園のプライバシーポリシー（個人情報保護方針）。取得する情報、利用目的、第三者提供、委託、Cookie、開示等の請求窓口を定めています。" />
   <meta name="theme-color" content="#5b7a59" />
+
+  <!-- OGP（任意） -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="ながたぶどう園" />
-  <meta property="og:description" content="信州須坂・日滝原の小さなぶどう農園。贈答にも喜ばれる旬のぶどうを産地直送。" />
-  <meta property="og:url" content="https://example.jp/" />
-  <meta property="og:image" content="/assets/img/ogp.png" />
-  <link rel="icon" href="/assets/img/ogp.png" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <meta property="og:title" content="プライバシーポリシー｜ながたぶどう園" />
+  <meta property="og:description" content="ながたぶどう園の個人情報保護方針。" />
+  <meta property="og:image" content="assets/img/ogp.png" />
+  <meta property="og:url" content="https://example.jp/privacy.html" />
+
+  <link rel="icon" href="assets/img/ogp.png" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- （必要なら index と同じ /exec を入れてOK。本文では未使用） -->
+  <script type="application/json" id="cfg-json">
+  { "webAppUrl": "https://script.google.com/macros/s/AKfycbxFU43FHo-7Hj_3HhrONhdH19ChT9oloaQUoHEACqGsedIR5-m-uCR2f4MtNnLXhFWd/exec" }
+  </script>
+
+  <!-- ページ専用の軽いCSS -->
+  <style>
+    .page-hero{
+      padding: clamp(20px, 4vw, 40px) 0 clamp(12px, 3vw, 24px);
+      background: #f5f7f5;
+    }
+    .page-hero .hero__content{ max-width: 960px; margin: 0 auto; }
+    .page-hero .kicker{ margin-bottom: .5rem; }
+
+    .policy{ max-width: 960px; margin: 0 auto; }
+    .policy h2{ font-size: 1.25rem; margin: 1.2em 0 .6em; }
+    .policy h3{ font-size: 1.05rem; margin: 1em 0 .4em; color:#445; }
+    .policy p{ line-height: 1.9; }
+    .policy ul{ margin: .3em 0 .9em 1.2em; }
+    .policy li{ margin:.2em 0; }
+    .note{ color:#667; font-size:.95em; }
+    .muted{ color:#667; }
+    .box{ background:#fafafa; border:1px solid #eee; border-radius:12px; padding:14px; }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== ヘッダー ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -35,38 +66,106 @@
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
           <a href="index.html">ホーム</a>
-          <a href="guide.html">はじめての方</a>
-          <a href="news.html">最新情報</a>
-          <a href="about.html">農園紹介</a>
-          <a href="shop.html">注文する</a>
+          <a class="nav-cta" href="shop.html">注文する</a>
           <a href="gift.html">ギフト</a>
           <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="news.html">最新情報</a>
           <a href="blog.html">ぶどう日誌</a>
+          <a href="about.html">農園紹介</a>
           <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </div>
   </header>
-  <div class="status" role="status" aria-live="polite">
-    <div class="inner">
-      <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">読み込み中...</span>
-      <span class="sep">|</span>
-      <a id="statusLink" href="#news">最新のお知らせ</a>
-    </div>
-  </div>
 
   <main id="main">
-    <section class="section reveal">
-      <div class="container">
-        <h1 class="section-title deco">プライバシーポリシー</h1>
-        
-<p>当園は、個人情報の適切な取扱いを行います。目的・第三者提供・安全管理・お問い合わせ窓口等をここに記載します。</p>
+    <!-- ===== ページ見出し ===== -->
+    <section class="section page-hero reveal" aria-label="プライバシーポリシー ヒーロー">
+      <div class="container hero__content">
+        <span class="kicker">Privacy Policy</span>
+        <h1>プライバシーポリシー（個人情報保護方針）</h1>
+        <p class="section-lead">ながたぶどう園（以下「当園」）は、個人情報の保護を重要な責務と考え、個人情報保護法その他関係法令・ガイドラインを遵守します。</p>
+        <p class="note">最終改定日：<time datetime="2025-10-14">2025年10月14日</time></p>
+      </div>
+    </section>
 
+    <!-- ===== 本文 ===== -->
+    <section class="section reveal" aria-label="プライバシーポリシー本文">
+      <div class="container policy">
+        <h2 id="scope">1. 適用範囲</h2>
+        <p>本ポリシーは、当園のウェブサイト（<span class="muted">example.jp</span> 以下）や注文フォーム、メール、SNS（LINE公式等）を通じて当園が取得・利用する個人情報の取扱いに適用されます。</p>
+
+        <h2 id="definition">2. 個人情報の定義</h2>
+        <p>氏名、住所、電話番号、メールアドレス、配送先情報、注文内容等、特定の個人を識別できる情報（他の情報と容易に照合でき、それにより識別できるものを含む）をいいます。</p>
+
+        <h2 id="collect">3. 取得する情報と取得方法</h2>
+        <ul>
+          <li>注文・お問い合わせ時：氏名、住所、電話番号、メールアドレス、配送先、注文内容、のし・名入れ内容等</li>
+          <li>決済関連：銀行振込の入金情報、PayPayアカウント名等（※クレジットカード番号は取り扱いません）</li>
+          <li>端末・Cookie等：サイトの基本動作に必要なCookie（セッション管理等）。<span class="note">※アクセス解析ツールは現時点では導入していません。導入時は本ポリシーを更新します。</span></li>
+        </ul>
+
+        <h2 id="purpose">4. 利用目的</h2>
+        <ul>
+          <li>商品の受注、出荷、配送、代金決済、アフターサポートの提供</li>
+          <li>ギフト対応（のし・名入れ）、納品書・領収書の発行と送付</li>
+          <li>予約・受付状況、出荷予定・完了等のご案内、重要なお知らせの送付</li>
+          <li>お問い合わせ対応、品質向上のためのアンケート等</li>
+          <li>法令で認められる範囲における利用目的の変更</li>
+        </ul>
+
+        <h2 id="third">5. 第三者提供</h2>
+        <p>当園は、次の場合を除き、本人の同意なく個人情報を第三者に提供しません。</p>
+        <ul>
+          <li>配送業者（例：ヤマト運輸等）への配送に必要な情報の提供</li>
+          <li>決済事業者・金融機関（例：銀行、PayPay等）への決済に必要な情報の提供</li>
+          <li>法令に基づく場合、人の生命・身体・財産の保護のために必要な場合 等</li>
+        </ul>
+
+        <h2 id="outsourcing">6. 取扱いの委託</h2>
+        <p>当園は、業務の一部を委託し、個人情報の取扱いを外部に委託することがあります（例：クラウド型フォーム、メール配信、データ保管）。この場合、委託先の選定基準を設け、適切な管理・監督を行います。</p>
+
+        <h2 id="xborder">7. 海外へのデータ移転</h2>
+        <p>当園が利用するクラウドサービス（Google等）のサーバーは国外に設置される場合があります。これらの事業者は適切な保護措置を講じています。詳細は各事業者のプライバシーポリシーをご参照ください。</p>
+
+        <h2 id="security">8. 安全管理措置</h2>
+        <ul>
+          <li>アクセス権限管理、パスワードの適正管理</li>
+          <li>クラウドサービス（Google等）における暗号化・ログ管理の活用</li>
+          <li>不要になったデータの適切な削除</li>
+          <li>関係者への周知・教育</li>
+        </ul>
+
+        <h2 id="cookie">9. Cookie等の利用</h2>
+        <p>当サイトは、ページ遷移の維持等のため最小限のCookieを使用する場合があります。ブラウザ設定によりCookieを無効化できますが、サイトの一部機能が正常に動作しない可能性があります。</p>
+
+        <h2 id="retention">10. 保管期間</h2>
+        <p>法令に定める保存期間または利用目的の達成に必要な期間を超えて保管しません。必要がなくなった情報は安全な方法で削除します。</p>
+
+        <h2 id="rights">11. 開示・訂正・利用停止等の請求</h2>
+        <p>ご本人からの、保有個人データの開示、内容の訂正・追加・削除、利用停止・消去又は第三者提供の停止のご請求に対応します。下記窓口までご連絡ください。本人確認のための情報提供をお願いする場合があります。</p>
+
+        <h2 id="children">12. 児童の個人情報</h2>
+        <p>未成年の方が当園のサービスを利用する場合は、保護者の同意を得たうえで情報をご提供ください。</p>
+
+        <h2 id="revision">13. ポリシーの変更</h2>
+        <p>法令の改正や運用の変更等に応じて、本ポリシーを改定することがあります。重要な変更がある場合はウェブサイトで告知します。</p>
+
+        <h2 id="contact">14. お問い合わせ窓口</h2>
+        <div class="box">
+          <p><strong>ながたぶどう園</strong><br>
+          長野県須坂市 日滝原<br>
+          メール：<a href="mailto:info@example.jp">info@example.jp</a><br>
+          営業時間：9:00–17:00（季節により変動）</p>
+        </div>
+
+        <p class="note" style="margin-top:12px;">本ポリシーは日本法（個人情報の保護に関する法律）に準拠します。</p>
       </div>
     </section>
   </main>
 
+  <!-- ===== フッター ===== -->
   <footer role="contentinfo">
     <div class="container footer-inner">
       <div>
@@ -78,11 +177,12 @@
       <div>
         <p>営業時間：9:00-17:00（季節により変動）</p>
         <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p><a href="/law.html">特定商取引法に基づく表記</a> ／ <a href="/privacy.html">プライバシーポリシー</a></p>
+        <p><a href="law.html">特定商取引法に基づく表記</a> ／ <a aria-current="page" href="privacy.html">プライバシーポリシー</a></p>
       </div>
       <div class="copyright">© 2025 ながたぶどう園</div>
     </div>
   </footer>
 
-  <script src="/assets/js/main.js"></script>
-</body></html>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
