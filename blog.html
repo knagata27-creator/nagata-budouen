@@ -266,6 +266,21 @@
       return `${y}年${mm}月${dd}日`;
     }
 
+    // ★ 追加：相対URLや slug でもリンクを生成
+    function resolveLink_(item, base){
+      const raw  = String(item.link || '').trim();
+      const slug = String(item.slug || '').trim();
+      if (raw){
+        if (/^https?:\/\//i.test(raw)) return { url: raw, external: true };
+        return { url: raw, external: false };              // /path や blog/xxx.html など
+      }
+      if (slug){
+        const b = String(base || '').replace(/^\/|\/$/g,'');
+        return { url: `/${b}/${encodeURIComponent(slug)}.html`, external: false };
+      }
+      return null;
+    }
+
     function renderChunk(){
       const next = filtered.slice(shown, shown + PAGE_SIZE);
       const html = next.map(item => {
@@ -273,9 +288,12 @@
         const dateLabel = formatJaDate_(item.date || '');
         const title = truncate_(item.title || 'ぶどう日誌', MAX_TITLE);
         const excerpt = truncate_(item.excerpt || item.summary || '', MAX_EXCERPT);
-        const linkUrl = item.link && /^https?:/.test(item.link) ? item.link : ''; // 外部/内部リンクがあれば
 
-        const btnHtml = linkUrl ? `<p style="margin-top:8px"><a class="btn" href="${linkUrl}" target="_blank" rel="noopener">続きを読む</a></p>` : '';
+        // ★ 修正：相対URL・slug対応の“続きを読む”
+        const L = resolveLink_(item, 'blog');
+        const btnHtml = L
+          ? `<p style="margin-top:8px"><a class="btn" href="${L.url}" ${L.external?'target="_blank" rel="noopener"':''}>続きを読む</a></p>`
+          : '';
 
         return `
           <article class="card post lift">
