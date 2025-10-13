@@ -5,24 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>特定商取引法に基づく表記｜ながたぶどう園</title>
 
-  <meta name="description" content="ながたぶどう園の特定商取引法に基づく表記。販売業者、所在地、連絡先、商品代金以外の必要料金、支払方法・時期、引渡時期、返品・キャンセル、不良品対応、個人情報の取り扱い等を掲載。" />
+  <meta name="description" content="ながたぶどう園の特定商取引法に基づく表記。販売業者、運営責任者、所在地、連絡先、価格、送料、支払方法、引き渡し時期、返品・キャンセル等。" />
   <meta name="theme-color" content="#5b7a59" />
 
+  <!-- OGP -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="特定商取引法に基づく表記｜ながたぶどう園" />
-  <meta property="og:description" content="販売事業者情報・支払方法・出荷目安・返品/キャンセル等。" />
-  <meta property="og:url" content="https://example.jp/law.html" />
+  <meta property="og:description" content="販売業者情報・送料・お支払い・返品など。" />
   <meta property="og:image" content="assets/img/ogp.png" />
+  <meta property="og:url" content="https://example.jp/law.html" />
 
   <link rel="icon" href="assets/img/ogp.png" />
-  <link rel="stylesheet" href="assets/css/style.css?v=20251013" />
-  <!-- JS有効検出（reveal安全化用） -->
-  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- 他ページと同じ /exec を入れてOK（本文では未使用） -->
+  <script type="application/json" id="cfg-json">
+  { "webAppUrl": "https://script.google.com/macros/s/AKfycbxFU43FHo-7Hj_3HhrONhdH19ChT9oloaQUoHEACqGsedIR5-m-uCR2f4MtNnLXhFWd/exec" }
+  </script>
+
+  <style>
+    .page-hero{
+      padding: clamp(20px, 4vw, 40px) 0 clamp(12px, 3vw, 24px);
+      background:#f5f7f5;
+    }
+    .page-hero .hero__content{ max-width: 960px; margin:0 auto; }
+    .page-hero .kicker{ margin-bottom:.5rem; }
+
+    .law{ max-width: 960px; margin:0 auto; }
+    .law .note{ color:#667; font-size:.95em; }
+    .law dl{ margin:0; }
+    .law dt{
+      width: 220px; flex: none;
+      font-weight: 700; color:#334;
+      padding:14px 12px; background:#fafafa; border-bottom:1px solid #eee; border-right:1px solid #eee;
+      border-left:1px solid #eee;
+      border-top:1px solid #eee;
+      border-radius:12px 0 0 0;
+    }
+    .law dd{
+      flex:1; margin:0; padding:14px 16px; border-bottom:1px solid #eee; border-right:1px solid #eee;
+      background:#fff; border-top:1px solid #eee; border-radius:0 12px 0 0;
+    }
+    .law .row{ display:flex; align-items:stretch; }
+    .law .row + .row dt{ border-top-left-radius:0; }
+    .law .row + .row dd{ border-top-right-radius:0; }
+    .law .row:last-child dt{ border-bottom-left-radius:12px; }
+    .law .row:last-child dd{ border-bottom-right-radius:12px; }
+
+    .law ul{ margin:.3em 0 .8em 1.2em; }
+    .law li{ margin:.2em 0; }
+    .muted{ color:#667; }
+    .box{ background:#fafafa; border:1px solid #eee; border-radius:12px; padding:12px 14px; }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
 
-  <!-- ===== Header / Global Nav ===== -->
+  <!-- ===== ヘッダー ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -42,148 +81,95 @@
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
           <a href="index.html">ホーム</a>
-          <a href="guide.html">はじめての方</a>
-          <a href="news.html">最新情報</a>
-          <a href="about.html">農園紹介</a>
-          <a href="shop.html">注文する</a>
+          <a class="nav-cta" href="shop.html">注文する</a>
           <a href="gift.html">ギフト</a>
           <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="news.html">最新情報</a>
           <a href="blog.html">ぶどう日誌</a>
+          <a href="about.html">農園紹介</a>
           <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </div>
   </header>
 
-  <!-- ===== Fixed Status Bar ===== -->
-  <div class="status" role="status" aria-live="polite">
-    <div class="inner">
-      <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">読み込み中…</span>
-      <span class="sep">|</span>
-      <a id="statusLink" href="index.html#news">最新のお知らせ</a>
-    </div>
-  </div>
-
   <main id="main">
-    <section class="section reveal">
-      <div class="container">
-        <h1 class="section-title deco">特定商取引法に基づく表記</h1>
-        <p class="section-lead">本ページは、ながたぶどう園（以下「当園」）の通信販売に適用される表示事項です。</p>
+    <!-- ===== ヒーロー ===== -->
+    <section class="section page-hero reveal" aria-label="特定商取引法の表記 ヒーロー">
+      <div class="container hero__content">
+        <span class="kicker">Legal Notice</span>
+        <h1>特定商取引法に基づく表記</h1>
+        <p class="section-lead">当園の販売事業に関する表示事項を定めています。</p>
+        <p class="note">最終改定日：<time datetime="2025-10-14">2025年10月14日</time></p>
+      </div>
+    </section>
 
-        <!-- 基本情報 -->
-        <div class="card lift" style="margin-bottom:18px">
-          <h2 class="section-title" style="margin-top:0">販売事業者</h2>
-          <dl class="list">
-            <dt><strong>販売業者</strong></dt><dd>ながたぶどう園（屋号）</dd>
-            <dt><strong>運営統括責任者</strong></dt><dd>（記載名）</dd>
-            <dt><strong>所在地</strong></dt><dd>長野県須坂市 日滝原（詳細住所はご注文確認メールに記載）</dd>
-            <dt><strong>お問い合わせ先</strong></dt><dd>メール：<a href="mailto:info@example.jp">info@example.jp</a>｜営業時間：9:00–17:00（季節により変動）</dd>
-          </dl>
-          <p class="note">※ 畑作業中はお電話に出られない場合があります。メールでのご連絡が確実です。</p>
+    <!-- ===== 本文 ===== -->
+    <section class="section reveal" aria-label="特定商取引法に基づく表記 本文">
+      <div class="container law">
+        <div class="row"><dt>販売業者</dt><dd>ながたぶどう園（個人事業）</dd></div>
+        <div class="row"><dt>運営責任者</dt><dd>永田（代表）<!-- 実名に置き換え可 --></dd></div>
+        <div class="row"><dt>所在地</dt><dd>長野県須坂市 日滝原<br><span class="note">※ 詳細住所はご請求いただければ遅滞なく開示します。</span></dd></div>
+        <div class="row"><dt>電話番号</dt><dd><span class="note">ご請求いただいた場合に遅滞なく開示します。畑作業中は電話に出られないため、メールでのご連絡が確実です。</span></dd></div>
+        <div class="row"><dt>メール</dt><dd><a href="mailto:info@example.jp">info@example.jp</a></dd></div>
+        <div class="row"><dt>サイトURL</dt><dd><a href="https://example.jp/">https://example.jp/</a></dd></div>
+
+        <div class="row"><dt>販売価格</dt><dd>各商品ページに税込価格で表示します。相場・作柄等により変動します。</dd></div>
+        <div class="row"><dt>商品代金以外の<br>必要料金</dt><dd>
+          <ul>
+            <li>配送料：地域・サイズにより異なります（クール便）。</li>
+            <li>オプション：化粧箱・手提げ袋 等（任意）。</li>
+            <li>振込手数料：銀行振込を選択時はお客さま負担。</li>
+          </ul>
+          <p class="note">配送料・オプションの目安は <a href="guide.html">はじめての方</a> をご確認ください。</p>
         </div>
 
-        <!-- 料金・支払・引渡し -->
-        <div class="grid grid-2">
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">商品代金以外の必要料金</h2>
-            <ul class="list">
-              <li>送料（地域別・クール便）</li>
-              <li>銀行振込手数料（振込時にお客様ご負担）</li>
-              <li>オプション：化粧箱・手提げ袋 など（必要時）</li>
-            </ul>
-          </div>
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">お支払い方法・時期</h2>
-            <ul class="list">
-              <li><strong>銀行振込</strong>：ご注文後にお知らせする口座へお振込みください。</li>
-              <li><strong>PayPay（予定）</strong>：対応開始次第、注文フォームで選択可能になります。</li>
-              <li>お支払い時期：<strong>ご注文から原則3日以内</strong>（期日を過ぎますと自動キャンセルになる場合があります）。</li>
-            </ul>
-          </div>
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">商品の引渡時期</h2>
-            <ul class="list">
-              <li>シーズン中は<strong>ご入金確認後2–4日</strong>を目安に出荷。</li>
-              <li>天候・収穫状況により前後します。最新の目安は各商品カードおよび<a href="calendar.html">収穫カレンダー</a>をご確認ください。</li>
-            </ul>
-          </div>
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">配送方法・配送業者</h2>
-            <ul class="list">
-              <li>ヤマト運輸（クール便）ほか</li>
-              <li>配送可能地域：日本国内（離島など一部地域は日数を要します）</li>
-            </ul>
-          </div>
-        </div>
+        <div class="row"><dt>お支払い方法</dt><dd>銀行振込／PayPay（予定）</dd></div>
+        <div class="row"><dt>お支払い時期</dt><dd>ご注文後 <strong>5日以内</strong>にお支払いください。期限を過ぎてもご入金が確認できない場合はキャンセルとなる場合があります。</dd></div>
 
-        <!-- 返品・不良品 -->
-        <div class="grid grid-2" style="margin-top:18px">
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">返品・キャンセルについて</h2>
-            <ul class="list">
-              <li>生鮮食品の性質上、<strong>お客様都合によるキャンセル・返品はお受けできません</strong>。</li>
-              <li>出荷前のキャンセルは対応可能な場合があります。できるだけ早く <a href="mailto:info@example.jp">info@example.jp</a> までご連絡ください。</li>
-            </ul>
-          </div>
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">不良品・破損時の対応</h2>
-            <ul class="list">
-              <li>到着当日に状態が分かる<strong>外装・中身の写真</strong>を添えてご連絡ください。</li>
-              <li>内容を確認のうえ、<strong>再送・返金</strong>など誠実に対応いたします。</li>
-              <li>輸送中の温度管理・破損防止のため、クール便・緩衝材・箱内敷材を使用しています。</li>
-            </ul>
-            <p class="note">※ 糖度・房形の個体差や一部果粒の脱粒など、果実の特性に起因する軽微な差はご容赦ください。</p>
-          </div>
-        </div>
-
-        <!-- その他の法定項目 -->
-        <div class="grid grid-2" style="margin-top:18px">
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">販売数量の制限等</h2>
-            <ul class="list">
-              <li>収穫量に応じて在庫を制限します（同一商品の大量注文は事前にご相談ください）。</li>
-              <li>ギフト大量出荷は納期を個別ご案内します。</li>
-            </ul>
-          </div>
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">申込みの有効期限</h2>
-            <ul class="list">
-              <li>シーズン・在庫により随時変動。注文後<strong>3日以内のご入金</strong>がない場合は自動キャンセルとなることがあります。</li>
-            </ul>
-          </div>
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">クーリング・オフについて</h2>
-            <p>通信販売はクーリング・オフ制度の対象外です。ただし当園の不備がある場合は個別に誠実に対応します。</p>
-          </div>
-          <div class="card lift">
-            <h2 class="section-title" style="margin-top:0">個人情報の取り扱い</h2>
-            <p>お客様の個人情報はご注文の確認・発送・お問い合わせ対応の目的にのみ使用し、<a href="privacy.html">プライバシーポリシー</a>に従い適切に管理します。</p>
-          </div>
-        </div>
-
-        <!-- 請求書・領収書・ギフト -->
-        <div class="card lift" style="margin-top:18px">
-          <h2 class="section-title" style="margin-top:0">請求書・領収書／ギフト対応</h2>
-          <ul class="list">
-            <li>領収書は電子発行または同梱・別送に対応します。</li>
-            <li>ギフトは<strong>のし・名入れ無料</strong>。<a href="gift.html">ギフトページ</a>をご確認ください。</li>
-            <li>法人・複数配送はCSV一括で承ります。納期は別途ご連絡します。</li>
+        <div class="row"><dt>引き渡し時期</dt><dd>
+          <ul>
+            <li>在庫販売：<strong>入金確認後 2〜4日</strong>を目安に出荷します（天候・繁忙期で前後）。</li>
+            <li>予約販売：収穫開始後、<strong>受注順</strong>に順次出荷します。</li>
           </ul>
         </div>
 
-        <p class="note" style="margin-top:16px">最終更新日：<time datetime="2025-10-13">2025年10月13日</time></p>
+        <div class="row"><dt>返品・交換</dt><dd>
+          <ul>
+            <li>生鮮食品のため、お客さま都合による返品・交換はお受けできません。</li>
+            <li>品質不良・破損等があった場合は、<strong>到着当日</strong>に状態の分かる写真とともにご連絡ください。内容確認のうえ「再送」または「返金」にて誠実に対応します。</li>
+          </ul>
+        </div>
 
-        <div class="btn-row" style="margin-top:10px">
-          <a class="btn" href="index.html#shop">商品をみる</a>
-          <a class="btn" href="guide.html">はじめての方</a>
-          <a class="btn" href="contact.html">お問い合わせ</a>
+        <div class="row"><dt>キャンセル</dt><dd>
+          <ul>
+            <li>出荷準備前までのキャンセルは承ります。</li>
+            <li>収穫・箱詰め後や出荷手配後のキャンセルはお受けできません。</li>
+          </ul>
+        </div>
+
+        <div class="row"><dt>不在・受取辞退</dt><dd>長期不在・受取辞退等により商品が劣化した場合、<strong>往復送料</strong>等の実費をご請求することがあります。</dd></div>
+
+        <div class="row"><dt>販売数量等の<br>制限</dt><dd>作柄・在庫により数量を制限する場合があります。法人・大口注文は事前にご相談ください。</dd></div>
+        <div class="row"><dt>申込みの<br>有効期限</dt><dd>季節商品につき、受付期間外はご注文いただけません。最新の受付状況は <a href="news.html">最新情報</a> をご確認ください。</dd></div>
+        <div class="row"><dt>配送可能地域</dt><dd>日本国内のみ（離島等一部地域はお届けに日数を要します）。</dd></div>
+        <div class="row"><dt>営業時間</dt><dd>9:00–17:00（季節により変動）</dd></div>
+        <div class="row"><dt>領収書・請求書</dt><dd>同梱／別送どちらも対応します（法人のまとめて精算も可）。</dd></div>
+        <div class="row"><dt>個人情報の取扱い</dt><dd>当園の <a href="privacy.html">プライバシーポリシー</a> に基づき適切に取り扱います。</dd></div>
+
+        <p class="note" style="margin-top:12px;">※ 本表記は法令の改正・運用の変更等により更新される場合があります。</p>
+        <div class="box" style="margin-top:8px;">
+          <p class="note">【記載の微調整ポイント】<br>
+            ・「運営責任者」は実名へ置換推奨／所在地は番地まで記載可能なら置換。<br>
+            ・支払期限「5日」は自社基準に合わせて変更可。<br>
+            ・送料・オプションの具体額は <em>guide.html</em> に一覧化すると親切です。</p>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- ===== Footer ===== -->
+  <!-- ===== フッター ===== -->
   <footer role="contentinfo">
     <div class="container footer-inner">
       <div>
@@ -195,38 +181,12 @@
       <div>
         <p>営業時間：9:00-17:00（季節により変動）</p>
         <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p><a href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
+        <p><a aria-current="page" href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
       </div>
       <div class="copyright">© 2025 ながたぶどう園</div>
     </div>
   </footer>
 
-  <!-- ===== Scripts ===== -->
   <script src="assets/js/main.js"></script>
-  <script>
-    // ステータスバー同期
-    (async () => {
-      try {
-        const res = await fetch('assets/data/status.json', { cache: 'no-store' });
-        const data = await res.json();
-        const map = { preorder: '予約受付前', inseason: '受付中', ended: '今季終了' };
-        document.getElementById('statusMode').textContent = map[data.mode] || '受付状況';
-        document.getElementById('statusMsg').textContent  = data.message || '';
-        if (data.notice_url) document.getElementById('statusLink').href = data.notice_url;
-        document.documentElement.classList.add('has-io'); // reveal安全化
-      } catch(e) {/* silent */}
-    })();
-  </script>
-
-  <!-- JSON-LD: WebPage -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"WebPage",
-    "name":"特定商取引法に基づく表記｜ながたぶどう園",
-    "url":"https://example.jp/law.html",
-    "publisher":{"@type":"Organization","name":"ながたぶどう園"}
-  }
-  </script>
 </body>
 </html>
