@@ -25,17 +25,7 @@
 
   <!-- news.html 専用：ヒーローを小さく -->
   <style>
-    @media (max-width: 480px){
-      .hero--compact{ padding: 20px 0 12px ; }
-    }
-    /* news のヒーロー専用の軽い見出し */
-    .page-hero{
-      padding: clamp(20px, 4vw, 40px) 0 clamp(12px, 3vw, 24px);
-      background: #f5f7f5; /* 任意。灰色を薄く */
-    }
-    .page-hero .hero__content{ max-width: 960px; margin: 0 auto; }
-    .page-hero .kicker{ margin-bottom: .5rem; }
-        /* コンパクトヒーロー */
+    /* コンパクトヒーロー */
     .page-hero{
       padding: 12px 0 8px;
       background:#cce0cf;
@@ -56,6 +46,16 @@
       margin:6px 0 0; color:#2e3a2e;
       font-size:clamp(14px, 1.7vw, 16px);
     }
+    @media (max-width: 480px){
+      .hero--compact{ padding: 20px 0 12px ; }
+    }
+    /* news のヒーロー専用の軽い見出し */
+    .page-hero{
+      padding: clamp(20px, 4vw, 40px) 0 clamp(12px, 3vw, 24px);
+      background: #f5f7f5; /* 任意。灰色を薄く */
+    }
+    .page-hero .hero__content{ max-width: 960px; margin: 0 auto; }
+    .page-hero .kicker{ margin-bottom: .5rem; }
   </style>
 </head>
 <body>
