@@ -358,13 +358,8 @@
         return;
       }
 
-      // 最新順（大きい日時ほど先頭）。不正な日付は末尾へ回す
-     　items.sort((a, b) => {
-        const tb = toTs_(b.date);
-        const ta = toTs_(a.date);
-        if (tb !== ta) return tb - ta; // 降順
-        return String(b.title || '').localeCompare(String(a.title || ''), 'ja'); // タイ時の安定化
-      });
+     　// 最新順（新しい→古い）※関数不要・不正日付は末尾へ
+      items.sort((a,b) => (Date.parse(b.date || '') || -1) - (Date.parse(a.date || '') || -1));
 
       allItems = items;
       filtered = items.slice();
