@@ -332,9 +332,9 @@ footer{
   .card{ box-shadow:none; border-color:#ddd; }
 }
 
-/* 画面下にぴったり固定 */
+/* ====== Shop: 画面下にぴったり固定するカートバー（共通） ====== */
 .cart-sticky{
-  position: fixed;       /* ← これがキモ */
+  position: fixed;       /* 固定 */
   left: 0;
   right: 0;
   bottom: 0;             /* iPhone のホームバー分の余白も考慮 */
@@ -348,70 +348,77 @@ body.has-sticky-cart{
   padding-bottom: 110px;
 }
 
-<!-- ▼ 追記：Shopをトップと同じ色合いにするテーマ上書き -->
-<style id="shop-theme">
-  /* トップページ側にブランド変数があれば流用、なければ #5b7a59 */
-  :root{
-    --brand: var(--color-brand, #5b7a59);
-    --brand-ink: var(--color-on-brand, #ffffff);
-    --brand-hover: color-mix(in srgb, var(--brand) 85%, black);
-    --ink: var(--color-ink, #222);
-    --surface: var(--color-surface, #fff);
-    --border: var(--color-border, #e8e8e8);
-  }
+/* =========================================================
+   Shopテーマ上書き（トップと色を合わせる）
+   - HTML側には <style> を書かず、CSSだけで完結させる
+   - #shopApp スコープで色味とUIの統一
+   ========================================================= */
+:root{
+  /* トップ側に独自変数があれば流用、なければフォールバック */
+  --brand: var(--color-brand, #5b7a59);
+  --brand-ink: var(--color-on-brand, #ffffff);
+  --ink: var(--color-ink, #222);
+  --surface: var(--color-surface, #fff);
+  --border: var(--color-border, #e8e8e8);
+  /* hover用の近似色（color-mix対応外ブラウザはボタンの暗さが若干違うだけでOK） */
+}
 
-  /* カードと文字色のトーンをトップの雰囲気へ寄せる */
-  #shopApp .card{
-    background: var(--surface);
-    border-color: var(--border);
-  }
-  #shopApp .name{ color: var(--ink); }
-  #shopApp .meta{ color: color-mix(in srgb, var(--ink) 70%, white); }
+/* ボタン色・文字色 */
+#shopApp .btn{
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+#shopApp .btn:hover:enabled{
+  /* Fallback: 少し暗く */
+  filter: brightness(.95);
+}
 
-  /* ボタンをブランド色に */
-  #shopApp .btn{
-    background: var(--brand);
-    color: var(--brand-ink);
-  }
-  #shopApp .btn:hover:enabled{ background: var(--brand-hover); }
+/* 下固定カートバー */
+#shopApp .cart-sticky{
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+#shopApp .cart-sticky:hover{
+  filter: brightness(.96);
+}
 
-  /* 下固定カートバーをブランド色ベースに */
-  #shopApp .cart-sticky{
-    background: var(--brand);
-    color: var(--brand-ink);
-  }
-  #shopApp .cart-sticky:hover{ background: var(--brand-hover); }
+/* 固定バー右の大きいCTAは反転で視認性UP */
+#shopApp .cart-sticky__cta{
+  background: var(--brand-ink);
+  color: var(--brand);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .15);
+}
+#shopApp .cart-sticky:hover .cart-sticky__cta{
+  filter: brightness(.98);
+}
 
-  /* 固定バー右の大きいCTAは反転で視認性UP */
-  #shopApp .cart-sticky__cta{
-    background: var(--brand-ink);
-    color: var(--brand);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, .15);
-  }
-  #shopApp .cart-sticky:hover .cart-sticky__cta{
-    background: color-mix(in srgb, var(--brand-ink) 92%, black);
-  }
+/* カードと文字色のトーンをトップの雰囲気へ寄せる */
+#shopApp .card{
+  background: var(--surface);
+  border-color: var(--border);
+}
+#shopApp .name{ color: var(--ink); }
+#shopApp .meta{ color: rgba(34,34,34,.7); }
 
-  /* カルーセルのドットを少し強めに（ブランド寄りの白） */
-  #shopApp .carousel-dot{
-    background: color-mix(in srgb, var(--brand-ink) 70%, transparent);
-  }
-  #shopApp .carousel-dot.is-active{
-    background: var(--brand-ink);
-  }
+/* タグのチップはデフォはブランド色、特種タグは従来色を維持 */
+#shopApp .badge-chip{ background: var(--brand); color:#fff; }
+#shopApp .badge-chip.is-new{ background:#13b981; } /* 新 */
+#shopApp .badge-chip.is-hit{ background:#ef4444; } /* 人気 */
+#shopApp .badge-chip.is-season{ background:#3b82f6; } /* 今季 */
 
-  /* タグのチップはデフォはブランド色、特種タグは従来の色を維持 */
-  #shopApp .badge-chip{ background: var(--brand); }
-  #shopApp .badge-chip.is-new{ background: #13b981; } /* 新 */
-  #shopApp .badge-chip.is-hit{ background: #ef4444; } /* 人気 */
-  #shopApp .badge-chip.is-season{ background: #3b82f6; } /* 今季 */
+/* フォーカスアウトラインもブランド寄りに */
+#shopApp .pressable:focus-visible{
+  outline: 3px solid rgba(91,122,89,.5);
+  outline-offset: 2px;
+}
 
-  /* フォーカスアウトラインもブランド寄りに */
-  #shopApp .pressable:focus-visible{
-    outline: 3px solid color-mix(in srgb, var(--brand) 50%, white);
-    outline-offset: 2px;
-  }
+/* カルーセルドット */
+#shopApp .carousel-dot{
+  background: rgba(255,255,255,.7);
+}
+#shopApp .carousel-dot.is-active{
+  background: #fff;
+}
 
-  /* スケルトンや境界線の色味を全体に合わせる（薄め） */
-  #shopApp .skel-card{ border-color: var(--border); }
-</style>
+/* スケルトン境界色 */
+#shopApp .skel-card{ border-color: var(--border); }
