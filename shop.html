@@ -335,21 +335,13 @@
 
   <!-- ===== Base Scripts ===== -->
   <script src="assets/js/main.js"></script>
-  <script>
-    // ステータスバー＆ヒーロー同期
-    (async () => {
-      try {
-        const res = await fetch('assets/data/status.json', { cache: 'no-store' });
-        const data = await res.json();
-        const map = { preorder: '予約受付前', inseason: '受付中', ended: '今季終了' };
-        document.getElementById('statusMode').textContent = map[data.mode] || '受付状況';
-        document.getElementById('statusMsg').textContent  = data.message || '';
-        if (data.ship_eta) document.getElementById('shipEta').textContent = data.ship_eta;
-        if (data.notice_url) document.getElementById('statusLink').href = data.notice_url;
-        document.getElementById('heroMode').textContent = map[data.mode] || '受付状況';
-      } catch(e) {/* silent */}
-    })();
-  </script>
+
+  <!-- head 内に1回だけ -->
+    <script type="application/json" id="cfg-json">
+    { "webAppUrl": "https://script.google.com/macros/s/AKfycbytACqss-IJgznIjBg7_DltrKFJKbnHonuVkdv9reJiqT4NC6bQ1yxPvkxcGN2C8rUinQ/exec" }
+    </script>
+
+  
 
   <!-- ===== GAS版 ロジック（既存と同じ、変更なし） ===== -->
   <script>
@@ -728,6 +720,43 @@
     });
 
     attachPressEffects(document.getElementById('shopApp'));
+  </script>
+
+  <script>
+    (async () => {
+      const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
+      const cfg = (() => {
+        try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); }
+        catch(_) { return {}; }
+      })();
+
+      async function fetchStatus() {
+        // 1) GAS（あれば）
+        if (cfg.webAppUrl) {
+          try {
+            const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-store' });
+            if (r.ok) return await r.json();
+          } catch(_) {}
+        }
+        // 2) ローカルJSON（フェイルバック）
+      const r2 = await fetch('assets/data/status.json', { cache:'no-store' });
+        return await r2.json();
+      }
+    
+      try {
+        const data = await fetchStatus();
+        const set = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
+    
+        set('statusMode', (map[data.mode] || '受付状況'));
+        set('statusMsg',  data.message || '');
+        if (data.ship_eta) set('shipEta', data.ship_eta);
+    
+        const link = document.getElementById('statusLink');
+        if (link && data.notice_url) link.href = data.notice_url;
+    
+        set('heroMode', (map[data.mode] || '受付状況')); // ヒーローがある頁だけ反映
+      } catch(e) { /* silent */ }
+    })();
   </script>
 </body>
 </html>
