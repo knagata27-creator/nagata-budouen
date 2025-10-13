@@ -309,7 +309,7 @@
   <script>
     let CFG = {};
     try { CFG = JSON.parse(document.getElementById('cfg-json').textContent || '{}'); } catch(_) { CFG = {}; }
-    const API_BASE = CFG.webAppUrl || 'https://script.google.com/macros/s/XXXXX/exec';
+    const API_BASE = CFG.webAppUrl || 'https://script.google.com/macros/s/AKfycbx2d_6SQTr4--3bVJSC-udFqtU-_WlgHhkFZyqU7mHge6SQiPGaT7wv_TxuOUyTR1sU/exec';
     document.getElementById('ship').textContent = ((CFG.shippingFee || 0) >>> 0).toLocaleString();
 
     const state = { products: [], cart: [] };
