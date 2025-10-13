@@ -105,6 +105,20 @@
     /* ========== 安全網（高コントラスト） ========== */
     :root{ color-scheme:light; }
     body, .container{ color:#222; }
+    /* page-hero を最優先で適用（順序＆specificity＆!importantで確定） */
+  .section.page-hero{
+    padding: 12px 0 8px !important;
+    background: #cce0cf !important;
+    border-bottom: 1px solid #e9ece8 !important;
+  }
+  /* .hero のオーバーレイ対策（背景が隠れる問題を解消） */
+  .section.page-hero::before{ content: none !important; display: none !important; }
+  
+  /* もし .hero が消せない場合の保険 */
+  .section.hero.page-hero{
+    padding: 12px 0 8px !important;
+    background: #cce0cf !important;
+  }
   </style>
 
 </head>
