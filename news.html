@@ -337,9 +337,15 @@
         return;
       }
 
-    　 // 最新順（新しい→古い）※関数不要・不正日付は末尾へ
+    // 最新順（新しい→古い）※関数不要・不正日付は末尾へ
     items.sort((a,b) => (Date.parse(b.date || '') || -1) - (Date.parse(a.date || '') || -1));
 
+      renderChunk();
+
+      // ★保険：初回が空ならもう一度
+      setTimeout(() => {
+        if (!listEl.children.length && items.length) renderChunk();
+      }, 0);
       
       btn.addEventListener('click', renderChunk);
     } catch (e) {
