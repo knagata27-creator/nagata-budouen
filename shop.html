@@ -488,41 +488,106 @@
       document.getElementById('m-total').textContent = yen(subtotal + baseShip);
     }
 
+    // 二重送信ガード
+    let __isSubmitting = false;
+
     async function submitOrderFromModal(){
-      if((state.cart||[]).length === 0){ alert('カートが空です'); return; }
       const btn = document.getElementById('m-submit');
-      const orig = btn.textContent; btn.disabled = true; btn.textContent = '送信中...';
+      if (!btn) {
+        console.error('[submit] #m-submit が見つかりません');
+        alert('内部エラー: m-submit が見つかりません'); // フォールバック
+        return;
+      }
+      if (__isSubmitting) { console.warn('[submit] 多重送信をブロック'); return; }
+
       try {
+        __isSubmitting = true;
+        const orig = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '送信中...';
+
+        // カート空チェック
+        if (!state?.cart?.length) {
+          showThanks('❌ カートが空です');
+          return;
+        }
+
+        // 入力値収集
         const payload = {
-          items: state.cart.map(({商品ID, 数量})=> ({商品ID, 数量})),
+          items: state.cart.map(({商品ID, 数量}) => ({ 商品ID, 数量 })),
           customer: {
-            氏名:  document.getElementById('m-name').value.trim(),
-            メール: document.getElementById('m-email').value.trim(),
-            電話:  document.getElementById('m-tel').value.trim(),
-            住所:  document.getElementById('m-addr').value.trim(),
-            備考:  document.getElementById('m-note').value.trim(),
-            支払方法: document.getElementById('m-pay').value
+            氏名:  document.getElementById('m-name')?.value.trim()  || '',
+            メール: document.getElementById('m-email')?.value.trim() || '',
+            電話:  document.getElementById('m-tel')?.value.trim()   || '',
+            住所:  document.getElementById('m-addr')?.value.trim()  || '',
+            備考:  document.getElementById('m-note')?.value.trim()  || '',
+            支払方法: document.getElementById('m-pay')?.value || '銀行振込'
           },
-          送料: CFG.shippingFee||0
+          送料: CFG.shippingFee || 0
         };
-        let errors = [];
-        if(!payload.customer.氏名) errors.push("氏名");
-        if(!payload.customer.住所) errors.push("住所");
-        if(!payload.customer.メール && !payload.customer.電話) errors.push("メールまたは電話番号");
-        if(errors.length){ showThanks("❌ " + errors.join("・") + " が入力されていません"); btn.disabled=false; btn.textContent=orig; return; }
 
-        const res = await fetch(`${API_BASE}?api=order`, { method:'POST', body: JSON.stringify(payload) });
-        const data = await res.json();
-        if(!data.ok){ showThanks("❌ エラー: " + (data.error||'送信失敗')); btn.disabled=false; btn.textContent=orig; return; }
+        // 必須チェック
+        const errors = [];
+        if (!payload.customer.氏名)  errors.push('氏名');
+        if (!payload.customer.住所)  errors.push('住所');
+        if (!payload.customer.メール && !payload.customer.電話) errors.push('メールまたは電話番号');
+        if (errors.length){
+          showThanks('❌ ' + errors.join('・') + ' が入力されていません');
+          return;
+        }
 
-        state.cart = []; updateCartBadge(); closeCheckoutModal();
-        showThanks(`✅ ご注文ありがとうございます！<br>注文番号：<b>${data.orderId}</b><br>合計：¥${(data.total||0).toLocaleString()}`);
-      } catch(e){
-        console.error(e); showThanks("❌ 通信エラー");
+        // API呼び出し
+        if (!API_BASE) throw new Error('API_BASE が未設定です');
+        const res = await fetch(`${API_BASE}?api=order`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }).catch(err => {
+          console.error('[submit] fetch失敗', err);
+          throw new Error('ネットワークエラー');
+        });
+
+        // ステータスチェック
+        if (!res.ok) {
+          const text = await res.text().catch(()=> '');
+          console.error('[submit] レスポンス異常', res.status, text);
+          showThanks(`❌ エラー: ${res.status} ${text?.slice(0,200)}`);
+          return;
+        }
+
+        const data = await res.json().catch(err => {
+          console.error('[submit] JSON 変換失敗', err);
+          throw new Error('サーバ応答の解析に失敗しました');
+        });
+
+        if (!data.ok) {
+          console.error('[submit] API エラー', data);
+          showThanks('❌ エラー: ' + (data.error || '送信失敗'));
+          return;
+        }
+
+        // 成功処理
+        state.cart = [];
+        updateCartBadge();
+        closeCheckoutModal();              // ← モーダルを閉じる
+        showThanks(
+          `✅ ご注文ありがとうございます！<br>注文番号：<b>${data.orderId || '-'}</b><br>合計：¥${(data.total||0).toLocaleString()}`
+        );
+
+      } catch (e) {
+        console.error('[submit] 例外', e);
+        showThanks('❌ 通信エラー：' + (e?.message || '不明なエラー'));
       } finally {
-        btn.disabled=false; btn.textContent=orig;
+        // ここは必ず通る
+        const btn2 = document.getElementById('m-submit');
+        if (btn2){
+          btn2.disabled = false;
+          btn2.textContent = '注文を確定する';
+        }
+        __isSubmitting = false;
       }
     }
+
     document.getElementById('m-submit').addEventListener('click', submitOrderFromModal);
 
     function showThanks(html){
