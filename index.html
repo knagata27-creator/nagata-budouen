@@ -402,5 +402,47 @@
     "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
   }]
   </script>
+
+  <script>
+  (async () => {
+    // cfg-json から webAppUrl を読む（なければそのまま無視）
+    const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
+    if (!cfg.webAppUrl) return; // 未設定なら何もしない（既存の静的カードが表示される）
+  
+    const wrap = document.querySelector('#news .grid');
+    if (!wrap) return;
+  
+    try {
+      const r = await fetch(`${cfg.webAppUrl}?api=news&limit=6`, { cache: 'no-store' });
+      const data = await r.json();
+      if (!data.ok || !Array.isArray(data.items) || data.items.length === 0) return;
+  
+      wrap.innerHTML = data.items.map(item => {
+        const img = item.image_url || 'assets/img/blog1.svg';
+        const dateLabel = (item.date || '').replace('T', ' ').slice(0, 10).replaceAll('-', '.');
+        const linkOpen = item.link ? `<a href="${item.link}" class="btn" target="_blank" rel="noopener">詳しく読む</a>` : '';
+        return `
+          <article class="card post lift">
+            <img src="${img}" alt="${item.title}">
+            <div>
+              <h4>${escapeHtml_(item.title)}</h4>
+              <time datetime="${item.date || ''}">${dateLabel || ''}</time>
+              <p>${escapeHtml_(item.excerpt || '')}</p>
+              ${linkOpen}
+            </div>
+          </article>
+        `;
+      }).join('');
+    } catch (e) {
+      // 失敗したら静的コンテンツのまま（何もしない）
+      console.warn('[news]', e);
+    }
+  
+    function escapeHtml_(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+  })();
+  </script>
+    
 </body>
 </html>
