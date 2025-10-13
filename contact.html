@@ -3,19 +3,39 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>お問い合わせ（メール／LINE）｜ながたぶどう園</title>
-  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。" />
+  <title>お問い合わせ｜ながたぶどう園</title>
+
+  <meta name="description" content="ながたぶどう園へのお問い合わせ（メール / LINE）。法人・複数配送のご相談、取材・メディアのご連絡もこちらから。" />
   <meta name="theme-color" content="#5b7a59" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="ながたぶどう園" />
-  <meta property="og:description" content="信州須坂・日滝原の小さなぶどう農園。贈答にも喜ばれる旬のぶどうを産地直送。" />
-  <meta property="og:url" content="https://example.jp/" />
-  <meta property="og:image" content="/assets/img/ogp.png" />
-  <link rel="icon" href="/assets/img/ogp.png" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <meta property="og:title" content="お問い合わせ｜ながたぶどう園" />
+  <meta property="og:description" content="メール / LINE / 簡易フォームで受付。営業時間：9:00–17:00（季節変動）" />
+  <meta property="og:url" content="https://nagata-budouen.jp/contact.html" />
+  <meta property="og:image" content="assets/img/ogp.png" />
+
+  <link rel="icon" href="assets/img/ogp.png" />
+  <link rel="stylesheet" href="assets/css/style.css?v=20251013" />
+  <script>document.documentElement.classList.add('js');</script>
+
+  <style>
+    /* ページ固有の軽い体裁だけ（既存トークンと調和） */
+    .contact-grid{display:grid;gap:22px;grid-template-columns:1.05fr 1fr}
+    @media (max-width:900px){ .contact-grid{grid-template-columns:1fr} }
+    .contact-list{display:grid;gap:10px}
+    .contact-list a.btn{width:fit-content}
+    .form-grid{display:grid;gap:12px}
+    .form-grid input,.form-grid textarea,.form-grid select{
+      width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;font-size:16px;background:#fff
+    }
+    .helper{color:#6a6a64;font-size:.9rem}
+    .req::after{content:" *";color:#d14;font-weight:900}
+  </style>
 </head>
+
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== Header / Global Nav ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -34,39 +54,112 @@
         </button>
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
-          <a href="/index.html#shop" class="">注文する</a>
-          <a href="/gift.html" class="">ギフト</a>
-          <a href="/calendar.html" class="">収穫カレンダー</a>
-          <a href="/guide.html" class="">はじめての方</a>
-          <a href="/about.html" class="">農園紹介</a>
-          <a href="/blog.html" class="">ぶどう日誌</a>
-          <a href="/contact.html" class="is-active">お問い合わせ</a>
+          <a href="index.html#shop">注文する</a>
+          <a href="gift.html">ギフト</a>
+          <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="about.html">農園紹介</a>
+          <a href="blog.html">ぶどう日誌</a>
+          <a href="contact.html" class="is-active">お問い合わせ</a>
         </nav>
       </div>
     </div>
   </header>
+
+  <!-- ===== Fixed Status Bar ===== -->
   <div class="status" role="status" aria-live="polite">
     <div class="inner">
       <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">読み込み中...</span>
+      <span id="statusMsg">読み込み中…</span>
       <span class="sep">|</span>
-      <a id="statusLink" href="#news">最新のお知らせ</a>
+      <a id="statusLink" href="index.html#news">最新のお知らせ</a>
     </div>
   </div>
 
   <main id="main">
-    <section class="section reveal">
+    <!-- ===== Heading ===== -->
+    <section class="section">
       <div class="container">
-        <h1 class="section-title deco">お問い合わせ（メール／LINE）</h1>
-        
-<p class="section-lead">在庫や納期のご相談はメールまたはLINEからお気軽に。</p>
-<p>メール：<a class="btn" href="mailto:info@example.jp">info@example.jp へメール</a></p>
-<p>LINE：<a class="btn" href="#" aria-disabled="true">LINE公式（準備中）</a></p>
+        <div class="card">
+          <h1 class="section-title deco" style="margin-top:0">お問い合わせ</h1>
+          <p class="section-lead">
+            商品の在庫・出荷目安、のし・名入れ、法人の複数配送、メディアのご連絡など、こちらからどうぞ。
+            営業時間：<b>9:00–17:00</b>（季節により変動）／畑作業中は電話に出られない場合があります。
+          </p>
+        </div>
+      </div>
+    </section>
 
+    <!-- ===== Methods + Form ===== -->
+    <section class="section">
+      <div class="container contact-grid">
+        <!-- 左：連絡方法のショートカット -->
+        <div class="card">
+          <h2 style="margin-top:0">連絡方法</h2>
+          <div class="contact-list">
+            <a class="btn btn--fill" href="mailto:info@example.jp?subject=%5BWEB%E5%95%8F%E5%90%88%E3%81%9B%5D">メールで問い合わせる</a>
+            <a class="btn" href="https://lin.ee/xxxxxxxx" target="_blank" rel="noopener">LINEで相談する</a>
+            <p class="helper">※ メールが確実です。LINEは既読タイミングにより返信が遅れる場合があります。</p>
+
+            <h3 style="margin:12px 0 6px;">法人・複数配送</h3>
+            <p class="meta">CSVでお届け先を一括受付可能です。納期・請求書対応もご相談ください。<br>
+              <a href="gift.html">ギフトのご案内</a>／<a href="shop.html">ギフト対象商品を見る</a>
+            </p>
+
+            <h3 style="margin:12px 0 6px;">連絡先</h3>
+            <p class="meta">
+              ながたぶどう園（長野県須坂市 日滝原）<br>
+              メール：<a href="mailto:info@example.jp">info@example.jp</a><br>
+              SNS：Instagram / YouTube / LINE 公式
+            </p>
+          </div>
+        </div>
+
+        <!-- 右：簡易フォーム（メール起動式） -->
+        <div class="card">
+          <h2 style="margin-top:0">お問い合わせフォーム</h2>
+          <form id="contactForm" class="form-grid">
+            <div>
+              <label class="req" for="name">お名前</label>
+              <input id="name" name="name" type="text" required autocomplete="name" />
+            </div>
+            <div>
+              <label class="req" for="email">メールアドレス</label>
+              <input id="email" name="email" type="email" required autocomplete="email" inputmode="email" />
+            </div>
+            <div>
+              <label for="tel">お電話番号（任意）</label>
+              <input id="tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" />
+            </div>
+            <div>
+              <label for="topic">お問い合わせ種別</label>
+              <select id="topic" name="topic">
+                <option value="商品・在庫">商品・在庫</option>
+                <option value="のし・ギフト">のし・ギフト</option>
+                <option value="法人・複数配送">法人・複数配送</option>
+                <option value="取材・メディア">取材・メディア</option>
+                <option value="その他" selected>その他</option>
+              </select>
+            </div>
+            <div>
+              <label class="req" for="message">内容</label>
+              <textarea id="message" name="message" rows="6" required placeholder="できるだけ具体的にご記入ください。"></textarea>
+            </div>
+            <div>
+              <label><input id="agree" type="checkbox" required /> プライバシーポリシーに同意します</label>
+              <div class="helper">お預かりした個人情報はお問い合わせ対応の目的のみに利用します。<a href="privacy.html">プライバシーポリシー</a></div>
+            </div>
+            <div>
+              <button class="btn btn--fill" type="submit">メールを作成して送る</button>
+              <div class="helper">※ 送信ボタンでメールアプリが起動しない場合は、<a href="mailto:info@example.jp">info@example.jp</a> 宛に直接お送りください。</div>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- ===== Footer ===== -->
   <footer role="contentinfo">
     <div class="container footer-inner">
       <div>
@@ -78,11 +171,63 @@
       <div>
         <p>営業時間：9:00-17:00（季節により変動）</p>
         <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p><a href="/law.html">特定商取引法に基づく表記</a> ／ <a href="/privacy.html">プライバシーポリシー</a></p>
+        <p><a href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
       </div>
       <div class="copyright">© 2025 ながたぶどう園</div>
     </div>
   </footer>
 
-  <script src="/assets/js/main.js"></script>
-</body></html>
+  <!-- ===== Scripts ===== -->
+  <script src="assets/js/main.js"></script>
+  <script>
+    // ステータスバー（共通）
+    (async () => {
+      try {
+        const res = await fetch('assets/data/status.json', { cache: 'no-store' });
+        const data = await res.json();
+        const map = { preorder: '予約受付前', inseason: '受付中', ended: '今季終了' };
+        document.getElementById('statusMode').textContent = map[data.mode] || '受付状況';
+        document.getElementById('statusMsg').textContent  = data.message || '';
+        if (data.notice_url) document.getElementById('statusLink').href = data.notice_url;
+      } catch(e) {}
+    })();
+
+    // 簡易フォーム：mailto を組み立て（GASに切替える場合はここを差し替え）
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const f = e.currentTarget;
+      if (!f.reportValidity()) return;
+
+      const name = f.name.value.trim();
+      const email = f.email.value.trim();
+      const tel = f.tel.value.trim();
+      const topic = f.topic.value;
+      const msg = f.message.value.trim();
+
+      const subject = `[WEB問い合わせ] ${topic}`;
+      const bodyLines = [
+        `お名前: ${name}`,
+        `メール: ${email}`,
+        `電話  : ${tel || '-'}`,
+        `種別  : ${topic}`,
+        '',
+        '--- お問い合わせ内容 ---',
+        msg,
+        '',
+        `（送信元: ${location.href}）`
+      ];
+      const mailto = `mailto:info@example.jp?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+
+      // メールクライアントを開く
+      location.href = mailto;
+
+      // もしGASに切替えるなら↓を使う（Apps Script WebアプリURLにPOST）
+      // fetch('https://script.google.com/macros/s/XXXXX/exec?api=contact', {
+      //   method:'POST', headers:{'Content-Type':'application/json'},
+      //   body: JSON.stringify({ name, email, tel, topic, message: msg })
+      // }).then(()=> alert('送信しました。返信をお待ちください。'));
+    });
+  </script>
+</body>
+</html>
