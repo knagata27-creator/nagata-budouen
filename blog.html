@@ -89,32 +89,8 @@
     :root{ color-scheme:light; }
     body, .container{ color:#222; }              /* 全体の基本色を濃く */
 
-        /* ========== 列数：3 → 2（blogと同様） ========== */
-    /* スマホ1列、760px以上は2列固定にして読みやすく */
-    #newsList.grid.grid-3{ grid-template-columns: 1fr; }
-    @media (min-width:760px){
-      #newsList.grid.grid-3{ grid-template-columns: 1fr 1fr; }
-    }
-    /* 行の高さは自動／上詰めに */
-    #newsList{ align-items: start; grid-auto-rows: auto; }
-  
-    /* カードの高さ制限を外して本文を切らない（blogと同様） */
-    #newsList .card.post{ height:auto !important; }
-    #newsList .card.post img{ height:auto; max-height:220px; object-fit:cover; }
-  
-    /* 他CSSの line-clamp / max-height を無効化（見切れ防止） */
-    #newsList .card.post h4,
-    #newsList .card.post p{
-      display:block !important;
-      overflow:visible !important;
-      max-height:none !important;
-      -webkit-line-clamp:unset !important;
-      line-clamp:unset !important;
-      white-space:normal !important;
-      color:#1f2a1f;
-    }
-    /* ボタンの間隔少し広げて読みやすく */
-    .blog-page #blogList .card.post .btn{ margin-top:10px; }
+    /* ===== 見えない対策（最小） ※追加はこの1行だけ ===== */
+    .card.post .btn{ display:inline-block !important; visibility:visible !important; }
   </style>
 </head>
 <body>
@@ -266,18 +242,33 @@
       return `${y}年${mm}月${dd}日`;
     }
 
-    // ★ 追加：相対URLや slug でもリンクを生成
+    /* ★ 追加：相対URL/slug/id/画像URL から“続きを読む”リンクを解決 */
     function resolveLink_(item, base){
-      const raw  = String(item.link || '').trim();
-      const slug = String(item.slug || '').trim();
+      const cand = [
+        item.link, item.url, item.page_url, item.href, item.permalink, item.path
+      ].map(v => String(v || '').trim()).filter(Boolean);
+      let raw = cand[0] || '';
+      const slug = String(item.slug || item.id || '').trim();
+
+      // 明示URL or 相対パス
       if (raw){
         if (/^https?:\/\//i.test(raw)) return { url: raw, external: true };
-        return { url: raw, external: false };              // /path や blog/xxx.html など
+        if (/^\//.test(raw) || /^[A-Za-z0-9_\-\/]+(\.html?|\/)?$/i.test(raw)){
+          return { url: raw.startsWith('/') ? raw : `/${raw}`, external: false };
+        }
+        // 「詳しくはこちら」などURLでない場合は無視して次の候補へ
       }
+
+      // slug / id があれば /{base}/{slug}.html
       if (slug){
         const b = String(base || '').replace(/^\/|\/$/g,'');
         return { url: `/${b}/${encodeURIComponent(slug)}.html`, external: false };
       }
+
+      // 最後の保険：画像URLが http(s) ならそこへ
+      const img = String(item.image_url || '').trim();
+      if (/^https?:\/\//i.test(img)) return { url: img, external: true };
+
       return null;
     }
 
@@ -289,10 +280,10 @@
         const title = truncate_(item.title || 'ぶどう日誌', MAX_TITLE);
         const excerpt = truncate_(item.excerpt || item.summary || '', MAX_EXCERPT);
 
-        // ★ 修正：相対URL・slug対応の“続きを読む”
+        /* ★ 修正：ボタン生成を resolveLink_ に一本化 */
         const L = resolveLink_(item, 'blog');
         const btnHtml = L
-          ? `<p style="margin-top:8px"><a class="btn" href="${L.url}" ${L.external?'target="_blank" rel="noopener"':''}>続きを読む</a></p>`
+          ? `<p style="margin-top:8px"><a class="btn" href="${L.url}" ${L.external ? 'target="_blank" rel="noopener"' : ''}>続きを読む</a></p>`
           : '';
 
         return `
