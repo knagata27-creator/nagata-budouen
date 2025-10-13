@@ -127,6 +127,55 @@
       }
       .cal__cells--mini .cal__cell{ height:28px; }
     }
+    .cal__row--mini,
+    .cal__months--mini,
+    .cal__cells--mini { display: none; }
+  
+    /* 2) ヘッダー行＆品種列をsticky化（必要ならtop調整） */
+    .cal__months{
+      position: sticky; top: 64px; /* ヘッダーの高さに合わせて調整 */
+      z-index: 5;
+      background: #fafafa;
+      border-bottom: 1px solid #eee;
+    }
+    .cal__name{
+      position: sticky; left: 0; z-index: 4;
+      background: #fff;
+      box-shadow: 1px 0 0 #f1f1f1;
+    }
+  
+    /* 3) セルとバーの視認性強化 */
+    .cal__cell{ height: 44px; }
+    .cal__bar{
+      inset: 8px 8px;                 /* 太く */
+      background: rgba(91,122,89,.28);
+      border: 1px solid rgba(91,122,89,.45);
+    }
+    .cal__cell--now .cal__bar{
+      box-shadow: 0 0 0 2px rgba(91,122,89,.35);  /* 今月ハイライト */
+    }
+  
+    /* 4) グリッド幅の下限（詰まり防止） */
+    .cal__months,
+    .cal__row{
+      grid-template-columns: 220px repeat(12, minmax(56px, 1fr));
+    }
+  
+    /* 5) スマホ時のみミニレイアウトを使う */
+    @media (max-width: 720px){
+      .cal{ border:none; background:transparent; }
+      .cal__months{ display:none; }
+      .cal__row{ grid-template-columns: 1fr; border:none; margin-bottom:12px; }
+      .cal__row--mini{ display:block; }                 /* ←ここで表示 */
+      .cal__months--mini, .cal__cells--mini{
+        display:grid; grid-template-columns: repeat(12, minmax(36px, 1fr));
+        border:1px solid #eee; border-top:none; border-radius:0 0 14px 14px; overflow:hidden; background:#fff;
+      }
+      .cal__months--mini div{
+        text-align:center; font-size:.85em; padding:.45em 0; color:#667; border-right:1px solid #f1f1f1;
+      }
+      .cal__cells--mini .cal__cell{ height:30px; }
+    }
   </style>
 </head>
 <body>
@@ -315,12 +364,66 @@
       render();
     }
 
+    // 追加：ツールチップ用フォーマッタ
+    function fmtMD_(d){
+      if (!d || isNaN(d)) return '';
+      const m = String(d.getMonth()+1).padStart(1,'0');
+      const day = String(d.getDate());
+      return `${m}/${day}`;
+    }
+  
     function render(){
       if (!filtered.length){
         wrap.innerHTML = `<div class="cal__empty">該当する品種がありません。</div>`;
         return;
       }
-
+      const monthsHead = Array.from({length:12}, (_,i)=>`<div>${i+1}月</div>`).join('');
+  
+      const rows = filtered.map((it) => {
+        const s = parseDate(it.start);
+        const e = parseDate(it.end);
+        const tooltip = (s && e) ? `${fmtMD_(s)} – ${fmtMD_(e)}` : '';
+  
+        const now = isNow(it);
+        const nameHtml = `
+          <div class="cal__name">
+            <span>${escapeHtml_(it.variety || '品種')}</span>
+            ${ now ? '<span class="pill pill--hot">受付中</span>' : '' }
+            ${ it.note ? `<span class="pill">${escapeHtml_(it.note)}</span>` : '' }
+          </div>`;
+  
+        const cells = Array.from({length:12}, (_,i)=>{
+          const m = i+1;
+          const on = monthOverlap(it, m);
+          const nowMonth = (m === THIS_M);
+          const cls = `cal__cell ${on?'cal__cell--on':''} ${nowMonth?'cal__cell--now':''}`;
+          const bar = on ? `<div class="cal__bar" title="${tooltip}"></div>` : '';
+          return `<div class="${cls}" aria-label="${m}月 ${on?'収穫期':'対象外'}">${bar}</div>`;
+        }).join('');
+  
+        return `
+          <div class="cal__row">
+            ${nameHtml}
+            ${cells}
+          </div>
+  
+          <!-- スマホ用（名前＋12ヶ月） -->
+          <div class="cal__row cal__row--mini" aria-hidden="true">
+            <div class="cal__months--mini">${monthsHead}</div>
+            <div class="cal__cells--mini">${cells}</div>
+          </div>
+        `;
+      }).join('');
+  
+      wrap.innerHTML = `
+        <div class="cal__months" aria-hidden="false">
+          <div>品種</div>
+          ${monthsHead}
+        </div>
+        ${rows}
+      `;
+    }
+    
       // PC：ヘッダー行＋各行、SP：各行にミニヘッダー
       const monthsHead = Array.from({length:12}, (_,i)=>`<div>${i+1}月</div>`).join('');
 
