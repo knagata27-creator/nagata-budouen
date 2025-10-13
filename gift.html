@@ -3,19 +3,55 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ギフト（のし・包装・法人）｜ながたぶどう園</title>
-  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。" />
+  <title>ギフト・のし・包装｜ながたぶどう園</title>
+
+  <meta name="description" content="ながたぶどう園のギフト対応（のし・名入れ・包装・化粧箱・複数配送・法人請求書対応）。最短納期や手順をわかりやすくご案内します。" />
   <meta name="theme-color" content="#5b7a59" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="ながたぶどう園" />
-  <meta property="og:description" content="信州須坂・日滝原の小さなぶどう農園。贈答にも喜ばれる旬のぶどうを産地直送。" />
-  <meta property="og:url" content="https://example.jp/" />
-  <meta property="og:image" content="/assets/img/ogp.png" />
-  <link rel="icon" href="/assets/img/ogp.png" />
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <meta property="og:title" content="ギフト・のし・包装｜ながたぶどう園" />
+  <meta property="og:description" content="のし・名入れ無料。百貨店テイストの包装、法人・複数配送もご相談ください。" />
+  <meta property="og:url" content="https://example.jp/gift.html" />
+  <meta property="og:image" content="assets/img/ogp.png" />
+
+  <link rel="icon" href="assets/img/ogp.png" />
+  <link rel="stylesheet" href="assets/css/style.css?v=20251013" />
+  <script>document.documentElement.classList.add('js');</script>
+
+  <!-- ページ内だけの軽い調整（テーブル等） -->
+  <style>
+    .gift-lead { color: var(--ink-sub); font-size: 1.05rem; }
+    .gift-grid { display:grid; gap:18px; grid-template-columns:repeat(3,1fr); }
+    .gift-card { background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); }
+    .gift-card h3 { margin:8px 0 8px; font-size:1.05rem; }
+    .gift-card p { margin:0; color:#5a6a5a; }
+    .gift-illus { aspect-ratio: 4 / 3; background:#f6f7f4; border-radius:12px; display:grid; place-items:center; color:#98a598; font-weight:700; }
+    @media (max-width: 900px){ .gift-grid{ grid-template-columns:1fr 1fr; } }
+    @media (max-width: 640px){ .gift-grid{ grid-template-columns:1fr; } }
+
+    .price-table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-soft); }
+    .price-table th, .price-table td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; }
+    .price-table tbody tr:last-child td { border-bottom:none; }
+    .price-note { color:#6a6a64; font-size:.92rem; }
+
+    .steps { counter-reset: step; display:grid; gap:14px; }
+    .step { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; box-shadow:var(--shadow); }
+    .step h3 { margin:0 0 8px; }
+    .step h3::before{ counter-increment: step; content: counter(step) "."; margin-right:8px; color:var(--brand); font-weight:900; }
+
+    .cta-row { display:flex; gap:12px; flex-wrap:wrap; }
+    .cta-row .btn--fill { background: linear-gradient(180deg, var(--accent), var(--accent-2)); color:#fff; border:none; }
+
+    .faq dl { background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow-soft); }
+    .faq dt { font-weight:800; padding:14px; border-top:1px solid var(--line); }
+    .faq dd { margin:0; padding:0 14px 14px; color:#5a6a5a; }
+    .faq dt:first-child { border-top:none; }
+  </style>
 </head>
+
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== Header / Global Nav ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -34,50 +70,191 @@
         </button>
 
         <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
-          <a href="/index.html#shop" class="">注文する</a>
-          <a href="/gift.html" class="is-active">ギフト</a>
-          <a href="/calendar.html" class="">収穫カレンダー</a>
-          <a href="/guide.html" class="">はじめての方</a>
-          <a href="/about.html" class="">農園紹介</a>
-          <a href="/blog.html" class="">ぶどう日誌</a>
-          <a href="/contact.html" class="">お問い合わせ</a>
+          <a href="index.html#shop">注文する</a>
+          <a href="gift.html" class="is-active">ギフト</a>
+          <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="about.html">農園紹介</a>
+          <a href="blog.html">ぶどう日誌</a>
+          <a href="contact.html">お問い合わせ</a>
         </nav>
       </div>
     </div>
   </header>
+
+  <!-- ===== Fixed Status Bar ===== -->
   <div class="status" role="status" aria-live="polite">
     <div class="inner">
       <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">読み込み中...</span>
+      <span id="statusMsg">読み込み中…</span>
       <span class="sep">|</span>
-      <a id="statusLink" href="#news">最新のお知らせ</a>
+      <a id="statusLink" href="index.html#news">最新のお知らせ</a>
     </div>
   </div>
 
   <main id="main">
-    <section class="section reveal">
-      <div class="container">
-        <h1 class="section-title deco">ギフト（のし・包装・法人）</h1>
-        
-<div class="two-col">
-  <div class="card lift">
-    <h3>のし・名入れ</h3>
-    <p>蝶結び／結び切り／仏事の各種に対応。名入れ・内祝など無料です。</p>
-    <h3>包装・箱</h3>
-    <p>化粧箱、手提げ袋のご用意（オプション）。</p>
-    <h3>法人・複数配送</h3>
-    <p>CSVでお届け先一括受付が可能です。納期・請求書対応もご相談ください。</p>
-    <p><a class="btn btn--fill" href="/shop.html">ギフト対象商品を見る</a></p>
-  </div>
-  <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
-    <img src="/assets/img/gift.svg" alt="ギフトイメージ">
-  </div>
-</div>
+    <!-- ===== Hero ===== -->
+    <section class="section">
+      <div class="container two-col">
+        <div class="card lift">
+          <h1 class="section-title deco" style="margin-top:0">ギフト・のし・包装</h1>
+          <p class="gift-lead">
+            のし・名入れは<strong>無料</strong>、百貨店テイストの包装でお届けします。<br/>
+            複数配送／法人まとめ買い、領収書・請求書発行にも対応します。
+          </p>
+          <div class="cta-row">
+            <a class="btn btn--fill" href="shop.html#catalog">ギフト用を選ぶ</a>
+            <a class="btn" href="#noshi">のしの種類</a>
+            <a class="btn" href="#flow">ご注文手順</a>
+            <a class="btn" href="#corporate">法人・大口</a>
+          </div>
+          <p class="note" style="margin-top:10px;">※ 青果につき在庫・天候で納期が前後します。ご希望日がある場合は備考欄へ。</p>
+        </div>
+        <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
+          <img src="assets/img/gift-hero.jpg" alt="ギフト包装のイメージ（化粧箱・のし）」">
+        </div>
+      </div>
+    </section>
 
+    <!-- ===== のし・包装バリエーション ===== -->
+    <section class="section" id="noshi">
+      <div class="container">
+        <h2 class="section-title deco">のし・包装の種類</h2>
+        <div class="gift-grid">
+          <div class="gift-card">
+            <div class="gift-illus"><img src="assets/img/noshi-mizuhiki-red.svg" alt="紅白蝶結びのし" style="max-width:72%"></div>
+            <h3>紅白蝶結び（一般）</h3>
+            <p>お中元・お歳暮・内祝など。繰り返しお祝いに。</p>
+          </div>
+          <div class="gift-card">
+            <div class="gift-illus"><img src="assets/img/noshi-knot.svg" alt="結び切りのし" style="max-width:72%"></div>
+            <h3>結び切り（慶事）</h3>
+            <p>快気祝・寿など。一度きりのお祝いに。</p>
+          </div>
+          <div class="gift-card">
+            <div class="gift-illus"><img src="assets/img/noshi-mourning.svg" alt="弔事用のし" style="max-width:72%"></div>
+            <h3>弔事（黄白/銀白）</h3>
+            <p>志・御供など。表書きのご指定に対応します。</p>
+          </div>
+
+          <div class="gift-card">
+            <div class="gift-illus">包装紙</div>
+            <h3>包装紙・外のし / 内のし</h3>
+            <p>デフォルトは<strong>外のし</strong>。内のしや二重包装も可（要望欄）。</p>
+          </div>
+          <div class="gift-card">
+            <div class="gift-illus">化粧箱</div>
+            <h3>化粧箱</h3>
+            <p>贈答向けに化粧箱をご用意。写真入りシール対応も可。</p>
+          </div>
+          <div class="gift-card">
+            <div class="gift-illus">カード</div>
+            <h3>メッセージカード</h3>
+            <p>40字程度まで同梱可。文例のご提案も可能です。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 手順 ===== -->
+    <section class="section" id="flow">
+      <div class="container">
+        <h2 class="section-title deco">ご注文手順（ギフト）</h2>
+        <div class="steps">
+          <div class="step">
+            <h3>商品を選ぶ</h3>
+            <p>「<a href="shop.html#catalog">オンライン直販</a>」から <strong>贈答</strong> または <strong>詰合せ</strong> の商品を選びます。</p>
+          </div>
+          <div class="step">
+            <h3>のし・名入れ指定</h3>
+            <p>カート内の備考欄に <em>表書き（例：お中元 / 御祝 / 志）</em> と <em>名入れ（送り主名）</em> をご入力ください。</p>
+          </div>
+          <div class="step">
+            <h3>お届け先の指定</h3>
+            <p>一件ごとにご注文（またはCSV/Excelで複数配送リストをご提供ください）。</p>
+          </div>
+          <div class="step">
+            <h3>納期</h3>
+            <p>目安は<strong>ご注文から2–4日で出荷</strong>（最盛期は前後）。希望日があれば備考欄へ。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 料金・納期 ===== -->
+    <section class="section" id="price">
+      <div class="container">
+        <h2 class="section-title deco">料金・納期の目安</h2>
+        <table class="price-table" aria-describedby="priceNote">
+          <thead>
+            <tr><th>項目</th><th>内容</th><th>料金</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>のし・名入れ</td><td>紅白蝶結び / 結び切り / 弔事（黄白/銀白）</td><td><strong>無料</strong></td></tr>
+            <tr><td>包装紙</td><td>外のし（内のしも可）</td><td><strong>無料</strong></td></tr>
+            <tr><td>化粧箱</td><td>贈答用ボックス</td><td>¥200〜/箱</td></tr>
+            <tr><td>メッセージカード</td><td>40字程度まで</td><td><strong>無料</strong></td></tr>
+            <tr><td>配送</td><td>クール便でお届け</td><td>地域別（<a href="guide.html#shipping">送料表</a>）</td></tr>
+            <tr><td>納期</td><td>通常2–4日で出荷（在庫・天候により変動）</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p id="priceNote" class="price-note">※ 価格は目安。シーズンにより変動する場合があります。</p>
+        <div class="cta-row" style="margin-top:12px;">
+          <a class="btn btn--fill" href="shop.html#catalog">今すぐギフトを選ぶ</a>
+          <a class="btn" href="guide.html">送料・お支払い</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 法人・まとめ買い ===== -->
+    <section class="section" id="corporate">
+      <div class="container">
+        <h2 class="section-title deco">法人・大口のご依頼</h2>
+        <div class="card">
+          <p class="gift-lead">請求書払い・領収書発行・納品書同梱/別送・<strong>複数配送先の一括手配</strong>に対応します。</p>
+          <ul class="list">
+            <li>ご希望の規格・ご予算・納期・配送先数をお知らせください。</li>
+            <li>配送先が多い場合は <a href="assets/docs/bulk-order.xlsx" download>一括リスト（Excel）</a> をご利用ください。</li>
+          </ul>
+          <div class="cta-row">
+            <a class="btn btn--fill" href="contact.html">法人窓口へ問い合わせる</a>
+            <a class="btn" href="mailto:info@example.jp?subject=%E3%80%90%E6%B3%95%E4%BA%BA%E3%83%BB%E5%A4%A7%E5%8F%A3%E3%80%91%E3%81%94%E7%94%B3%E8%AB%8B">メールで相談</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="section" id="faq">
+      <div class="container">
+        <h2 class="section-title deco">よくあるご質問（ギフト）</h2>
+        <div class="faq">
+          <dl>
+            <dt>希望日に届きますか？</dt>
+            <dd>在庫・天候により前後しますが、可能な限り調整します。備考欄に希望日をご記入ください。</dd>
+
+            <dt>名入れの文字数に制限はありますか？</dt>
+            <dd>目安40字程度です。長文の場合はメッセージカードをご利用ください。</dd>
+
+            <dt>複数の届け先に送れますか？</dt>
+            <dd>はい。件数が多い場合はExcelリストで一括手配いたします。</dd>
+
+            <dt>領収書・請求書は発行できますか？</dt>
+            <dd>可能です。宛名・但し書き・送付方法（同梱/別送）をご指定ください。</dd>
+
+            <dt>明細は同梱されますか？（ギフト先に価格がわかりませんか？）</dt>
+            <dd>贈答先には金額のわかる書面は<strong>同梱しません</strong>（ご依頼主へメール/別送）。</dd>
+          </dl>
+        </div>
+        <div class="cta-row" style="margin-top:14px;">
+          <a class="btn btn--fill" href="shop.html#catalog">ギフトの注文に進む</a>
+          <a class="btn" href="contact.html">問い合わせる</a>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- ===== Footer ===== -->
   <footer role="contentinfo">
     <div class="container footer-inner">
       <div>
@@ -89,11 +266,46 @@
       <div>
         <p>営業時間：9:00-17:00（季節により変動）</p>
         <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p><a href="/law.html">特定商取引法に基づく表記</a> ／ <a href="/privacy.html">プライバシーポリシー</a></p>
+        <p><a href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
       </div>
       <div class="copyright">© 2025 ながたぶどう園</div>
     </div>
   </footer>
 
-  <script src="/assets/js/main.js"></script>
-</body></html>
+  <!-- ===== Base Scripts ===== -->
+  <script src="assets/js/main.js"></script>
+  <script>
+    // ステータスバー同期（他ページと同じ）
+    (async () => {
+      try {
+        const res = await fetch('assets/data/status.json', { cache: 'no-store' });
+        const data = await res.json();
+        const map = { preorder: '予約受付前', inseason: '受付中', ended: '今季終了' };
+        document.getElementById('statusMode').textContent = map[data.mode] || '受付状況';
+        document.getElementById('statusMsg').textContent  = data.message || '';
+        if (data.notice_url) document.getElementById('statusLink').href = data.notice_url;
+      } catch(e) {/* silent */}
+    })();
+  </script>
+
+  <!-- 構造化データ（FAQ） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "希望日に届きますか？",
+        "acceptedAnswer": { "@type": "Answer", "text": "在庫・天候により前後しますが、可能な限り調整します。備考欄に希望日をご記入ください。" } },
+      { "@type": "Question", "name": "名入れの文字数に制限はありますか？",
+        "acceptedAnswer": { "@type": "Answer", "text": "目安40字程度です。長文の場合はメッセージカードをご利用ください。" } },
+      { "@type": "Question", "name": "複数の届け先に送れますか？",
+        "acceptedAnswer": { "@type": "Answer", "text": "はい。件数が多い場合はExcelリストで一括手配いたします。" } },
+      { "@type": "Question", "name": "領収書・請求書は発行できますか？",
+        "acceptedAnswer": { "@type": "Answer", "text": "可能です。宛名・但し書き・送付方法（同梱/別送）をご指定ください。" } },
+      { "@type": "Question", "name": "贈答先に金額はわかりますか？",
+        "acceptedAnswer": { "@type": "Answer", "text": "贈答先には金額のわかる書面は同梱しません（ご依頼主へメール/別送）。" } }
+    ]
+  }
+  </script>
+</body>
+</html>
