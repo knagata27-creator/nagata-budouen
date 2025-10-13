@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>最新情報｜ながたぶどう園</title>
+
+  <meta name="description" content="ながたぶどう園の最新情報・お知らせ一覧。収穫や販売受付、ギフト情報などをお知らせします。" />
+  <meta name="theme-color" content="#5b7a59" />
+
+  <!-- OGP（任意） -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="最新情報｜ながたぶどう園" />
+  <meta property="og:description" content="収穫や販売受付、ギフト情報などのお知らせ一覧。" />
+  <meta property="og:image" content="assets/img/ogp.png" />
+  <meta property="og:url" content="https://example.jp/news.html" />
+
+  <link rel="icon" href="assets/img/ogp.png" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- index.html と同じ /exec を入れてください -->
+  <script type="application/json" id="cfg-json">
+  { "webAppUrl": "https://script.google.com/macros/s/（index.htmlと同じexec）/exec" }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <!-- ===== ヘッダー（index.htmlと同じ構造） ===== -->
+  <header class="site-header" role="banner">
+    <div class="bar">
+      <div class="inner">
+        <h1 class="brand" aria-label="ながたぶどう園">
+          <svg class="brand__logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="9" cy="8" r="3" fill="#fff" opacity="0.9"/>
+            <circle cx="14.5" cy="6.5" r="2.3" fill="#fff" opacity="0.85"/>
+            <circle cx="13" cy="10.5" r="2.6" fill="#fff" opacity="0.92"/>
+            <path d="M15 3c2 .3 2.8 1.4 3.3 2.4" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          </svg>
+          <span class="brand__name">ながたぶどう園</span>
+        </h1>
+
+        <button class="nav-toggle" id="navToggle" aria-label="メニュー" aria-controls="primaryNav" aria-expanded="false">
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
+          <a href="index.html">ホーム</a>
+          <a href="shop.html">注文する</a>
+          <a href="gift.html">ギフト</a>
+          <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="about.html">農園紹介</a>
+          <a href="blog.html">ぶどう日誌</a>
+          <a class="is-active" href="news.html" aria-current="page">最新情報</a>
+          <a href="contact.html">お問い合わせ</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== ページ見出し ===== -->
+    <section class="section hero reveal" aria-label="最新情報ヒーロー">
+      <div class="container hero__content">
+        <span class="kicker">News & Updates</span>
+        <h1>最新情報</h1>
+        <p class="section-lead">収穫・販売受付・ギフト情報など、直近のお知らせを一覧でご案内します。</p>
+        <p style="margin-top:8px"><a class="btn" href="index.html">← トップへ戻る</a></p>
+      </div>
+    </section>
+
+    <!-- ===== 一覧 ===== -->
+    <section class="section reveal" aria-label="最新情報一覧">
+      <div class="container">
+        <div id="newsList" class="grid grid-3" aria-live="polite">
+          <!-- ここにカードを挿入 -->
+        </div>
+
+        <div style="text-align:center; margin-top:20px;">
+          <button id="loadMoreBtn" class="btn">もっと見る</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== フッター ===== -->
+  <footer role="contentinfo">
+    <div class="container footer-inner">
+      <div>
+        <h3 class="footer-title">ながたぶどう園</h3>
+        <p>長野県須坂市 日滝原</p>
+        <p>お問い合わせ：<a href="mailto:info@example.jp">info@example.jp</a></p>
+        <p>Instagram / YouTube / LINE 公式</p>
+      </div>
+      <div>
+        <p>営業時間：9:00-17:00（季節により変動）</p>
+        <p>※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
+        <p><a href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
+      </div>
+      <div class="copyright">© 2025 ながたぶどう園</div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+
+  <!-- ===== ニュース取得（GAS or ローカルJSON） ===== -->
+  <script>
+  (async () => {
+    const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
+    const listEl = document.getElementById('newsList');
+    const btn = document.getElementById('loadMoreBtn');
+
+    // 表示設定
+    const FETCH_LIMIT = 100;   // 最大取得件数（必要に応じて増やせます）
+    const PAGE_SIZE   = 9;     // 1回で見せる枚数（「もっと見る」で追加）
+
+    let items = [];
+    let shown = 0;
+
+    // データ取得（GAS優先 → ローカルフォールバック）
+    async function fetchNews() {
+      // 1) GAS
+      if (cfg.webAppUrl) {
+        try {
+          const r = await fetch(`${cfg.webAppUrl}?api=news&limit=${FETCH_LIMIT}`, { cache: 'no-store' });
+          if (r.ok) {
+            const data = await r.json();
+            if (data && data.ok && Array.isArray(data.items)) return data.items;
+          }
+        } catch(_){}
+      }
+      // 2) ローカル（任意で assets/data/news.json を用意すると安心）
+      try {
+        const r2 = await fetch('assets/data/news.json', { cache: 'no-store' });
+        if (r2.ok) {
+          const data2 = await r2.json();
+          if (data2 && Array.isArray(data2.items)) return data2.items;
+        }
+      } catch(_){}
+      return [];
+    }
+
+    function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function formatJaDate_(iso){
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (isNaN(d)) {
+        const m = String(iso).slice(0,10).split(/[-/.]/);
+        if (m.length === 3) return `${m[0]}年${m[1]}月${m[2]}日`;
+        return escapeHtml_(iso);
+      }
+      const y = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,'0');
+      const dd = String(d.getDate()).padStart(2,'0');
+      return `${y}年${mm}月${dd}日`;
+    }
+
+    function renderChunk(){
+      const next = items.slice(shown, shown + PAGE_SIZE);
+      const html = next.map(item => {
+        const img = item.image_url || 'assets/img/blog1.svg';
+        const dateLabel = formatJaDate_(item.date || '');
+        const title = item.title || 'お知らせ';
+        const excerpt = item.excerpt || '';
+        const linkUrl = item.link && /^https?:/.test(item.link) ? item.link : '';
+
+        const btnHtml = linkUrl
+          ? `<p style="margin-top:8px"><a class="btn" href="${linkUrl}" target="_blank" rel="noopener">詳しく読む</a></p>`
+          : '';
+
+        return `
+          <article class="card post lift">
+            <img src="${img}" alt="${escapeHtml_(title)}">
+            <div>
+              <h4>${escapeHtml_(title)}</h4>
+              <time datetime="${item.date || ''}">${dateLabel}</time>
+              <p>${escapeHtml_(excerpt)}</p>
+              ${btnHtml}
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      listEl.insertAdjacentHTML('beforeend', html);
+      shown += next.length;
+
+      if (shown >= items.length) {
+        btn.style.display = 'none';
+      } else {
+        btn.style.display = '';
+      }
+    }
+
+    try {
+      items = await fetchNews();
+      if (!items.length) {
+        listEl.innerHTML = `<div class="card"><p>現在、公開中のお知らせはありません。</p></div>`;
+        btn.style.display = 'none';
+        return;
+      }
+      // 念のため日付降順に（API側でも並んでいるが二重で担保）
+      items.sort((a,b) => String(b.date || '').localeCompare(String(a.date || '')));
+      renderChunk();
+
+      btn.addEventListener('click', renderChunk);
+    } catch (e) {
+      console.warn('[news.html] fetch error:', e);
+      listEl.innerHTML = `<div class="card"><p>読み込みに失敗しました。時間をおいて再度お試しください。</p></div>`;
+      btn.style.display = 'none';
+    }
+  })();
+  </script>
+</body>
+</html>
