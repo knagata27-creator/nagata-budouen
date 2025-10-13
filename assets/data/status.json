@@ -1,7 +1,7 @@
 {
-  "mode": "inseason",
-  "message": "ただいまナガノパープル受付中。17時までのご注文は2–4日で出荷。",
-  "ship_eta": "2–4日で出荷",
-  "notice_url": "https://www.instagram.com/p/XXXX",
+  "mode": "ended",
+  "message": "今季の受付は終了しました。来季のご案内をお待ちください。",
+  "ship_eta": "",
+  "notice_url": "blog.html",
   "updated_at": "2025-10-13T09:00:00"
 }
