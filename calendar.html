@@ -19,7 +19,7 @@
 
   <!-- index と同じ /exec を入れてください -->
   <script type="application/json" id="cfg-json">
-    { "webAppUrl": "https://script.google.com/macros/s/AKfycbxNPaNQ0Jkv0r5jpeTkJeXrCF_a8TGj7rp2tnf5BOsUe_tW7m1sK3jCdcSSZEozKZge/exec" }
+    { "webAppUrl": "https://script.google.com/macros/s/AKfycbyjbBbsDM-s7UcBmNlEWTqNvvEglj8xwuMVh0GG_csZR9OMUY4R8iMZcAR0iEU1IVTP/exec" }
   </script>
 
   <!-- ==== Page-local styles (scoped) ==== -->
@@ -309,62 +309,7 @@
         return String(a.variety || a.name).localeCompare(String(b.variety || b.name),'ja');
       });
 
-      renderTable();
       renderCards();
-    }
-
-    // ---- render: table ----
-    function renderTable(){
-      if (!viewData.length){
-        tableWrap.innerHTML = `<div class="calapp-empty">該当する品種がありません。</div>`;
-        tableWrap.setAttribute('aria-busy','false');
-        return;
-      }
-      const head = `
-        <table class="calapp-table" role="table" aria-describedby="calendar-desc">
-          <colgroup>
-            <col style="width:220px">
-            ${Array.from({length:12},()=>'<col>').join('')}
-          </colgroup>
-          <thead>
-            <tr>
-              <th scope="col" class="calapp-rowhead" data-month="">品種</th>
-              ${Array.from({length:12},(_,i)=>{
-                const m=i+1;
-                const now = (m===THIS_M) ? ' data-month="now"' : '';
-                return `<th scope="col"${now}>${m}月</th>`;
-              }).join('')}
-            </tr>
-          </thead>
-          <tbody>
-            ${viewData.map(it=>{
-              const s = parseDate(it.start), e = parseDate(it.end);
-              const tip = (s&&e) ? `${md(s)} – ${md(e)}` : '';
-              const name = it.variety || it.name || '品種';
-              const hot  = isNow(it) ? `<span class="calapp-chip calapp-chip--hot">受付中</span>` : '';
-              const note = it.note || it.notes ? `<span class="calapp-chip">${escapeHtml(it.note || it.notes)}</span>` : '';
-
-              const cells = Array.from({length:12},(_,i)=>{
-                const m=i+1;
-                const on = monthOverlap(it,m);
-                const now= (m===THIS_M) ? ' data-month="now"' : '';
-                const dot = on ? '' : ' calapp-dot';
-                const range = on ? `<div class="calapp-range" title="${tip}"></div>` : '';
-                return `<td${now} class="${dot}" aria-label="${m}月">${range}</td>`;
-              }).join('');
-
-              return `
-                <tr>
-                  <th scope="row" class="calapp-rowhead">
-                    <span>${escapeHtml(name)}</span>${hot}${note}
-                  </th>
-                  ${cells}
-                </tr>`;
-            }).join('')}
-          </tbody>
-        </table>`;
-      tableWrap.innerHTML = head;
-      tableWrap.setAttribute('aria-busy','false');
     }
 
     // ---- render: cards ----
