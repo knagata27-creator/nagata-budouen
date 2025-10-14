@@ -21,7 +21,7 @@
 
   <!-- head 内に1回だけ -->
   <script type="application/json" id="cfg-json">
-  { "webAppUrl": "https://script.google.com/macros/s/AKfycbwJY7n5VDme5qH5s25wKnRx35u9J4oYoPH2m4eRHYPPVmsf7gHDnl8Uqhlq-_UrSGYW/exec" }
+  { "webAppUrl": "https://script.google.com/macros/s/AKfycbzTo0bAU4rrtqyFfMX9ojvUpbXZG4kxZlbFYUmfyrzwjf2RyIkCReC34s_LUFD7iyDP/exec" }
   </script>
 </head>
 <body>
@@ -449,7 +449,7 @@
       });
     }
     try {
-      const gasData = await withTimeout(fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}`), 2500);
+      const gasData = await withTimeout(fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}&tail=1`), 2500);
       const gasItems = norm(gasData);
       if (gasItems.length && maxTs(gasItems) > renderedTs) {
         render(gasItems);
