@@ -198,7 +198,7 @@
     async function fetchFromApi(apiName){
       if (!cfg.webAppUrl) return null;
       try {
-        const r = await fetch(`${cfg.webAppUrl}?api=${apiName}&limit=${FETCH_LIMIT}`, { cache:'no-store' });
+        const r = await fetch(`${cfg.webAppUrl}?api=${apiName}&limit=${FETCH_LIMIT}`, { cache:'no-cache'  });
         if (!r.ok) return null;
         const data = await r.json();
         if (data && data.ok && Array.isArray(data.items)) return data.items;
@@ -207,7 +207,7 @@
     }
     async function fetchFromLocal(path){
       try {
-        const r = await fetch(path, { cache:'no-store' });
+        const r = await fetch(path, { cache:'no-cache'  });
         if (!r.ok) return null;
         const data = await r.json();
         if (data && (Array.isArray(data.items) || Array.isArray(data))) {
