@@ -21,7 +21,7 @@
 
   <!-- head 内に1回だけ -->
   <script type="application/json" id="cfg-json">
-  { "webAppUrl": "https://script.google.com/macros/s/AKfycbxvydZ5f3dqJ6aAaXZfBthd7g7s2OPLXoXkPIf0iIXPfJ5NQozl8CnTWlWNewpbJIhs/exec" }
+  { "webAppUrl": "https://script.google.com/macros/s/AKfycbwJY7n5VDme5qH5s25wKnRx35u9J4oYoPH2m4eRHYPPVmsf7gHDnl8Uqhlq-_UrSGYW/exec" }
   </script>
 </head>
 <body>
@@ -379,71 +379,92 @@
   (async () => {
     const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
     if (!cfg.webAppUrl) return;
-
+  
     const wrap = document.getElementById('newsGrid') || document.querySelector('#news .grid');
     if (!wrap) return;
-
+  
     const LIMIT = 2;
     const MAX_TITLE = 60;
     const MAX_EXCERPT = 160;
-
-    // ---- JSON取得（Content-Type不問・キャッシュ回避クエリ付き） ----
+  
+    // ===== util =====
+    const nowQs = () => (`_=${Date.now()}`);
     async function fetchJSON_(url){
-      const u = url + (url.includes('?') ? '&' : '?') + '_=' + Date.now();
-      const r = await fetch(u, { cache:'no-cache', credentials:'omit' });
+      const r = await fetch(url + (url.includes('?') ? '&' : '?') + nowQs(), { cache:'no-cache', credentials:'omit' });
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      const text = await r.text();
-      try { return JSON.parse(text); } catch(e){ console.warn('[index/news] non-json:', text.slice(0,200)); return null; }
+      const t = await r.text();
+      return JSON.parse(t);
     }
-
-    // ---- 受付状況カード ----
+    const norm = (d) => Array.isArray(d?.items) ? d.items : Array.isArray(d?.rows) ? d.rows : (Array.isArray(d) ? d : []);
+    const toTs = (v) => { const d = new Date(v); return isNaN(d) ? -Infinity : d.getTime(); };
+    const maxTs = (items) => Math.max(...items.map(it => toTs(it.date || it.updated_at || '')), -Infinity);
+  
+    // ===== 受付状況カード（従来通り） =====
     let statusCardHTML = '';
     try {
       const s = await fetchJSON_(`${cfg.webAppUrl}?api=status`);
-      if (s) statusCardHTML = buildStatusCard_(s);
-    } catch(e){ /* ignore */ }
-
-    // ---- ニュース本体（GAS → ローカルfallback） ----
-    let newsItems = [];
-    try {
-      const d = await fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}`);
-      if (d) newsItems = Array.isArray(d.items) ? d.items : Array.isArray(d.rows) ? d.rows : (Array.isArray(d) ? d : []);
-    } catch(e){ /* ignore */ }
-    if (!newsItems.length) {
-      try {
-        const d2 = await fetchJSON_('assets/data/news.json');
-        if (d2) newsItems = Array.isArray(d2.items) ? d2.items : (Array.isArray(d2) ? d2 : []);
-      } catch(e){ /* ignore */ }
+      statusCardHTML = buildStatusCard_(s);
+    } catch(_) {}
+  
+    // ===== ニュース：ローカル即描画 / GASはあとから上書き =====
+    // A) 先にローカル（速い）
+    let localItems = [];
+    try { localItems = norm(await fetchJSON_('assets/data/news.json')); } catch(_){}
+  
+    let renderedTs = -Infinity;
+    function render(items){
+      if (!items || !items.length) return;
+      items.sort((a,b)=>(Date.parse(b.date||'')||-1)-(Date.parse(a.date||'')||-1));
+      const cards = items.slice(0, LIMIT).map(item => {
+        const img = item.image_url || 'assets/img/blog1.svg';
+        const linkUrl = (item.link && /^https?:/.test(item.link)) ? item.link : 'news.html';
+        const title = truncate_(item.title || '', MAX_TITLE);
+        const excerpt = truncate_(item.excerpt || '', MAX_EXCERPT);
+        const dateLabel = formatJaDate_(item.date || '');
+        return `
+          <article class="card post lift">
+            <img src="${img}" alt="${escapeHtml_(item.title || '最新情報')}" loading="lazy">
+            <div>
+              <h4>${escapeHtml_(title)}</h4>
+              <time datetime="${item.date || ''}">${dateLabel}</time>
+              <p>${escapeHtml_(excerpt)}</p>
+              <a href="${linkUrl}" class="btn" target="_blank" rel="noopener">詳しく読む</a>
+            </div>
+          </article>`;
+      }).join('');
+  
+      wrap.innerHTML = (statusCardHTML || '') + cards + `
+        <p style="margin-top:16px"><a class="btn" href="news.html">最新情報をすべて見る</a></p>`;
+      renderedTs = maxTs(items);
     }
-
-    if (!newsItems.length && !statusCardHTML) return;
-
-    const newsCards = (newsItems.slice(0, LIMIT)).map(item => {
-      const img = item.image_url || 'assets/img/blog1.svg';
-      const linkUrl = (item.link && /^https?:/.test(item.link)) ? item.link : 'news.html';
-      const title = truncate_(item.title || '', MAX_TITLE);
-      const excerpt = truncate_((item.excerpt || ''), MAX_EXCERPT);
-      const dateLabel = formatJaDate_(item.date || '');
-      return `
-        <article class="card post lift">
-          <img src="${img}" alt="${escapeHtml_(item.title || '最新情報')}">
-          <div>
-            <h4>${escapeHtml_(title)}</h4>
-            <time datetime="${item.date || ''}">${dateLabel}</time>
-            <p>${escapeHtml_(excerpt)}</p>
-            <a href="${linkUrl}" class="btn" target="_blank" rel="noopener">詳しく読む</a>
-          </div>
-        </article>
-      `;
-    }).join('');
-
-    wrap.innerHTML = (statusCardHTML || '') + newsCards + `
-      <p style="margin-top:16px">
-        <a class="btn" href="news.html">最新情報をすべて見る</a>
-      </p>
-    `;
-
-    // --- helpers ---
+  
+    // ローカルが取れたら即描画
+    if (localItems.length) render(localItems);
+  
+    // B) GAS（遅いことがある）— 2.5s で諦め、来たら“より新しければ”上書き
+    function withTimeout(p, ms){
+      return new Promise((res, rej) => {
+        const t = setTimeout(()=>rej(new Error('timeout')), ms);
+        p.then(v => { clearTimeout(t); res(v); }).catch(e => { clearTimeout(t); rej(e); });
+      });
+    }
+    try {
+      const gasData = await withTimeout(fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}`), 2500);
+      const gasItems = norm(gasData);
+      if (gasItems.length && maxTs(gasItems) > renderedTs) {
+        render(gasItems);
+      } else if (!localItems.length && !gasItems.length && statusCardHTML){
+        wrap.innerHTML = statusCardHTML;
+      }
+    } catch(_) {
+      // GASが遅延/失敗しても、ローカルが出ていればそのまま
+      if (!localItems.length) {
+        if (statusCardHTML) wrap.innerHTML = statusCardHTML;
+        else wrap.innerHTML = `<div class="card"><p>現在、公開中のお知らせはありません。</p></div>`;
+      }
+    }
+  
+    // ---- helpers（既存と同等） ----
     function buildStatusCard_(s){
       if (!s || typeof s !== 'object') return '';
       const modeMap = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
@@ -459,15 +480,14 @@
       if (!s.mode && !s.message && !s.ship_eta) return '';
       return `
         <article class="card post lift">
-          <img src="${img}" alt="受付状況">
+          <img src="${img}" alt="受付状況" loading="lazy">
           <div>
             <h4>${escapeHtml_(title)}</h4>
             ${dateLabel ? `<time datetime="${escapeHtml_(s.updated_at || '')}">${dateLabel}</time>` : ''}
             ${excerpt ? `<p>${escapeHtml_(excerpt)}</p>` : ''}
             <a href="${linkUrl}" class="btn">詳しく読む</a>
           </div>
-        </article>
-      `;
+        </article>`;
     }
     function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
     function truncate_(s, n){ const str = String(s); return (str.length > n) ? (str.slice(0, n - 1) + '…') : str; }
@@ -479,11 +499,10 @@
         if (m.length === 3) return `${m[0]}年${m[1]}月${m[2]}日`;
         return iso;
       }
-      const y = d.getFullYear(); const mm = String(d.getMonth() + 1).padStart(2, '0'); const dd = String(d.getDate()).padStart(2, '0');
+      const y = d.getFullYear(), mm = String(d.getMonth()+1).padStart(2,'0'), dd = String(d.getDate()).padStart(2,'0');
       return `${y}年${mm}月${dd}日`;
     }
   })();
   </script>
-
 </body>
 </html>
