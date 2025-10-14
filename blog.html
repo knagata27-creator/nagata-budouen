@@ -92,8 +92,10 @@
     /* ===== 見えない対策（最小） ※追加はこの1行だけ ===== */
     .card.post .btn{ display:inline-block !important; visibility:visible !important; }
     /* 一覧は常に1列（スマホ～PCまで統一） */
-    #newsList.grid.grid-3{ grid-template-columns: 1fr !important; }
-    @media (min-width:760px){ #newsList.grid.grid-3{ grid-template-columns: 1fr !important; } }
+    #blogList.grid.grid-3{ grid-template-columns: 1fr !important; }
+    @media (min-width:760px){
+      #blogList.grid.grid-3{ grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
