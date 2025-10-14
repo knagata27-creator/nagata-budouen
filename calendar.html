@@ -95,6 +95,8 @@
       .calapp-wrap{border:none;background:transparent}
       .calapp-scroll{border:1px solid var(--calapp-line);border-radius:14px;background:#fff}
     }
+    /* 既存の <style> に追記 */
+    .calapp-meta{ margin:6px 0 8px; font-size:.9rem; color:#556; }
   </style>
 </head>
 <body>
@@ -174,6 +176,11 @@
 
     <!-- ===== カードビュー ===== -->
     <section class="calapp-inner" id="panel-card" role="tabpanel" aria-labelledby="tab-card" hidden>
+      <div class="calapp-legend" aria-label="カードの見方">
+        <span><i></i> 塗りつぶし＝収穫期</span>
+        <span>枠のある月＝今月</span>
+        <span>数字＝1〜12月</span>
+      </div>
       <div id="calapp-cards" class="calapp-cards" aria-live="polite" aria-busy="true">
         <!-- JSで描画 -->
       </div>
@@ -372,21 +379,28 @@
         const name = escapeHtml(it.variety || it.name || '品種');
         const hot  = isNow(it) ? `<span class="calapp-chip calapp-chip--hot">受付中</span>` : '';
         const note = it.note || it.notes ? `<span class="calapp-chip">${escapeHtml(it.note || it.notes)}</span>` : '';
+        // 追加：テキストの期間表示
+        const rangeText = (s && e)
+          ? `収穫目安：${md(s)}〜${md(e)}（${s.getMonth()+1}〜${e.getMonth()+1}月）`
+          : `収穫目安：未設定`;
+    
         const months = Array.from({length:12},(_,i)=>{
           const m=i+1, on=monthOverlap(it,m);
           const cls = `calapp-month${on?' is-on':''}${(m===THIS_M)?' is-now':''}`;
-          return `<div class="${cls}" aria-hidden="true">${m}</div>`;
+          return `<div class="${cls}" aria-label="${m}月">${m}</div>`;
         }).join('');
-
+    
         return `
           <article class="calapp-card">
             <h3>${name} ${hot} ${note}</h3>
+            <p class="calapp-meta">${rangeText}</p>
             <div class="calapp-range-bar" title="${s&&e? md(s)+' – '+md(e) : ''}"></div>
             <div class="calapp-months">${months}</div>
           </article>`;
       }).join('');
       cardsWrap.setAttribute('aria-busy','false');
     }
+
 
     function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
