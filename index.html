@@ -76,9 +76,7 @@
       <div class="container hero__content">
         <span class="kicker">Nagata Budou-en</span>
         <h1>信州・須坂 日滝原から、旬のぶどうを産地直送。</h1>
-        <p id="heroLead">[受付状況] 本日17時までのご注文は
-          <span id="heroShip" aria-live="polite" data-fallback="2–4日で出荷">読み込み中…</span>。
-        </p>
+        <p id="heroLead">[読み込み中] 出荷目安を取得しています…</p>
         <div class="cta">
           <a class="btn btn--fill" href="#shop">🍇 注文する</a>
           <a class="btn" href="gift.html">🎁 ギフトを見る</a>
@@ -381,82 +379,54 @@
   }]
   </script>
   
-  <!-- ▼▼▼ GAS or ローカルJSONから受付状況を読み込み（統合版） ▼▼▼ -->
   <script>
   (async () => {
     const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
-  
-    // cfg-jsonの取得
+
     const cfg = (() => {
       try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); }
       catch(_) { return {}; }
     })();
-  
-    // 取得：GAS優先 → ローカル fallback
+
     async function fetchStatus() {
-      // 1) GAS
       if (cfg.webAppUrl) {
         try {
-          const r = await fetch(`${cfg.webAppUrl}?api=status&_=${Date.now()}`, { cache:'no-cache', credentials:'omit' });
+          const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-cache' });
           if (r.ok) return await r.json();
         } catch(_) {}
       }
-      // 2) ローカル
-      try {
-        const r2 = await fetch('assets/data/status.json?_=' + Date.now(), { cache:'no-cache', credentials:'omit' });
-        if (r2.ok) return await r2.json();
-      } catch(_) {}
-      return { mode:'preorder', message:'', ship_eta:'', notice_url:'' };
+      const r2 = await fetch('assets/data/status.json', { cache:'no-cache' });
+      return await r2.json();
     }
-  
-    // 表示ユーティリティ
-    const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
-  
-    // ★ ヒーローの置換：ship_eta を同期
-    function updateHeroFromStatus(data){
-      const heroLead = document.getElementById('heroLead');
-      const heroShip = document.getElementById('heroShip');
-      const modeTxt  = map[data.mode] || '受付状況';
-  
-      // [受付状況] の差し替え（無ければ先頭に付与）
-      if (heroLead) {
-        if (/\[.*?\]/.test(heroLead.innerHTML)) {
-          heroLead.innerHTML = heroLead.innerHTML.replace(/\[.*?\]/, `[${modeTxt}]`);
-        } else {
-          heroLead.innerHTML = `[${modeTxt}] ` + heroLead.innerHTML;
-        }
-      }
-      // ship_eta を差し替え（無ければ data-fallback に戻す）
-      if (heroShip) {
-        const fallback = heroShip.getAttribute('data-fallback') || heroShip.textContent || '';
-        const eta = (data.ship_eta || '').trim();
-        heroShip.textContent = eta || fallback;
-      }
-    }
-  
+
     try {
-      // 初期：読み込み中のまま待機
+      // 先にヒーローを読み込み表示にしておく
+      const heroLead = document.getElementById('heroLead');
+      if (heroLead) heroLead.textContent = '[読み込み中] 出荷目安を取得しています…';
+
       const data = await fetchStatus();
-  
+
       // ステータスバー
+      const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
       setText('statusMode', (map[data.mode] || '受付状況'));
       setText('statusMsg',  data.message || '');
+
       const link = document.getElementById('statusLink');
       if (link && data.notice_url) link.href = data.notice_url;
-  
-      // ヒーロー
-      updateHeroFromStatus(data);
-    } catch(e) {
-      // 失敗時：ヒーローは fallback に戻す
-      const heroShip = document.getElementById('heroShip');
-      if (heroShip) {
-        const fallback = heroShip.getAttribute('data-fallback') || '2–4日で出荷';
-        heroShip.textContent = fallback;
+
+      // ヒーロー：一文まるごとAPIで上書き（角括弧置換はやめる）
+      const modeTxt = map[data.mode] || '受付状況';
+      const shipTxt = data.ship_eta || '—';
+      if (heroLead) {
+        heroLead.innerHTML = `[${modeTxt}] 本日17時までのご注文は <span id="heroShip">${shipTxt}</span>。`;
       }
+    } catch(e) {
+      // 失敗時は既定文言にフォールバック
+      const heroLead = document.getElementById('heroLead');
+      if (heroLead) heroLead.innerHTML = `[受付状況] 本日17時までのご注文は <span id="heroShip">2–4日で出荷</span>。`;
     }
   })();
-  </script>
-  <!-- ▲▲▲ ここだけ差し替え／他は無変更 ▲▲▲ -->
+</script>
 
 </body>
 </html>
