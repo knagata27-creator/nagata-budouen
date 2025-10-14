@@ -220,38 +220,39 @@
   let items = [];
   let shown = 0;
 
-  // --- 安全な JSON 取得（Content-Type を確認 / 失敗時テキストでログ） ---
+  // ---- 安全に JSON を取る（Content-Type 不問・テキストからも parse） ----
   async function fetchJSON_(url){
     const r = await fetch(url, { cache:'no-cache', credentials:'omit' });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    const ct = r.headers.get('content-type') || '';
     const text = await r.text();
-    try {
-      // GAS が HTML を返している（未公開/ログインページ等）ケースに備える
-      if (!/application\/json/i.test(ct) && !/^\s*[{[]/.test(text)) {
-        console.warn('[news] non-JSON response head:', text.slice(0,120));
-        throw new Error('Non-JSON');
-      }
-      return JSON.parse(text);
-    } catch (e) {
-      console.warn('[news] JSON parse error. body head:', text.slice(0,200));
+    try { return JSON.parse(text); }
+    catch (e) {
+      console.warn('[news] non JSON body head:', text.slice(0,200));
       throw e;
     }
   }
 
-  // データ取得（GAS優先 → ローカルフォールバック）
+  // ---- GAS優先 → ローカル fallback。items/rows/配列のいずれでも受け取る ----
   async function fetchNews() {
     // 1) GAS
     if (cfg.webAppUrl) {
       try {
-        const data = await fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${FETCH_LIMIT}`);
-        if (data && (data.ok === true || data.ok === 'true') && Array.isArray(data.items)) return data.items;
+        const apiUrl = `${cfg.webAppUrl}?api=news&limit=${FETCH_LIMIT}&_=${Date.now()}`; // キャッシュ回避クエリ
+        const data = await fetchJSON_(apiUrl);
+        const arr =
+          Array.isArray(data?.items) ? data.items :
+          Array.isArray(data?.rows)  ? data.rows  :
+          Array.isArray(data)        ? data       : [];
+        if (arr.length) return arr;
       } catch(e){ console.warn('[news] GAS fetch failed:', e); }
     }
     // 2) ローカル
     try {
-      const data2 = await fetchJSON_('assets/data/news.json');
-      if (data2 && Array.isArray(data2.items)) return data2.items;
+      const data2 = await fetchJSON_('assets/data/news.json?_=' + Date.now());
+      const arr2 =
+        Array.isArray(data2?.items) ? data2.items :
+        Array.isArray(data2)        ? data2       : [];
+      if (arr2.length) return arr2;
     } catch(e){ console.warn('[news] local fallback failed:', e); }
     return [];
   }
@@ -321,13 +322,16 @@
 
   try {
     items = await fetchNews();
+
     if (!items.length) {
       listEl.innerHTML = `<div class="card"><p>現在、公開中のお知らせはありません。</p></div>`;
       btn.style.display = 'none';
       return;
     }
+
     // 新しい→古い（不正日付は末尾へ）
     items.sort((a,b) => (Date.parse(b.date || '') || -1) - (Date.parse(a.date || '') || -1));
+
     renderChunk();
     btn.addEventListener('click', renderChunk);
   } catch (e) {
@@ -337,5 +341,6 @@
   }
 })();
 </script>
+
 </body>
 </html>
