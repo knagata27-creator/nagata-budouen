@@ -147,7 +147,7 @@
     <section id="news" class="section reveal">
       <div class="container">
         <h2 class="section-title deco">最新情報</h2>
-        <div class="grid grid-2" id="newsGrid"><!-- ←空の入れ物だけ残す --></div>
+        <div class="grid grid-3" id="newsGrid"><!-- ←空の入れ物だけ残す --></div>
       </div>
     </section>
 
@@ -283,63 +283,6 @@
   <!-- Scripts -->
   <script src="assets/js/main.js"></script>
 
-  <!-- ▼▼▼ GAS or ローカルJSONから受付状況を読み込み（統合版） ▼▼▼ -->
-  <script>
-    (async () => {
-      const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
-
-      // cfg-jsonの取得
-      const cfg = (() => {
-        try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); }
-        catch(_) { return {}; }
-      })();
-
-      async function fetchStatus() {
-        // 1) GAS（あれば優先）
-        if (cfg.webAppUrl) {
-          try {
-            const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-store' });
-            if (r.ok) return await r.json();
-          } catch(_) {}
-        }
-        // 2) ローカルJSON（フェイルバック）
-        const r2 = await fetch('assets/data/status.json', { cache:'no-store' });
-        return await r2.json();
-      }
-
-      try {
-        const data = await fetchStatus();
-
-        // ステータスバー
-        const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
-        setText('statusMode', (map[data.mode] || '受付状況'));
-        setText('statusMsg',  data.message || '');
-
-        const link = document.getElementById('statusLink');
-        if (link && data.notice_url) link.href = data.notice_url;
-
-        // ヒーロー：角括弧内の文言と出荷目安のspanを置換
-        const heroLead = document.getElementById('heroLead');
-        const heroShip = document.getElementById('heroShip');
-        if (heroLead) {
-          const modeTxt = map[data.mode] || '受付状況';
-          // 先頭の [xxx] を差し替え（無ければ先頭に付ける）
-          if (/\[.*?\]/.test(heroLead.innerHTML)) {
-            heroLead.innerHTML = heroLead.innerHTML.replace(/\[.*?\]/, `[${modeTxt}]`);
-          } else {
-            heroLead.innerHTML = `[${modeTxt}] ` + heroLead.innerHTML;
-          }
-        }
-        if (heroShip && data.ship_eta) {
-          heroShip.textContent = data.ship_eta; // 例： "2–4日で出荷"
-        }
-      } catch(e) {
-        // 失敗時はそのまま（初期テキストを表示）
-      }
-    })();
-  </script>
-  <!-- ▲▲▲ ここだけ差し替え／1本化。重複していた旧スクリプトは削除 ▲▲▲ -->
-
   <!-- 構造化データ（LocalBusiness） -->
   <script type="application/ld+json">
   {
@@ -380,7 +323,6 @@
   }]
   </script>
 
-  <!-- ▼▼▼ index.html の news 取得ブロック差し替え ▼▼▼ -->
   <!-- ▼▼▼ index.html の news 取得ブロック：受付状況つき ▼▼▼ -->
     <script>
     (async () => {
@@ -495,9 +437,6 @@
         return `${y}年${mm}月${dd}日`;
       }
     })();
-    </script>
-<!-- ▲▲▲ ここまで ▲▲▲ -->
-
-    
+    </script>   
 </body>
 </html>
