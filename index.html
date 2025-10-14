@@ -399,13 +399,37 @@
     const toTs = (v) => { const d = new Date(v); return isNaN(d) ? -Infinity : d.getTime(); };
     const maxTs = (items) => Math.max(...items.map(it => toTs(it.date || it.updated_at || '')), -Infinity);
   
-    // ===== 受付状況カード（従来通り） =====
+    // ===== 受付状況カード（フェイルバック付きに修正） =====
     let statusCardHTML = '';
+    
+    // 使い回す簡易タイムアウト
+    function withTimeout(p, ms){
+      return new Promise((res, rej) => {
+        const t = setTimeout(()=>rej(new Error('timeout')), ms);
+        p.then(v => { clearTimeout(t); res(v); })
+         .catch(e => { clearTimeout(t); rej(e); });
+      });
+    }
+    
+    let statusData = null;
+    // 1) まずGASを試す（やや長めに待つ）
     try {
-      const s = await fetchJSON_(`${cfg.webAppUrl}?api=status`);
-      statusCardHTML = buildStatusCard_(s);
-    } catch(_) {}
-  
+      statusData = await withTimeout(
+        fetchJSON_(`${cfg.webAppUrl}?api=status`),
+        6000
+      );
+    } catch(_) { /* ignore */ }
+    
+    // 2) 失敗/タイムアウト時はローカルにフォールバック
+    if (!statusData) {
+      try { statusData = await fetchJSON_('assets/data/status.json'); } catch(_) {}
+    }
+    
+    // 3) 取れたらカード化
+    if (statusData) {
+      statusCardHTML = buildStatusCard_(statusData);
+    }
+
     // ===== ニュース：ローカル即描画 / GASはあとから上書き =====
     // A) 先にローカル（速い）
     let localItems = [];
