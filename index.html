@@ -308,6 +308,7 @@
       }
 
       try {
+        // ヒーローは読み込み表示のまま開始（HTML初期値）
         const data = await fetchStatus();
 
         // ステータスバー
@@ -318,22 +319,17 @@
         const link = document.getElementById('statusLink');
         if (link && data.notice_url) link.href = data.notice_url;
 
-        // ヒーロー：角括弧内の文言と出荷目安のspanを置換
+        // ヒーロー：一文まるごと上書き（角括弧置換ロジックは廃止）
         const heroLead = document.getElementById('heroLead');
-        const heroShip = document.getElementById('heroShip');
+        const modeTxt = map[data.mode] || '受付状況';
+        const shipTxt = data.ship_eta || '—';
         if (heroLead) {
-          const modeTxt = map[data.mode] || '受付状況';
-          if (/\[.*?\]/.test(heroLead.innerHTML)) {
-            heroLead.innerHTML = heroLead.innerHTML.replace(/\[.*?\]/, `[${modeTxt}]`);
-          } else {
-            heroLead.innerHTML = `[${modeTxt}] ` + heroLead.innerHTML;
-          }
-        }
-        if (heroShip && data.ship_eta) {
-          heroShip.textContent = data.ship_eta; // 例： "2–4日で出荷"
+          heroLead.innerHTML = `[${modeTxt}] 本日17時までのご注文は <span id="heroShip">${shipTxt}</span>。`;
         }
       } catch(e) {
-        // 失敗時はそのまま（初期テキストを表示）
+        // 失敗時は既定文言にフォールバック
+        const heroLead = document.getElementById('heroLead');
+        if (heroLead) heroLead.innerHTML = `[受付状況] 本日17時までのご注文は <span id="heroShip">2–4日で出荷</span>。`;
       }
     })();
   </script>
@@ -378,55 +374,116 @@
     "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
   }]
   </script>
-  
+
   <script>
   (async () => {
-    const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
+    const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
+    if (!cfg.webAppUrl) return;
 
-    const cfg = (() => {
-      try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); }
-      catch(_) { return {}; }
-    })();
+    const wrap = document.getElementById('newsGrid') || document.querySelector('#news .grid');
+    if (!wrap) return;
 
-    async function fetchStatus() {
-      if (cfg.webAppUrl) {
-        try {
-          const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-cache' });
-          if (r.ok) return await r.json();
-        } catch(_) {}
-      }
-      const r2 = await fetch('assets/data/status.json', { cache:'no-cache' });
-      return await r2.json();
+    const LIMIT = 2;
+    const MAX_TITLE = 60;
+    const MAX_EXCERPT = 160;
+
+    // ---- JSON取得（Content-Type不問・キャッシュ回避クエリ付き） ----
+    async function fetchJSON_(url){
+      const u = url + (url.includes('?') ? '&' : '?') + '_=' + Date.now();
+      const r = await fetch(u, { cache:'no-cache', credentials:'omit' });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const text = await r.text();
+      try { return JSON.parse(text); } catch(e){ console.warn('[index/news] non-json:', text.slice(0,200)); return null; }
     }
 
+    // ---- 受付状況カード ----
+    let statusCardHTML = '';
     try {
-      // 先にヒーローを読み込み表示にしておく
-      const heroLead = document.getElementById('heroLead');
-      if (heroLead) heroLead.textContent = '[読み込み中] 出荷目安を取得しています…';
+      const s = await fetchJSON_(`${cfg.webAppUrl}?api=status`);
+      if (s) statusCardHTML = buildStatusCard_(s);
+    } catch(e){ /* ignore */ }
 
-      const data = await fetchStatus();
+    // ---- ニュース本体（GAS → ローカルfallback） ----
+    let newsItems = [];
+    try {
+      const d = await fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}`);
+      if (d) newsItems = Array.isArray(d.items) ? d.items : Array.isArray(d.rows) ? d.rows : (Array.isArray(d) ? d : []);
+    } catch(e){ /* ignore */ }
+    if (!newsItems.length) {
+      try {
+        const d2 = await fetchJSON_('assets/data/news.json');
+        if (d2) newsItems = Array.isArray(d2.items) ? d2.items : (Array.isArray(d2) ? d2 : []);
+      } catch(e){ /* ignore */ }
+    }
 
-      // ステータスバー
-      const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
-      setText('statusMode', (map[data.mode] || '受付状況'));
-      setText('statusMsg',  data.message || '');
+    if (!newsItems.length && !statusCardHTML) return;
 
-      const link = document.getElementById('statusLink');
-      if (link && data.notice_url) link.href = data.notice_url;
+    const newsCards = (newsItems.slice(0, LIMIT)).map(item => {
+      const img = item.image_url || 'assets/img/blog1.svg';
+      const linkUrl = (item.link && /^https?:/.test(item.link)) ? item.link : 'news.html';
+      const title = truncate_(item.title || '', MAX_TITLE);
+      const excerpt = truncate_((item.excerpt || ''), MAX_EXCERPT);
+      const dateLabel = formatJaDate_(item.date || '');
+      return `
+        <article class="card post lift">
+          <img src="${img}" alt="${escapeHtml_(item.title || '最新情報')}">
+          <div>
+            <h4>${escapeHtml_(title)}</h4>
+            <time datetime="${item.date || ''}">${dateLabel}</time>
+            <p>${escapeHtml_(excerpt)}</p>
+            <a href="${linkUrl}" class="btn" target="_blank" rel="noopener">詳しく読む</a>
+          </div>
+        </article>
+      `;
+    }).join('');
 
-      // ヒーロー：一文まるごとAPIで上書き（角括弧置換はやめる）
-      const modeTxt = map[data.mode] || '受付状況';
-      const shipTxt = data.ship_eta || '—';
-      if (heroLead) {
-        heroLead.innerHTML = `[${modeTxt}] 本日17時までのご注文は <span id="heroShip">${shipTxt}</span>。`;
+    wrap.innerHTML = (statusCardHTML || '') + newsCards + `
+      <p style="margin-top:16px">
+        <a class="btn" href="news.html">最新情報をすべて見る</a>
+      </p>
+    `;
+
+    // --- helpers ---
+    function buildStatusCard_(s){
+      if (!s || typeof s !== 'object') return '';
+      const modeMap = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
+      const modeTxt = modeMap[s.mode] || 'お知らせ';
+      const title = `【受付状況】${modeTxt}`;
+      const dateLabel = s.updated_at ? formatJaDate_(s.updated_at) : '';
+      const img = 'assets/img/status.svg';
+      const parts = [];
+      if (s.message) parts.push(s.message);
+      if (s.ship_eta) parts.push(`出荷目安：${s.ship_eta}`);
+      const excerpt = parts.join('／');
+      const linkUrl = (s.notice_url && /^https?:/.test(s.notice_url)) ? s.notice_url : 'news.html';
+      if (!s.mode && !s.message && !s.ship_eta) return '';
+      return `
+        <article class="card post lift">
+          <img src="${img}" alt="受付状況">
+          <div>
+            <h4>${escapeHtml_(title)}</h4>
+            ${dateLabel ? `<time datetime="${escapeHtml_(s.updated_at || '')}">${dateLabel}</time>` : ''}
+            ${excerpt ? `<p>${escapeHtml_(excerpt)}</p>` : ''}
+            <a href="${linkUrl}" class="btn">詳しく読む</a>
+          </div>
+        </article>
+      `;
+    }
+    function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+    function truncate_(s, n){ const str = String(s); return (str.length > n) ? (str.slice(0, n - 1) + '…') : str; }
+    function formatJaDate_(iso){
+      if (!iso) return '';
+      const d = new Date(iso);
+      if (isNaN(d)) {
+        const m = String(iso).slice(0,10).split(/[-/.]/);
+        if (m.length === 3) return `${m[0]}年${m[1]}月${m[2]}日`;
+        return iso;
       }
-    } catch(e) {
-      // 失敗時は既定文言にフォールバック
-      const heroLead = document.getElementById('heroLead');
-      if (heroLead) heroLead.innerHTML = `[受付状況] 本日17時までのご注文は <span id="heroShip">2–4日で出荷</span>。`;
+      const y = d.getFullYear(); const mm = String(d.getMonth() + 1).padStart(2, '0'); const dd = String(d.getDate()).padStart(2, '0');
+      return `${y}年${mm}月${dd}日`;
     }
   })();
-</script>
+  </script>
 
 </body>
 </html>
