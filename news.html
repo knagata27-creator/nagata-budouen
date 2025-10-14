@@ -117,6 +117,10 @@
 
     /* ★ 追加：ボタンがCSSで消されている場合の保険 */
     .card.post .btn{ display:inline-block !important; visibility:visible !important; }
+    
+    /* 一覧は常に1列（スマホ～PCまで統一） */
+    #newsList.grid.grid-3{ grid-template-columns: 1fr !important; }
+    @media (min-width:760px){ #newsList.grid.grid-3{ grid-template-columns: 1fr !important; } }
   </style>
 
 </head>
