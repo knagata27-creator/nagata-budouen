@@ -17,12 +17,12 @@
   <link rel="icon" href="assets/img/ogp.png" />
   <link rel="stylesheet" href="assets/css/style.css" />
 
-  <!-- index と同じ /exec を入れてください -->
+  <!-- index と同じ /exec を入れてください（必要なら） -->
   <script type="application/json" id="cfg-json">
     { "webAppUrl": "https://script.google.com/macros/s/AKfycbyjbBbsDM-s7UcBmNlEWTqNvvEglj8xwuMVh0GG_csZR9OMUY4R8iMZcAR0iEU1IVTP/exec" }
   </script>
 
-  <!-- ==== Page-local styles (scoped) ==== -->
+  <!-- ==== Page-local styles (table系は削除、カード系のみ残置) ==== -->
   <style>
     :root{
       --calapp-brand:#5b7a59;
@@ -32,10 +32,8 @@
       --calapp-bgh:#f6f8f5;
       --calapp-now:#e7efe7;
       --calapp-chip:#eef5ef;
-      --calapp-dot:#dfe7df;
       --calapp-range:rgba(91,122,89,.32);
       --calapp-range-brd:rgba(91,122,89,.55);
-      --calapp-sticky-top:64px; /* サイトの固定ヘッダー高に合わせて調整 */
     }
 
     /* ---- hero ---- */
@@ -49,60 +47,34 @@
     .calapp-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
     .calapp-toolbar select,
     .calapp-toolbar input[type="search"]{border:1px solid #ddd;border-radius:12px;padding:.6em .9em;background:#fff}
-    .calapp-toolbar label{display:flex;gap:.5em;align-items:center;color:#445; font-size:.95rem}
+    .calapp-toolbar label{display:flex;gap:.5em;align-items:center;color:#445;font-size:.95rem}
     .calapp-btn{display:inline-block;padding:.6em 1em;border-radius:12px;background:var(--calapp-brand);color:#fff;text-decoration:none;font-weight:600}
 
     /* ---- legend ---- */
-    .calapp-legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:#566; font-size:.95rem;margin-top:6px}
+    .calapp-legend{display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:#566;font-size:.95rem;margin-top:6px}
     .calapp-legend i{display:inline-block;width:14px;height:14px;border:1px solid var(--calapp-range-brd);border-radius:6px;background:var(--calapp-range)}
 
-    /* ---- tabs (view switch) ---- */
-    .calapp-tabs{display:flex;gap:6px;margin:14px 0 0}
-    .calapp-tab{border:1px solid var(--calapp-line);background:#fff;border-radius:12px;padding:.4em .8em;font-weight:600;color:#3a4;cursor:pointer}
-    .calapp-tab[aria-selected="true"]{background:#eef5ef;border-color:#cfe0d0;color:#1f2}
-
-    /* ---- table view ---- */
-    .calapp-wrap{border:1px solid var(--calapp-line);border-radius:16px;background:#fff;overflow:hidden}
-    .calapp-scroll{overflow:auto}
-    .calapp-table{min-width:880px;width:100%;border-collapse:separate;border-spacing:0}
-    .calapp-table thead th{position:sticky;top:var(--calapp-sticky-top);z-index:3;background:var(--calapp-bgh);border-bottom:1px solid var(--calapp-line);font-weight:700;color:#445;padding:.6em .7em}
-    .calapp-table thead th+th{border-left:1px solid var(--calapp-line)}
-    .calapp-rowhead{position:sticky;left:0;z-index:2;background:#fff;border-right:1px solid var(--calapp-line);padding:.7em .7em;white-space:nowrap}
-    .calapp-chip{display:inline-block;background:var(--calapp-chip);border:1px solid #dfe8df;color:#355;padding:.15em .55em;border-radius:999px;font-size:.78em;margin-left:.4em}
-    .calapp-chip--hot{background:#fff3e6;border-color:#ffe1bf;color:#9a5a00}
-    .calapp-table tbody td{height:42px;padding:0;position:relative;border-left:1px solid var(--calapp-line)}
-    .calapp-table tbody tr:nth-child(odd){background:#fcfdfb}
-    .calapp-dot:before{content:"";position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:999px;background:var(--calapp-dot);opacity:.7}
-    .calapp-range{position:absolute;inset:8px 6px;border-radius:10px;background:var(--calapp-range);border:1px solid var(--calapp-range-brd)}
-    /* 今月列の帯 */
-    .calapp-table td[data-month="now"],
-    .calapp-table th[data-month="now"]{background:var(--calapp-now)}
-    .calapp-empty{padding:18px;text-align:center;color:#566}
-
-    /* ---- card view (mobile-first) ---- */
+    /* ---- card view ---- */
     .calapp-cards{display:grid;grid-template-columns:1fr;gap:12px}
     .calapp-card{border:1px solid var(--calapp-line);border-radius:14px;background:#fff;padding:12px}
     .calapp-card h3{margin:0 0 6px;font-size:1.05rem;color:var(--calapp-ink)}
+    .calapp-chip{display:inline-block;background:var(--calapp-chip);border:1px solid #dfe8df;color:#355;padding:.15em .55em;border-radius:999px;font-size:.78em;margin-left:.4em}
+    .calapp-chip--hot{background:#fff3e6;border-color:#ffe1bf;color:#9a5a00}
+    .calapp-meta{ margin:6px 0 8px; font-size:.9rem; color:#556; }
+
     .calapp-range-bar{height:10px;border-radius:8px;background:linear-gradient(90deg,transparent, var(--calapp-range) 20%, var(--calapp-range) 80%, transparent)}
     .calapp-months{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;margin-top:8px}
     .calapp-month{height:22px;border-radius:6px;background:#f5f7f4;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:#667}
     .calapp-month.is-on{background:var(--calapp-range)}
     .calapp-month.is-now{outline:2px solid var(--calapp-range-brd)}
 
-    /* ---- responsive ---- */
-    @media (max-width: 800px){
-      .calapp-tabs{margin-top:10px}
-      .calapp-wrap{border:none;background:transparent}
-      .calapp-scroll{border:1px solid var(--calapp-line);border-radius:14px;background:#fff}
-    }
-    /* 既存の <style> に追記 */
-    .calapp-meta{ margin:6px 0 8px; font-size:.9rem; color:#556; }
+    .calapp-empty{padding:18px;text-align:center;color:#566}
   </style>
 </head>
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
 
-  <!-- ===== 既存サイトのヘッダー（固定） ===== -->
+  <!-- ===== 既存サイトのヘッダー ===== -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -154,32 +126,21 @@
 
         <div class="calapp-legend">
           <span><i></i> 収穫期（出荷目安）</span>
-          <span>今月列は淡い帯でハイライト</span>
+          <span>枠のある月＝今月</span>
           <span>※ 実際の受付は「最新情報」をご確認ください</span>
         </div>
-
-        <div class="calapp-tabs" role="tablist" aria-label="表示切替">
-          <button class="calapp-tab" role="tab" id="tab-card" aria-controls="panel-card" aria-selected="false">カード</button>
-        </div>
       </div>
     </section>
 
-     <!-- ===== 表ビュー ===== -->
-    <section class="calapp-inner" id="panel-table" role="tabpanel" aria-labelledby="tab-table">
-      <div class="calapp-wrap">
-        <div class="calapp-scroll" id="calapp-tableWrap" aria-live="polite" aria-busy="true">
-          <!-- JSで描画 -->
-        </div>
-      </div>
-    </section>
-    
-    <!-- ===== カードビュー ===== -->
-    <section class="calapp-inner" id="panel-card" role="tabpanel" aria-labelledby="tab-card" hidden>
+    <!-- ===== カードビューのみ ===== -->
+    <section class="calapp-inner" id="panel-card" role="region" aria-label="品種カード一覧">
+      <!-- （任意）カードの見方：スマホ向けの補助凡例 -->
       <div class="calapp-legend" aria-label="カードの見方">
         <span><i></i> 塗りつぶし＝収穫期</span>
         <span>枠のある月＝今月</span>
         <span>数字＝1〜12月</span>
       </div>
+
       <div id="calapp-cards" class="calapp-cards" aria-live="polite" aria-busy="true">
         <!-- JSで描画 -->
       </div>
@@ -206,33 +167,28 @@
 
   <script src="assets/js/main.js"></script>
 
-  <!-- ===== Calendar JS (scoped) ===== -->
+  <!-- ===== Calendar JS（表ビューロジック削除版） ===== -->
   <script>
   (async () => {
-    // ---- elements ----
     const $ = (s, r = document) => r.querySelector(s);
-    const tableWrap = $('#calapp-tableWrap');
+
+    // elements（カードのみ）
     const cardsWrap = $('#calapp-cards');
     const selMonth  = $('#calapp-month');
     const boxSearch = $('#calapp-search');
     const onlyNow   = $('#calapp-nowOnly');
-    const tabTable  = $('#tab-table');
-    const tabCard   = $('#tab-card');
-    const panelTable= $('#panel-table');
-    const panelCard = $('#panel-card');
 
-    // ---- date ----
+    // date
     const today = new Date();
     const THIS_M = today.getMonth() + 1; // 1..12
 
-    // ---- data ----
+    // data
     let items = [];
     let viewData = [];
 
-    // ---- fetch ----
+    // fetch calendar
     async function fetchCalendar(){
       const cfg = (() => {try{ return JSON.parse($('#cfg-json')?.textContent || '{}'); }catch(_){ return {}; }})();
-      // 1) GAS
       if (cfg.webAppUrl) {
         try{
           const r = await fetch(`${cfg.webAppUrl}?api=calendar`, {cache:'no-store'});
@@ -242,7 +198,7 @@
           }
         }catch(_){}
       }
-      // 2) local fallback
+      // fallback
       try{
         const r2 = await fetch('assets/data/calendar.json', {cache:'no-store'});
         if (r2.ok) {
@@ -251,7 +207,7 @@
           if (Array.isArray(d2)) return d2;
         }
       }catch(_){}
-      // 3) minimum
+      // minimum
       return [
         { variety:'シャインマスカット', start:'2025-08-25', end:'2025-10-10', note:'冷蔵便・のし可' },
         { variety:'ナガノパープル',     start:'2025-09-01', end:'2025-10-05', note:'皮ごと食べられます' },
@@ -259,31 +215,45 @@
       ];
     }
 
-    // ---- utils ----
-    const parseDate = (s)=> {
-      if (!s) return null;
-      const d = new Date(s);
-      if (!isNaN(d)) return d;
-      const m = String(s).slice(0,10).split(/[-/.]/);
-      return (m.length===3) ? new Date(+m[0], +m[1]-1, +m[2]) : null;
-    };
-    const monthOverlap = (item, m1to12)=>{ // その月にかかる？
-      const s = parseDate(item.start), e = parseDate(item.end);
+    // safe parsers
+    function parseDate(v){
+      if (!v) return null;
+      if (Object.prototype.toString.call(v) === '[object Date]' && !isNaN(v)) {
+        return new Date(v.getFullYear(), v.getMonth(), v.getDate());
+      }
+      const s = String(v).trim();
+      if (/^\d+(\.\d+)?$/.test(s)) { // serial
+        const n = Number(s);
+        const ms = Math.round((n - 25569) * 86400 * 1000);
+        const d = new Date(ms);
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      }
+      const m = s.match(/^\s*(\d{4})[^\d]?(\d{1,2})[^\d]?(\d{1,2})/);
+      if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+      return null;
+    }
+    function monthOverlap(item, m1to12){
+      const s = parseDate(item.start);
+      const e = parseDate(item.end);
       if (!s || !e) return false;
-      const y = s.getFullYear();
-      const first = new Date(y, m1to12 - 1, 1);
-      const last  = new Date(y, m1to12, 0, 23, 59, 59);
-      return (e >= first && s <= last);
-    };
-    const isNow = (item) => {
-      const s = parseDate(item.start), e = parseDate(item.end);
+      let sY = s.getFullYear(), eY = e.getFullYear();
+      if (e < s) eY = sY + 1;
+      const first = new Date(sY, m1to12 - 1, 1);
+      const last  = new Date(sY, m1to12, 0);
+      const sTime = s.getTime();
+      const eTime = new Date(eY, e.getMonth(), e.getDate()).getTime();
+      return (eTime >= first.getTime() && sTime <= last.getTime());
+    }
+    const isNow = (it)=> {
+      const s = parseDate(it.start), e = parseDate(it.end);
       if (!s || !e) return false;
       const t = today.getTime();
       return s.getTime() <= t && t <= e.getTime();
     };
     const md = (d)=> d ? `${d.getMonth()+1}/${d.getDate()}` : '';
+    const escapeHtml = (s)=> String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-    // ---- filter & sort ----
+    // filter & render（カードのみ）
     function applyFilter(){
       const monthVal = selMonth.value;
       const term = (boxSearch.value || '').trim().toLowerCase();
@@ -311,7 +281,6 @@
       renderCards();
     }
 
-    // ---- render: cards ----
     function renderCards(){
       if (!viewData.length){
         cardsWrap.innerHTML = `<div class="calapp-empty">該当する品種がありません。</div>`;
@@ -323,17 +292,16 @@
         const name = escapeHtml(it.variety || it.name || '品種');
         const hot  = isNow(it) ? `<span class="calapp-chip calapp-chip--hot">受付中</span>` : '';
         const note = it.note || it.notes ? `<span class="calapp-chip">${escapeHtml(it.note || it.notes)}</span>` : '';
-        // 追加：テキストの期間表示
         const rangeText = (s && e)
           ? `収穫目安：${md(s)}〜${md(e)}（${s.getMonth()+1}〜${e.getMonth()+1}月）`
           : `収穫目安：未設定`;
-    
+
         const months = Array.from({length:12},(_,i)=>{
           const m=i+1, on=monthOverlap(it,m);
           const cls = `calapp-month${on?' is-on':''}${(m===THIS_M)?' is-now':''}`;
           return `<div class="${cls}" aria-label="${m}月">${m}</div>`;
         }).join('');
-    
+
         return `
           <article class="calapp-card">
             <h3>${name} ${hot} ${note}</h3>
@@ -345,24 +313,9 @@
       cardsWrap.setAttribute('aria-busy','false');
     }
 
-
-    function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-
-    // ---- tab switch ----
-    function setTab(which){
-      const tableActive = (which === 'table');
-      tabTable.setAttribute('aria-selected', tableActive ? 'true' : 'false');
-      tabCard.setAttribute('aria-selected', tableActive ? 'false' : 'true');
-      panelTable.hidden = !tableActive;
-      panelCard.hidden  = tableActive;
-    }
-    tabTable.addEventListener('click', ()=> setTab('table'));
-    tabCard.addEventListener('click',  ()=> setTab('card'));
-
-    // ---- init ----
+    // init
     try{
       items = await fetchCalendar();
-      // 正規化
       items = items.map(it=>({
         variety: it.variety || it.name || '',
         start  : it.start || it.start_date || it.harvest_start || '',
@@ -373,9 +326,6 @@
       }));
       viewData = items.slice();
 
-      // モバイルは初期表示をカードに
-      if (window.matchMedia('(max-width: 800px)').matches) setTab('card');
-
       applyFilter();
 
       selMonth.addEventListener('change', applyFilter);
@@ -383,7 +333,6 @@
       onlyNow.addEventListener('change', applyFilter);
     }catch(e){
       console.warn('[calendar] error', e);
-      tableWrap.innerHTML = `<div class="calapp-empty">読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
       cardsWrap.innerHTML = `<div class="calapp-empty">読み込みに失敗しました。時間をおいて再度お試しください。</div>`;
     }
   })();
