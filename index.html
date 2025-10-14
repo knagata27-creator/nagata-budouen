@@ -441,29 +441,44 @@
     // ローカルが取れたら即描画
     if (localItems.length) render(localItems);
   
-    // B) GAS（遅いことがある）— 2.5s で諦め、来たら“より新しければ”上書き
+    <!-- B) GAS（遅いことがある）— 早着なら即、遅着でも到着したら上書き -->
+    const TIMEOUT_MS = 6000; // ← 2.5s は厳しすぎ。やや長めに
     function withTimeout(p, ms){
       return new Promise((res, rej) => {
         const t = setTimeout(()=>rej(new Error('timeout')), ms);
-        p.then(v => { clearTimeout(t); res(v); }).catch(e => { clearTimeout(t); rej(e); });
+        p.then(v => { clearTimeout(t); res(v); })
+         .catch(e => { clearTimeout(t); rej(e); });
       });
     }
+  
+    // GASフェッチ本体は「1つの Promise」を作り、早着/遅着の両方で使い回す
+    const gasPromise = fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}&tail=1`)
+      .then(norm)
+      .catch(() => []); // 失敗は空配列に
+  
+    // 1) 早着なら TIMEOUT_MS 内に即反映
     try {
-      const gasData = await withTimeout(fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}&tail=1`), 2500);
-      const gasItems = norm(gasData);
-      if (gasItems.length && maxTs(gasItems) > renderedTs) {
-        render(gasItems);
-      } else if (!localItems.length && !gasItems.length && statusCardHTML){
+      const early = await withTimeout(gasPromise, TIMEOUT_MS);
+      if (early.length && maxTs(early) > renderedTs) {
+        render(early);
+      } else if (!localItems.length && !early.length && statusCardHTML) {
         wrap.innerHTML = statusCardHTML;
       }
-    } catch(_) {
-      // GASが遅延/失敗しても、ローカルが出ていればそのまま
+    } catch (_) {
+      // タイムアウト/失敗時：ローカルが無ければ保険の表示
       if (!localItems.length) {
         if (statusCardHTML) wrap.innerHTML = statusCardHTML;
         else wrap.innerHTML = `<div class="card"><p>現在、公開中のお知らせはありません。</p></div>`;
       }
     }
   
+    // 2) 遅着でも、到着したら“より新しければ”上書き（UIはブロックしない）
+    gasPromise.then(items => {
+      if (items.length && maxTs(items) > renderedTs) {
+        render(items);
+      }
+    });
+
     // ---- helpers（既存と同等） ----
     function buildStatusCard_(s){
       if (!s || typeof s !== 'object') return '';
