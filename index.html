@@ -381,6 +381,7 @@
   </script>
 
   <!-- ▼▼▼ index.html の news 取得ブロック：受付状況つき ▼▼▼ -->
+  <!-- ▼▼▼ index.html の news 取得ブロック：受付状況1 + ニュース2 ▼▼▼ -->
   <script>
   (async () => {
     // cfg-json から webAppUrl を読む
@@ -390,7 +391,7 @@
     let wrap = document.getElementById('newsGrid') || document.querySelector('#news .grid');
     if (!wrap) return; 
   
-    // 表示件数・文字数（必要なら数字だけ調整OK）
+    // 表示件数・文字数（ニュースを2件に変更）
     const LIMIT = 2;
     const MAX_TITLE = 60;
     const MAX_EXCERPT = 160;
@@ -474,7 +475,7 @@
     }
   
     function escapeHtml_(s){
-      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&quot;',"'":'&#39;'}[m]));
     }
     function truncate_(s, n){
       const str = String(s);
@@ -494,6 +495,8 @@
       return `${y}年${mm}月${dd}日`;
     }
   })();
-  </script>   
+  </script>
+<!-- ▲▲▲ ここまで ▲▲▲ -->
+  
 </body>
 </html>
