@@ -205,161 +205,137 @@
 
   <script src="assets/js/main.js"></script>
 
-  <!-- ===== ニュース取得（GAS or ローカルJSON） ===== -->
-  <script>
-  (async () => {
-    const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
-    const listEl = document.getElementById('newsList');
-    const btn = document.getElementById('loadMoreBtn');
+<script>
+(async () => {
+  const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
+  const listEl = document.getElementById('newsList');
+  const btn = document.getElementById('loadMoreBtn');
 
-    // 表示設定
-    const FETCH_LIMIT = 100;   // 最大取得件数
-    const PAGE_SIZE   = 9;     // 1回で見せる枚数
-    const MAX_TITLE   = 70;   // タイトル長
-    const MAX_EXCERPT = 220;  // 抜粋長
+  // 表示設定
+  const FETCH_LIMIT = 100;
+  const PAGE_SIZE   = 9;
+  const MAX_TITLE   = 70;
+  const MAX_EXCERPT = 220;
 
-    let items = [];
-    let shown = 0;
+  let items = [];
+  let shown = 0;
 
-    // データ取得（GAS優先 → ローカルフォールバック）
-    async function fetchNews() {
-      // 1) GAS
-      if (cfg.webAppUrl) {
-        try {
-          const r = await fetch(`${cfg.webAppUrl}?api=news&limit=${FETCH_LIMIT}`, { cache: 'no-cache'  });
-          if (r.ok) {
-            const data = await r.json();
-            if (data && data.ok && Array.isArray(data.items)) return data.items;
-          }
-        } catch(_){}
-      }
-      // 2) ローカル
-      try {
-        const r2 = await fetch('assets/data/news.json', { cache: 'no-cache'  });
-        if (r2.ok) {
-          const data2 = await r2.json();
-          if (data2 && Array.isArray(data2.items)) return data2.items;
-        }
-      } catch(_){}
-      return [];
-    }
-
-    function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-    function formatJaDate_(iso){
-      if (!iso) return '';
-      const d = new Date(iso);
-      if (isNaN(d)) {
-        const m = String(iso).slice(0,10).split(/[-/.]/);
-        if (m.length === 3) return `${m[0]}年${m[1]}月${m[2]}日`;
-        return escapeHtml_(iso);
-      }
-      const y = d.getFullYear();
-      const mm = String(d.getMonth()+1).padStart(2,'0');
-      const dd = String(d.getDate()).padStart(2,'0');
-      return `${y}年${mm}月${dd}日`;
-    }
-
-    // 追加：日時を確実に数値化（YYYY-MM-DD / YYYY-MM-DDTHH:mm:ss 両対応）
-    function toTs_(v){
-      if (!v) return -Infinity;
-      if (v instanceof Date) return v.getTime();
-      const s = String(v).trim();
-      const m = s.match(/^(\d{4})-(\d{2})-(\d{2})(?:[T\s](\d{2}):(\d{2})(?::(\d{2}))?)?$/);
-      if (m){
-        const y = +m[1], mo = +m[2]-1, d = +m[3];
-        const hh = +(m[4]||0), mm = +(m[5]||0), ss = +(m[6]||0);
-        return new Date(y, mo, d, hh, mm, ss).getTime();
-      }
-      const d = new Date(s);
-      return isNaN(d) ? -Infinity : d.getTime();
-    }
-
-    /* ★ 追加：相対URL/slug/id/画像URL から“詳しく読む”リンクを解決 */
-    function resolveLink_(item, base){
-      const cand = [
-        item.link, item.url, item.page_url, item.href, item.permalink, item.path
-      ].map(v => String(v || '').trim()).filter(Boolean);
-      let raw = cand[0] || '';
-      const slug = String(item.slug || item.id || '').trim();
-
-      if (raw){
-        if (/^https?:\/\//i.test(raw)) return { url: raw, external: true };
-        if (/^\//.test(raw) || /^[A-Za-z0-9_\-\/]+(\.html?|\/)?$/i.test(raw)){
-          return { url: raw.startsWith('/') ? raw : `/${raw}`, external: false };
-        }
-      }
-      if (slug){
-        const b = String(base || '').replace(/^\/|\/$/g,'');
-        return { url: `/${b}/${encodeURIComponent(slug)}.html`, external: false };
-      }
-      const img = String(item.image_url || '').trim();
-      if (/^https?:\/\//i.test(img)) return { url: img, external: true };
-
-      return null;
-    }
-
-    function renderChunk(){
-      const next = items.slice(shown, shown + PAGE_SIZE);
-      const html = next.map(item => {
-        const img = item.image_url || 'assets/img/blog1.svg';
-        const dateLabel = formatJaDate_(item.date || '');
-        const title = item.title || 'お知らせ';
-        const excerpt = item.excerpt || '';
-
-        /* ★ 修正：ボタン生成を resolveLink_ に一本化 */
-        const L = resolveLink_(item, 'news');
-        const btnHtml = L
-          ? `<p style="margin-top:8px"><a class="btn" href="${L.url}" ${L.external ? 'target="_blank" rel="noopener"' : ''}>詳しく読む</a></p>`
-          : '';
-
-        return `
-          <article class="card post lift">
-            <img src="${img}" alt="${escapeHtml_(title)}">
-            <div>
-              <h4>${escapeHtml_(title)}</h4>
-              <time datetime="${item.date || ''}">${dateLabel}</time>
-              <p>${escapeHtml_(excerpt)}</p>
-              ${btnHtml}
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      listEl.insertAdjacentHTML('beforeend', html);
-      shown += next.length;
-
-      if (shown >= items.length) {
-        btn.style.display = 'none';
-      } else {
-        btn.style.display = '';
-      }
-    }
-
+  // --- 安全な JSON 取得（Content-Type を確認 / 失敗時テキストでログ） ---
+  async function fetchJSON_(url){
+    const r = await fetch(url, { cache:'no-cache', credentials:'omit' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const ct = r.headers.get('content-type') || '';
+    const text = await r.text();
     try {
-      items = await fetchNews();
-      if (!items.length) {
-        listEl.innerHTML = `<div class="card"><p>現在、公開中のお知らせはありません。</p></div>`;
-        btn.style.display = 'none';
-        return;
+      // GAS が HTML を返している（未公開/ログインページ等）ケースに備える
+      if (!/application\/json/i.test(ct) && !/^\s*[{[]/.test(text)) {
+        console.warn('[news] non-JSON response head:', text.slice(0,120));
+        throw new Error('Non-JSON');
       }
-
-    // 最新順（新しい→古い）※関数不要・不正日付は末尾へ
-    items.sort((a,b) => (Date.parse(b.date || '') || -1) - (Date.parse(a.date || '') || -1));
-
-      renderChunk();
-
-      // ★保険：初回が空ならもう一度
-      setTimeout(() => {
-        if (!listEl.children.length && items.length) renderChunk();
-      }, 0);
-      
-      btn.addEventListener('click', renderChunk);
+      return JSON.parse(text);
     } catch (e) {
-      console.warn('[news.html] fetch error:', e);
-      listEl.innerHTML = `<div class="card"><p>読み込みに失敗しました。時間をおいて再度お試しください。</p></div>`;
-      btn.style.display = 'none';
+      console.warn('[news] JSON parse error. body head:', text.slice(0,200));
+      throw e;
     }
-  })();
-  </script>
+  }
+
+  // データ取得（GAS優先 → ローカルフォールバック）
+  async function fetchNews() {
+    // 1) GAS
+    if (cfg.webAppUrl) {
+      try {
+        const data = await fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${FETCH_LIMIT}`);
+        if (data && (data.ok === true || data.ok === 'true') && Array.isArray(data.items)) return data.items;
+      } catch(e){ console.warn('[news] GAS fetch failed:', e); }
+    }
+    // 2) ローカル
+    try {
+      const data2 = await fetchJSON_('assets/data/news.json');
+      if (data2 && Array.isArray(data2.items)) return data2.items;
+    } catch(e){ console.warn('[news] local fallback failed:', e); }
+    return [];
+  }
+
+  function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function formatJaDate_(iso){
+    if (!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d)) {
+      const m = String(iso).slice(0,10).split(/[-/.]/);
+      if (m.length === 3) return `${m[0]}年${m[1]}月${m[2]}日`;
+      return escapeHtml_(iso);
+    }
+    const y = d.getFullYear();
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    return `${y}年${mm}月${dd}日`;
+  }
+  function resolveLink_(item, base){
+    const cand = [item.link, item.url, item.page_url, item.href, item.permalink, item.path]
+      .map(v => String(v || '').trim()).filter(Boolean);
+    let raw = cand[0] || '';
+    const slug = String(item.slug || item.id || '').trim();
+
+    if (raw){
+      if (/^https?:\/\//i.test(raw)) return { url: raw, external: true };
+      if (/^\//.test(raw) || /^[A-Za-z0-9_\-\/]+(\.html?|\/)?$/i.test(raw)){
+        return { url: raw.startsWith('/') ? raw : `/${raw}`, external: false };
+      }
+    }
+    if (slug){
+      const b = String(base || '').replace(/^\/|\/$/g,'');
+      return { url: `/${b}/${encodeURIComponent(slug)}.html`, external: false };
+    }
+    const img = String(item.image_url || '').trim();
+    if (/^https?:\/\//i.test(img)) return { url: img, external: true };
+    return null;
+  }
+
+  function renderChunk(){
+    const next = items.slice(shown, shown + PAGE_SIZE);
+    const html = next.map(item => {
+      const img = item.image_url || 'assets/img/blog1.svg';
+      const dateLabel = formatJaDate_(item.date || '');
+      const title = item.title || 'お知らせ';
+      const excerpt = item.excerpt || '';
+      const L = resolveLink_(item, 'news');
+      const btnHtml = L ? `<p style="margin-top:8px"><a class="btn" href="${L.url}" ${L.external ? 'target="_blank" rel="noopener"' : ''}>詳しく読む</a></p>` : '';
+
+      return `
+        <article class="card post lift">
+          <img src="${img}" alt="${escapeHtml_(title)}">
+          <div>
+            <h4>${escapeHtml_(title)}</h4>
+            <time datetime="${item.date || ''}">${dateLabel}</time>
+            <p>${escapeHtml_(excerpt)}</p>
+            ${btnHtml}
+          </div>
+        </article>
+      `;
+    }).join('');
+
+    listEl.insertAdjacentHTML('beforeend', html);
+    shown += next.length;
+    btn.style.display = (shown >= items.length) ? 'none' : '';
+  }
+
+  try {
+    items = await fetchNews();
+    if (!items.length) {
+      listEl.innerHTML = `<div class="card"><p>現在、公開中のお知らせはありません。</p></div>`;
+      btn.style.display = 'none';
+      return;
+    }
+    // 新しい→古い（不正日付は末尾へ）
+    items.sort((a,b) => (Date.parse(b.date || '') || -1) - (Date.parse(a.date || '') || -1));
+    renderChunk();
+    btn.addEventListener('click', renderChunk);
+  } catch (e) {
+    console.warn('[news.html] fetch error:', e);
+    listEl.innerHTML = `<div class="card"><p>読み込みに失敗しました。時間をおいて再度お試しください。</p></div>`;
+    btn.style.display = 'none';
+  }
+})();
+</script>
 </body>
 </html>
