@@ -21,7 +21,7 @@
 
   <!-- head 内に1回だけ -->
   <script type="application/json" id="cfg-json">
-  { "webAppUrl": "https://script.google.com/macros/s/AKfycbzTo0bAU4rrtqyFfMX9ojvUpbXZG4kxZlbFYUmfyrzwjf2RyIkCReC34s_LUFD7iyDP/exec" }
+  { "webAppUrl": "https://script.google.com/macros/s/AKfycby90f86Y7j5HKtfDOC9aK0iNltN2W_QPg3NVoBG54B3f06L6NlwRKDe6Zy8LiHRB1b0/exec" }
   </script>
 </head>
 <body>
@@ -465,7 +465,7 @@
     // ローカルが取れたら即描画
     if (localItems.length) render(localItems);
   
-    <!-- B) GAS（遅いことがある）— 早着なら即、遅着でも到着したら上書き -->
+    // B) GAS（遅いことがある）— 早着なら即、遅着でも到着したら上書き
     const TIMEOUT_MS = 6000; // ← 2.5s は厳しすぎ。やや長めに
     function withTimeout(p, ms){
       return new Promise((res, rej) => {
