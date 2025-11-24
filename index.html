@@ -6,13 +6,8 @@
   <title>ながたぶどう園｜信州須坂・日滝原のぶどう直販</title>
 
   <!-- Meta -->
-  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。シャインマスカット・ナガノパープルなど旬を産地直送。ご予約・直販・ギフト承ります。" />
+  <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。シャインマスカット・ナガノパープルなど旬を産地直送。" />
   <meta name="theme-color" content="#5b7a59" />
-
-  <!-- Fonts (Google Fonts) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Old+Mincho:wght@600;900&display=swap" rel="stylesheet">
 
   <!-- OGP -->
   <meta property="og:type" content="website" />
@@ -22,419 +17,131 @@
   <meta property="og:image" content="assets/img/ogp.png" />
   <link rel="icon" href="assets/img/ogp.png" />
 
+  <!-- 外部CSS（あれば） -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- ★修正1: 最低限のレイアウトとスマホメニュー用のCSSを追加 -->
+  <style>
+    /* ベーススタイル */
+    :root { --color-main: #5b7a59; --color-text: #333; }
+    body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", sans-serif; color: var(--color-text); line-height: 1.6; margin: 0; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; height: auto; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+    .section { padding: 60px 0; }
+    .section-title { text-align: center; margin-bottom: 40px; font-size: 1.8rem; color: var(--color-main); }
+    .btn { display: inline-block; padding: 10px 25px; background: var(--color-main); color: #fff; border-radius: 4px; transition: opacity 0.3s; }
+    .btn:hover { opacity: 0.8; }
+    .btn--fill { background: var(--color-main); }
+
+    /* グリッドレイアウト（スマホ対応） */
+    .grid { display: grid; gap: 24px; }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } /* 幅に合わせて自動折り返し */
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* カードデザインとクリック領域拡大 */
+    .card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; transition: transform 0.2s; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .card h3 { margin: 15px; font-size: 1.1rem; }
+    .card p { margin: 0 15px 15px; font-size: 0.9rem; color: #666; }
+    /* ★修正3: カード全体をクリック可能にするトリック */
+    .card a::after { content: ""; position: absolute; inset: 0; z-index: 1; } 
+    .card .footer { padding: 15px; border-top: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+    
+    /* ヘッダー＆ナビゲーション */
+    .site-header { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #ddd; z-index: 100; padding: 10px 0; }
+    .site-header .inner { display: flex; justify-content: space-between; align-items: center; max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; }
+    .brand__logo { width: 32px; height: 32px; }
+
+    /* スマホメニュー（ハンバーガー） */
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 10px; z-index: 101; }
+    .nav-toggle__bar { display: block; width: 25px; height: 2px; background: #333; position: relative; transition: 0.3s; }
+    .nav-toggle__bar::before, .nav-toggle__bar::after { content: ""; position: absolute; width: 100%; height: 2px; background: #333; left: 0; transition: 0.3s; }
+    .nav-toggle__bar::before { top: -8px; } .nav-toggle__bar::after { top: 8px; }
+    
+    .primary { display: flex; gap: 20px; }
+    .primary a { font-weight: bold; font-size: 0.95rem; }
+
+    @media (max-width: 768px) {
+      .nav-toggle { display: block; }
+      .primary {
+        position: fixed; top: 0; right: -100%; width: 80%; height: 100vh;
+        background: #fff; flex-direction: column; padding: 80px 20px;
+        box-shadow: -5px 0 10px rgba(0,0,0,0.1); transition: 0.3s;
+      }
+      .primary.is-open { right: 0; }
+      /* メニューオープン時の×印 */
+      .nav-toggle[aria-expanded="true"] .nav-toggle__bar { background: transparent; }
+      .nav-toggle[aria-expanded="true"] .nav-toggle__bar::before { top: 0; transform: rotate(45deg); }
+      .nav-toggle[aria-expanded="true"] .nav-toggle__bar::after { top: 0; transform: rotate(-45deg); }
+    }
+
+    /* ステータスバー */
+    .status { background: #333; color: #fff; padding: 5px 0; font-size: 0.8rem; text-align: center; }
+    .status .pill { background: #d9534f; padding: 2px 6px; border-radius: 4px; margin-right: 5px; }
+
+    /* ヒーロー */
+    .hero { background: #f9f9f9; padding: 60px 20px; text-align: center; }
+    .hero h1 { font-size: 2rem; margin-bottom: 20px; }
+  </style>
+
   <!-- 設定JSON -->
   <script type="application/json" id="cfg-json">
   { "webAppUrl": "https://script.google.com/macros/s/AKfycby90f86Y7j5HKtfDOC9aK0iNltN2W_QPg3NVoBG54B3f06L6NlwRKDe6Zy8LiHRB1b0/exec" }
   </script>
-
-  <!-- モダンデザイン用CSS -->
-  <style>
-    /* === 変数定義 === */
-    :root {
-      --color-primary: #5b7a59; /* セージグリーン（葉） */
-      --color-accent: #6a2c70;  /* ディープパープル（ぶどう） */
-      --color-accent-light: #9d4edd;
-      --color-text: #333333;
-      --color-text-light: #666666;
-      --color-bg: #fdfbf7;      /* 生成り色（紙のような質感） */
-      --color-white: #ffffff;
-      
-      --font-base: 'Noto Sans JP', sans-serif;
-      --font-serif: 'Zen Old Mincho', serif;
-
-      --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-      --shadow-md: 0 8px 24px rgba(0,0,0,0.08);
-      --radius-md: 12px;
-      --radius-lg: 24px;
-    }
-
-    /* === リセット & 基本設定 === */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font-base);
-      background-color: var(--color-bg);
-      color: var(--color-text);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { text-decoration: none; color: inherit; transition: 0.3s; }
-    img { max-width: 100%; height: auto; display: block; }
-    ul { list-style: none; }
-
-    /* === コンポーネント: ボタン === */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.8em 2em;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: 0.05em;
-      transition: all 0.3s ease;
-      border: 1px solid var(--color-primary);
-      color: var(--color-primary);
-      background: transparent;
-      cursor: pointer;
-    }
-    .btn--fill {
-      background: var(--color-primary);
-      color: var(--color-white);
-    }
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-sm);
-    }
-    .btn--fill:hover {
-      background: #4a6348;
-    }
-    
-    /* === レイアウト === */
-    .container {
-      width: 90%;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .section { padding: 80px 0; }
-    @media (max-width: 768px) { .section { padding: 60px 0; } }
-
-    .section-title {
-      font-family: var(--font-serif);
-      font-size: 2rem;
-      text-align: center;
-      margin-bottom: 1rem;
-      color: var(--color-accent);
-    }
-    .section-lead {
-      text-align: center;
-      max-width: 600px;
-      margin: 0 auto 3rem;
-      color: var(--color-text-light);
-    }
-    .deco { position: relative; display: inline-block; width: 100%; }
-    .deco::after {
-      content: "";
-      display: block;
-      width: 40px;
-      height: 2px;
-      background: var(--color-primary);
-      margin: 15px auto 0;
-    }
-
-    /* === グリッドシステム === */
-    .grid {
-      display: grid;
-      gap: 2rem;
-    }
-    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-
-    /* === ヘッダー === */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      padding: 15px 0;
-    }
-    .header-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--font-serif);
-      font-size: 1.4rem;
-      color: var(--color-text);
-    }
-    .brand__logo circle { fill: var(--color-accent); }
-    .brand__logo path { stroke: var(--color-accent); }
-    .brand__logo { width: 40px; height: 40px; }
-
-    .primary-nav {
-      display: flex;
-      gap: 20px;
-    }
-    .primary-nav a {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--color-text);
-    }
-    .primary-nav a:hover { color: var(--color-primary); }
-
-    @media (max-width: 900px) {
-      .primary-nav { display: none; } /* 簡易的に非表示（ハンバーガーメニューが必要ですが今回は割愛） */
-      /* モバイルメニューボタンはHTMLに残していますが、JS動作確認のため表示だけ調整 */
-      #navToggle { display: block; background:none; border:none; cursor:pointer; }
-      .nav-toggle__bar { display:block; width:25px; height:2px; background:#333; position:relative; }
-      .nav-toggle__bar::before, .nav-toggle__bar::after {
-        content:''; position:absolute; left:0; width:100%; height:2px; background:#333;
-      }
-      .nav-toggle__bar::before{ top:-8px; }
-      .nav-toggle__bar::after{ top:8px; }
-    }
-    @media (min-width: 901px) { #navToggle { display: none; } }
-
-    /* === ステータスバー === */
-    .status {
-      background: var(--color-text);
-      color: var(--color-white);
-      font-size: 0.85rem;
-      padding: 8px 0;
-      text-align: center;
-    }
-    .status .pill {
-      background: var(--color-accent);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      margin-right: 8px;
-    }
-    .status a { text-decoration: underline; margin-left: 10px; }
-
-    /* === ヒーローエリア === */
-    .hero {
-      position: relative;
-      min-height: 70vh; /* 画面の7割 */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
-      background: #f0f0f0; /* 画像がない場合のフォールバック */
-    }
-    /* 背景画像の装飾（実画像がある想定） */
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: url('assets/img/hero.svg'); /* SVG or jpg */
-      background-size: cover;
-      background-position: center;
-      opacity: 0.2; /* 画像を薄くして文字を見やすく */
-      z-index: 0;
-    }
-    .hero__content {
-      position: relative;
-      z-index: 1;
-      padding: 20px;
-      max-width: 800px;
-    }
-    .kicker {
-      display: block;
-      font-family: var(--font-serif);
-      color: var(--color-accent);
-      letter-spacing: 0.1em;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    .hero h1 {
-      font-family: var(--font-serif);
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      line-height: 1.3;
-      margin-bottom: 20px;
-      color: var(--color-text);
-    }
-    #heroLead {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      background: rgba(255,255,255,0.7);
-      display: inline-block;
-      padding: 5px 15px;
-      border-radius: 50px;
-      backdrop-filter: blur(4px);
-    }
-    .cta { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
-
-    /* === カード（共通） === */
-    .card {
-      background: var(--color-white);
-      border-radius: var(--radius-md);
-      padding: 0;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: transform 0.3s, box-shadow 0.3s;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow-md);
-    }
-    .lift { /* ホバーアニメーション用クラス */ }
-
-    /* 商品カード */
-    .product-card .variety__img {
-      width: 100%;
-      aspect-ratio: 4/3;
-      background: #f4f4f4;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .product-card .variety__img img { max-height: 80%; }
-    .product-card h3 {
-      font-size: 1.2rem;
-      margin: 15px 15px 5px;
-      font-family: var(--font-serif);
-    }
-    .product-card .meta {
-      font-size: 0.85rem;
-      color: var(--color-text-light);
-      margin: 0 15px 15px;
-      flex-grow: 1; /* フッターを下部に押しやる */
-    }
-    .product-card .footer {
-      border-top: 1px solid #eee;
-      padding: 15px;
-      margin-top: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .price {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: var(--color-accent);
-    }
-
-    /* ニュースカード */
-    .post img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .post div { padding: 20px; display: flex; flex-direction: column; height: 100%; }
-    .post h4 { font-size: 1.1rem; margin-bottom: 10px; line-height: 1.4; }
-    .post time { font-size: 0.85rem; color: var(--color-text-light); display: block; margin-bottom: 10px; }
-    .post p { font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 15px; flex-grow: 1; }
-
-    /* === Two Col Layout (Gift, About) === */
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: center;
-    }
-    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
-
-    .ratio-3x2 { aspect-ratio: 3/2; background: #ddd; }
-    .radius-16 { border-radius: 16px; }
-    .shadow-soft { box-shadow: var(--shadow-md); }
-    .overflow-hidden { overflow: hidden; }
-    .overflow-hidden img { width: 100%; height: 100%; object-fit: cover; }
-
-    /* === リストスタイル === */
-    ul.muted li {
-      position: relative;
-      padding-left: 1.5em;
-      margin-bottom: 0.5em;
-      color: var(--color-text-light);
-    }
-    ul.muted li::before {
-      content: "✔";
-      position: absolute;
-      left: 0;
-      color: var(--color-primary);
-    }
-
-    /* === CTAセクション === */
-    #cta { background: var(--color-bg); }
-    #cta .card {
-      padding: 40px;
-      background: linear-gradient(135deg, #fff 0%, #fcfcfc 100%);
-      border: 1px solid #eee;
-    }
-    .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
-
-    /* === フッター === */
-    footer {
-      background: #2c2c2c;
-      color: #ccc;
-      padding: 60px 0 20px;
-      font-size: 0.9rem;
-    }
-    .footer-inner {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 40px;
-      margin-bottom: 40px;
-    }
-    .footer-title { color: #fff; margin-bottom: 15px; font-family: var(--font-serif); }
-    .copyright {
-      text-align: center;
-      border-top: 1px solid #444;
-      padding-top: 20px;
-      font-size: 0.8rem;
-    }
-    footer a { color: #fff; text-decoration: underline; text-decoration-color: #666; }
-    footer a:hover { text-decoration-color: #fff; }
-
-    /* スキップリンク (アクセシビリティ) */
-    .skip-link {
-      position: absolute; top: -999px; left: 0;
-      background: #000; color: #fff; padding: 10px; z-index: 2000;
-    }
-    .skip-link:focus { top: 0; }
-  </style>
 </head>
 <body>
-  <a class="skip-link" href="#main">本文へスキップ</a>
-
-  <!-- ============= ステータスバー（固定） ============= -->
-  <div class="status" role="status" aria-live="polite">
-    <div class="container">
-      <span class="pill" id="statusMode">受付状況</span>
-      <span id="statusMsg">ただいまの状況を読み込み中…</span>
-      <a id="statusLink" href="#news">詳細 ></a>
-    </div>
-  </div>
+  <a class="skip-link" href="#main" style="position:absolute; left:-9999px;">本文へスキップ</a>
 
   <!-- ============= ヘッダー ============= -->
   <header class="site-header" role="banner">
-    <div class="container header-inner">
-      <h1 class="brand" aria-label="ながたぶどう園">
-        <svg class="brand__logo" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="9" cy="8" r="3" fill="#6a2c70" opacity="0.9"/>
-          <circle cx="14.5" cy="6.5" r="2.3" fill="#6a2c70" opacity="0.85"/>
-          <circle cx="13" cy="10.5" r="2.6" fill="#6a2c70" opacity="0.92"/>
-          <path d="M15 3c2 .3 2.8 1.4 3.3 2.4" stroke="#5b7a59" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        </svg>
+    <div class="inner">
+      <h1 class="brand">
+        <svg class="brand__logo" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#5b7a59"/></svg>
         <span class="brand__name">ながたぶどう園</span>
       </h1>
 
-      <button class="nav-toggle" id="navToggle" aria-label="メニュー" aria-controls="primaryNav" aria-expanded="false">
-        <span class="nav-toggle__bar" aria-hidden="true"></span>
+      <button class="nav-toggle" id="navToggle" aria-label="メニュー" aria-expanded="false">
+        <span class="nav-toggle__bar"></span>
       </button>
 
-      <nav class="primary-nav" id="primaryNav" role="navigation">
+      <nav class="primary" id="primaryNav">
         <a href="index.html">ホーム</a>
         <a href="shop.html">注文する</a>
         <a href="gift.html">ギフト</a>
-        <a href="calendar.html">収穫カレンダー</a>
-        <a href="guide.html">ご利用ガイド</a>
-        <a href="contact.html">お問い合わせ</a>
+        <a href="calendar.html">カレンダー</a>
+        <a href="news.html">最新情報</a>
+        <a href="about.html">農園紹介</a>
       </nav>
     </div>
   </header>
 
+  <!-- ============= ステータスバー ============= -->
+  <div class="status">
+    <div class="container">
+      <span class="pill" id="statusMode">読込中</span>
+      <span id="statusMsg"></span>
+      <span class="sep">|</span>
+      <a id="statusLink" href="#news" style="color:#fff; text-decoration:underline;">詳細</a>
+    </div>
+  </div>
+
   <main id="main">
     <!-- ============= 1) ヒーロー ============= -->
-    <section id="home" class="hero section" aria-label="メインビジュアル">
-      <div class="container hero__content">
-        <span class="kicker">Nagata Budou-en</span>
-        <h1>信州・須坂 日滝原から<br>旬のぶどうを産地直送。</h1>
-        <p id="heroLead">出荷目安を取得しています…</p>
+    <section class="hero">
+      <div class="container">
+        <span class="kicker" style="color:#5b7a59; font-weight:bold;">Nagata Budou-en</span>
+        <h1>信州・須坂 日滝原から、<br>旬のぶどうを産地直送。</h1>
+        <p id="heroLead" style="background:#fff; display:inline-block; padding:5px 15px; border-radius:20px; margin-bottom:20px;">
+          <!-- ここがJSで書き換わります -->
+          現在、出荷目安を確認しています…
+        </p>
         <div class="cta">
           <a class="btn btn--fill" href="#shop">🍇 注文する</a>
-          <a class="btn" href="gift.html">🎁 ギフトを見る</a>
+          <a class="btn" href="gift.html" style="color:#333; border:1px solid #333; margin-left:10px;">🎁 ギフトを見る</a>
         </div>
       </div>
     </section>
@@ -442,326 +149,166 @@
     <!-- ============= 3) 商品ラインアップ ============= -->
     <section id="shop" class="section">
       <div class="container">
-        <h2 class="section-title deco">商品ラインアップ</h2>
-        <p class="section-lead">代表商品をオンライン直販で承ります。価格はシーズン・規格により変動します。</p>
-
+        <h2 class="section-title">商品ラインアップ</h2>
+        <!-- Grid-3: スマホで1列、PCで3列になるようにCSSで調整済み -->
         <div class="grid grid-3">
-          <!-- シャイン -->
-          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/grape_shine.svg" alt="シャインマスカット" itemprop="image" width="200" height="150" loading="lazy"/>
+          <!-- 商品1 -->
+          <article class="card product-card">
+            <div class="variety__img" style="background:#f4f4f4; text-align:center;">
+              <!-- ★修正2: width/heightを指定してガタつき防止 -->
+              <img src="assets/img/grape_shine.svg" alt="シャインマスカット" width="300" height="225" loading="lazy" />
             </div>
-            <h3 itemprop="name">シャインマスカット（2房）</h3>
-            <p class="meta" itemprop="description">クール便｜のし可｜目安：2–4日</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="price">¥3,980〜</span>
-              <meta itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="3980" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
+            <h3><a href="shop.html">シャインマスカット（2房）</a></h3>
+            <p>クール便｜のし可｜出荷目安：2–4日</p>
+            <div class="footer">
+              <span class="price" style="font-weight:bold; font-size:1.2rem;">¥3,980〜</span>
             </div>
           </article>
 
-          <!-- ナガノパープル -->
-          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/grape_nagano.svg" alt="ナガノパープル" itemprop="image" width="200" height="150" loading="lazy"/>
+          <!-- 商品2 -->
+          <article class="card product-card">
+            <div class="variety__img" style="background:#f4f4f4; text-align:center;">
+              <img src="assets/img/grape_nagano.svg" alt="ナガノパープル" width="300" height="225" loading="lazy" />
             </div>
-            <h3 itemprop="name">ナガノパープル（2房）</h3>
-            <p class="meta" itemprop="description">クール便｜のし可｜目安：2–4日</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="price">¥4,480〜</span>
-              <meta itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="4480" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
+            <h3><a href="shop.html">ナガノパープル（2房）</a></h3>
+            <p>クール便｜のし可｜出荷目安：2–4日</p>
+            <div class="footer">
+              <span class="price" style="font-weight:bold; font-size:1.2rem;">¥4,480〜</span>
             </div>
           </article>
 
-          <!-- 詰合せギフト -->
-          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/gift.svg" alt="詰合せギフト" itemprop="image" width="200" height="150" loading="lazy"/>
+          <!-- 商品3 -->
+          <article class="card product-card">
+            <div class="variety__img" style="background:#f4f4f4; text-align:center;">
+              <img src="assets/img/gift.svg" alt="詰合せギフト" width="300" height="225" loading="lazy" />
             </div>
-            <h3 itemprop="name">詰合せギフト（2〜3房）</h3>
-            <p class="meta" itemprop="description">のし・名入れ無料／化粧箱</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="price">¥5,980〜</span>
-              <meta itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="5980" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
+            <h3><a href="shop.html">詰合せギフト（2〜3房）</a></h3>
+            <p>のし・名入れ無料／化粧箱</p>
+            <div class="footer">
+              <span class="price" style="font-weight:bold; font-size:1.2rem;">¥5,980〜</span>
             </div>
           </article>
         </div>
-
-        <p style="margin-top:30px; text-align:center;">
-          <a class="btn" href="shop.html">すべての商品を見る</a>
-        </p>
       </div>
     </section>   
     
-    <!-- ============= 4) 最新情報 ============= -->
-    <section id="news" class="section" style="background:#fff;">
+    <!-- ============= 4) 最新情報（API連携） ============= -->
+    <section id="news" class="section" style="background:#f9f9f9;">
       <div class="container">
-        <h2 class="section-title deco">最新情報</h2>
-        <div class="grid grid-3" id="newsGrid"></div>
-      </div>
-    </section>
-
-    <!-- ============= 5) ギフト案内 ============= -->
-    <section id="gift" class="section">
-      <div class="container two-col">
-        <div>
-          <h2 class="section-title deco" style="text-align:left;">ギフト／のし・包装</h2>
-          <p style="margin-bottom:1.5rem;">“のし・名入れ”無料。法人の複数配送もご相談ください。最短出荷日をご案内します。</p>
-          <ul class="list muted">
-            <li>のし：蝶結び／結び切り／仏事（名入れ可）</li>
-            <li>化粧箱・手提げ袋（オプション）</li>
-            <li>請求書・領収書：同梱／別送対応</li>
-          </ul>
-          <p style="margin-top:20px"><a class="btn btn--fill" href="gift.html">ギフト詳細を見る</a></p>
+        <h2 class="section-title">最新情報</h2>
+        <div class="grid grid-3" id="newsGrid">
+            <!-- JSでここに記事が挿入されます -->
         </div>
-        <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
-          <!-- 画像プレースホルダー -->
-          <div style="width:100%; height:100%; background:#eee; display:grid; place-items:center;">
-             <img src="assets/img/gift.svg" alt="ギフトボックス" width="100">
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============= 6) 収穫カレンダー ============= -->
-    <section id="calendar-digest" class="section" style="background:#fff;">
-      <div class="container" style="text-align:center;">
-        <h2 class="section-title deco">収穫カレンダー</h2>
-        <p class="section-lead">品種ごとのおおよその時期を掲載しています（天候により前後します）。</p>
-        <div class="card" style="padding:20px; display:inline-block; max-width:800px; width:100%;">
-          <img src="assets/img/calendar.svg" alt="収穫カレンダー" width="600" height="300" style="margin:0 auto;">
-        </div>
-        <p style="margin-top:30px"><a class="btn" href="calendar.html">詳しく見る</a></p>
+        <p style="text-align:center; margin-top:20px;">
+            <a class="btn" href="news.html" style="background:#fff; color:#333; border:1px solid #ddd;">すべてのお知らせを見る</a>
+        </p>
       </div>
     </section>
 
     <!-- ============= 7) はじめての方 ============= -->
     <section id="guide-digest" class="section">
       <div class="container">
-        <h2 class="section-title deco">はじめての方へ</h2>
+        <h2 class="section-title">はじめての方へ</h2>
         <div class="grid grid-3">
-          <div class="card" style="padding:30px;">
-            <h3 style="color:var(--color-primary); margin-bottom:10px;">1. 注文</h3>
-            <p style="font-size:0.9rem;">商品カードの「注文する」からフォームへ。数量・お届け先を入力。</p>
+          <div class="card" style="padding:20px;">
+            <h3 style="margin:0 0 10px;">1. 注文</h3>
+            <p style="margin:0;">商品カードの「注文する」からフォームへ。</p>
           </div>
-          <div class="card" style="padding:30px;">
-            <h3 style="color:var(--color-primary); margin-bottom:10px;">2. お支払い</h3>
-            <p style="font-size:0.9rem;">銀行振込／PayPay（予定）。入金確認後に出荷手配。</p>
+          <div class="card" style="padding:20px;">
+            <h3 style="margin:0 0 10px;">2. お支払い</h3>
+            <p style="margin:0;">銀行振込／PayPay（予定）。</p>
           </div>
-          <div class="card" style="padding:30px;">
-            <h3 style="color:var(--color-primary); margin-bottom:10px;">3. 出荷</h3>
-            <p style="font-size:0.9rem;">収穫後クール便で発送。出荷予定日→出荷完了をメール/LINEでお知らせ。</p>
+          <div class="card" style="padding:20px;">
+            <h3 style="margin:0 0 10px;">3. 出荷</h3>
+            <p style="margin:0;">収穫後クール便で発送。</p>
           </div>
-        </div>
-        <p style="margin-top:30px; text-align:center;"><a class="btn" href="guide.html">送料・お支払い・FAQ</a></p>
-      </div>
-    </section>
-
-    <!-- ============= 8) 品質・安心 ============= -->
-    <section id="about-digest" class="section" style="background:#fff;">
-      <div class="container two-col">
-        <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden order-2-mobile">
-           <div style="width:100%; height:100%; background:#eee; display:grid; place-items:center;">
-             <img src="assets/img/hero.svg" alt="畑の風景" width="100">
-           </div>
-        </div>
-        <div class="order-1-mobile">
-          <h2 class="section-title deco" style="text-align:left;">品質・安心への取り組み</h2>
-          <p style="margin-bottom:1.5rem; line-height:1.8;">寒暖差のある気候と清らかな水に恵まれた日滝原。丁寧な房づくりと温度管理で、贈答にも選ばれる品質を目指します。</p>
-          <p><a class="btn" href="about.html">農園紹介を読む</a></p>
         </div>
       </div>
     </section>
 
-    <!-- ============= 10) CTA再掲 ============= -->
-    <section id="cta" class="section">
-      <div class="container">
-        <div class="card">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap">
-            <div>
-              <h2 style="margin:0; font-family:var(--font-serif); color:var(--color-accent);">ご注文はこちらから</h2>
-              <p style="margin:6px 0 0; color:var(--color-text-light);">最短の出荷目安を自動でご案内します。</p>
-            </div>
-            <div class="btn-row">
-              <a class="btn btn--fill" href="index.html#shop">注文する</a>
-              <a class="btn" href="gift.html">ギフトを見る</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <!-- ============= フッター ============= -->
-  <footer role="contentinfo">
-    <div class="container footer-inner">
-      <div>
-        <h3 class="footer-title">ながたぶどう園</h3>
-        <p>〒382-0000 長野県須坂市 日滝原</p>
-        <p style="margin-top:10px">お問い合わせ：<a href="mailto:info@example.jp">info@example.jp</a></p>
-        <p style="margin-top:10px; opacity:0.8;">Instagram / YouTube / LINE 公式</p>
-      </div>
-      <div>
-        <h4 style="color:#fff; margin-bottom:10px;">営業案内</h4>
-        <p>営業時間：9:00-17:00（季節により変動）</p>
-        <p style="font-size:0.85rem; opacity:0.7; margin-top:5px;">※ 畑作業でお電話に出られない場合があります。メールでのご連絡が確実です。</p>
-        <p style="margin-top:15px"><a href="law.html">特定商取引法に基づく表記</a> ／ <a href="privacy.html">プライバシーポリシー</a></p>
-      </div>
+  <footer style="background:#333; color:#ccc; padding:40px 0; text-align:center; font-size:0.9rem;">
+    <div class="container">
+      <p>長野県須坂市 日滝原 | ながたぶどう園</p>
+      <p>© 2025 ながたぶどう園</p>
     </div>
-    <div class="copyright">© 2025 Nagata Budou-en. All Rights Reserved.</div>
   </footer>
 
-  <!-- ▼▼▼ スクリプト（元のロジックを維持） ▼▼▼ -->
+  <!-- ============= Scripts ============= -->
   <script>
-    // メニュー開閉などの簡易UI用スクリプト
-    document.getElementById('navToggle')?.addEventListener('click', function(){
-      const nav = document.getElementById('primaryNav');
-      const expanded = this.getAttribute('aria-expanded') === 'true';
-      this.setAttribute('aria-expanded', !expanded);
-      nav.style.display = expanded ? 'none' : 'flex';
-      nav.style.flexDirection = 'column';
-      nav.style.position = 'absolute';
-      nav.style.top = '100%';
-      nav.style.left = '0';
-      nav.style.right = '0';
-      nav.style.background = '#fff';
-      nav.style.padding = '20px';
-      nav.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+    // ★修正1: ハンバーガーメニューの開閉スクリプト
+    const navToggle = document.getElementById('navToggle');
+    const primaryNav = document.getElementById('primaryNav');
+
+    navToggle.addEventListener('click', () => {
+      const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', !isExpanded);
+      primaryNav.classList.toggle('is-open');
     });
 
-    // GASデータ取得ロジック（変更なし）
+    // GASデータ連携（統合版）
     (async () => {
       const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
-      const cfg = (() => {
-        try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); }
-        catch(_) { return {}; }
-      })();
-
-      async function fetchStatus() {
+      const cfg = JSON.parse(document.getElementById('cfg-json')?.textContent || '{}');
+      
+      // ステータス取得
+      try {
+        let data = { mode: 'inseason', message: '旬の味覚をお届けします', ship_eta: '2-4日で出荷' }; // デフォルト値
+        
+        // GASまたはローカルJSONから取得
         if (cfg.webAppUrl) {
-          try {
-            const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-cache' });
-            if (r.ok) return await r.json();
-          } catch(_) {}
+           try {
+             const r = await fetch(`${cfg.webAppUrl}?api=status`);
+             if (r.ok) data = await r.json();
+           } catch(e) { console.log('GAS fetch failed, using default'); }
         }
-        const r2 = await fetch('assets/data/status.json', { cache:'no-cache' });
-        return await r2.json();
+
+        // 表示反映
+        const modeTxt = map[data.mode] || '受付状況';
+        document.getElementById('statusMode').textContent = modeTxt;
+        document.getElementById('statusMsg').textContent = data.message;
+        
+        // ヒーローテキストの更新（安全に書き換え）
+        const heroLead = document.getElementById('heroLead');
+        heroLead.innerHTML = `<span style="font-weight:bold; color:#d9534f;">[${modeTxt}]</span> 本日17時までのご注文は <strong>${data.ship_eta || '順次出荷'}</strong>。`;
+
+      } catch(e) {
+        console.error(e);
       }
 
-      try {
-        const data = await fetchStatus();
-        const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
-        setText('statusMode', (map[data.mode] || '受付状況'));
-        setText('statusMsg',  data.message || '');
-        const link = document.getElementById('statusLink');
-        if (link && data.notice_url) link.href = data.notice_url;
-
-        const heroLead = document.getElementById('heroLead');
-        const modeTxt = map[data.mode] || '受付状況';
-        const shipTxt = data.ship_eta || '—';
-        if (heroLead) {
-          heroLead.innerHTML = `<span style="font-weight:bold; color:var(--color-accent)">[${modeTxt}]</span> 本日17時までのご注文は <strong>${shipTxt}</strong>。`;
+      // ★修正4: ニュース取得（3件取得に変更）
+      const newsWrap = document.getElementById('newsGrid');
+      if (newsWrap && cfg.webAppUrl) {
+        try {
+          // grid-3なので、limit=3に変更して隙間をなくす
+          const r = await fetch(`${cfg.webAppUrl}?api=news&limit=3`);
+          const json = await r.json();
+          const items = json.items || [];
+          
+          if(items.length > 0) {
+            newsWrap.innerHTML = items.map(item => `
+              <article class="card post">
+                <a href="${item.link || '#'}" target="_blank" style="display:block; text-decoration:none; color:inherit;">
+                  <div style="height:180px; overflow:hidden; background:#eee;">
+                     <img src="${item.image_url || 'assets/img/blog1.svg'}" alt="" style="width:100%; height:100%; object-fit:cover;">
+                  </div>
+                  <div style="padding:15px;">
+                    <time style="font-size:0.8rem; color:#888;">${item.date ? item.date.split('T')[0] : ''}</time>
+                    <h4 style="margin:5px 0 10px; font-size:1rem;">${item.title}</h4>
+                    <p style="font-size:0.85rem; color:#666;">${item.excerpt ? item.excerpt.substring(0,40)+'...' : '...'}</p>
+                  </div>
+                </a>
+              </article>
+            `).join('');
+          } else {
+             newsWrap.innerHTML = '<p>現在、新しいお知らせはありません。</p>';
+          }
+        } catch(e) {
+          newsWrap.innerHTML = '<p>お知らせの読み込みに失敗しました。</p>';
         }
-      } catch(e) {
-        const heroLead = document.getElementById('heroLead');
-        if (heroLead) heroLead.innerHTML = `[受付状況] 本日17時までのご注文は <strong>2–4日で出荷</strong>。`;
       }
     })();
-  </script>
-
-  <script>
-  (async () => {
-    const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
-    if (!cfg.webAppUrl) return;
-  
-    const wrap = document.getElementById('newsGrid');
-    if (!wrap) return;
-  
-    const LIMIT = 3;
-    const MAX_TITLE = 40;
-    const MAX_EXCERPT = 60;
-  
-    const nowQs = () => (`_=${Date.now()}`);
-    async function fetchJSON_(url){
-      const r = await fetch(url + (url.includes('?') ? '&' : '?') + nowQs(), { cache:'no-cache', credentials:'omit' });
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return JSON.parse(await r.text());
-    }
-    const norm = (d) => Array.isArray(d?.items) ? d.items : Array.isArray(d?.rows) ? d.rows : (Array.isArray(d) ? d : []);
-    
-    let statusCardHTML = '';
-    let statusData = null;
-    try { statusData = await fetchJSON_(`${cfg.webAppUrl}?api=status`); } catch(_) {
-       try { statusData = await fetchJSON_('assets/data/status.json'); } catch(_) {}
-    }
-    if (statusData) statusCardHTML = buildStatusCard_(statusData);
-
-    let localItems = [];
-    try { localItems = norm(await fetchJSON_('assets/data/news.json')); } catch(_){}
-    if (localItems.length) render(localItems);
-
-    fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}&tail=1`)
-      .then(norm)
-      .then(items => {
-        if (items.length) render(items);
-        else if (!localItems.length && statusCardHTML) wrap.innerHTML = statusCardHTML;
-      })
-      .catch(()=>{});
-
-    function render(items){
-      if (!items || !items.length) return;
-      items.sort((a,b)=>(Date.parse(b.date||'')||-1)-(Date.parse(a.date||'')||-1));
-      const cards = items.slice(0, LIMIT).map(item => {
-        const img = item.image_url || 'assets/img/blog1.svg';
-        const linkUrl = (item.link && /^https?:/.test(item.link)) ? item.link : 'news.html';
-        const title = truncate_(item.title || '', MAX_TITLE);
-        const excerpt = truncate_(item.excerpt || '', MAX_EXCERPT);
-        const dateLabel = formatJaDate_(item.date || '');
-        return `
-          <article class="card post">
-            <a href="${linkUrl}" target="_blank" rel="noopener" style="display:block; height:100%;">
-              <div style="height:200px; overflow:hidden;"><img src="${img}" alt="" style="width:100%; height:100%; object-fit:cover; transition:transform 0.5s;"></div>
-              <div>
-                <time datetime="${item.date || ''}">${dateLabel}</time>
-                <h4 style="color:var(--color-text);">${escapeHtml_(title)}</h4>
-                <p>${escapeHtml_(excerpt)}</p>
-                <span style="color:var(--color-primary); font-weight:bold; font-size:0.9rem;">記事を読む &rarr;</span>
-              </div>
-            </a>
-          </article>`;
-      }).join('');
-      wrap.innerHTML = (statusCardHTML || '') + cards;
-    }
-  
-    function buildStatusCard_(s){
-      if (!s || (!s.mode && !s.message)) return '';
-      const modeMap = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
-      const linkUrl = (s.notice_url && /^https?:/.test(s.notice_url)) ? s.notice_url : 'news.html';
-      return `
-        <article class="card post" style="border:2px solid var(--color-accent);">
-          <a href="${linkUrl}" style="display:block; height:100%; background:#fcfcfc;">
-            <div style="padding:20px; height:100%; display:flex; flex-direction:column;">
-              <h4 style="color:var(--color-accent); margin-bottom:10px;">【受付状況】${modeMap[s.mode]||''}</h4>
-              <p style="flex-grow:1; font-weight:bold;">${escapeHtml_(s.message)}</p>
-              <time style="display:block; margin-top:10px; font-size:0.8rem;">${formatJaDate_(s.updated_at)} 更新</time>
-            </div>
-          </a>
-        </article>`;
-    }
-    function escapeHtml_(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-    function truncate_(s, n){ const str = String(s); return (str.length > n) ? (str.slice(0, n - 1) + '…') : str; }
-    function formatJaDate_(iso){
-      if (!iso) return '';
-      const d = new Date(iso);
-      if (isNaN(d)) return iso;
-      return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
-    }
-  })();
   </script>
 </body>
 </html>
