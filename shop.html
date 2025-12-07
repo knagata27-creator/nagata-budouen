@@ -806,7 +806,7 @@
       }
       
       grid.innerHTML = products.map(product => `
-        <div class="product-card">
+        <div class="product-card" data-product-id="${product.productId}">
           <img src="${product.imageUrl}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/280x220?text=No+Image'">
           <div class="product-card-body">
             <h3>${product.name}</h3>
@@ -815,9 +815,9 @@
             <p class="stock-info">残り: ${product.remain}房</p>
             
             <div class="quantity-selector">
-              <button onclick="decreaseProductQuantity('${product.productId}')">-</button>
-              <span class="quantity-display" id="qty-${product.productId}">1</span>
-              <button onclick="increaseProductQuantity('${product.productId}')">+</button>
+              <button onclick="decreaseProductQuantity('${product.productId}', this)">-</button>
+              <span class="quantity-display">1</span>
+              <button onclick="increaseProductQuantity('${product.productId}', this)">+</button>
             </div>
             
             <div class="product-card-buttons">
@@ -835,22 +835,25 @@
     // ========================================
     
     // 商品カードの数量を増やす
-    function increaseProductQuantity(productId) {
+    function increaseProductQuantity(productId, buttonElem) {
       productQuantities[productId] = (productQuantities[productId] || 1) + 1;
-      updateProductQuantityDisplay(productId);
+      updateProductQuantityDisplay(productId, buttonElem);
     }
     
     // 商品カードの数量を減らす
-    function decreaseProductQuantity(productId) {
-      if (productQuantities[productId] > 1) {
+    function decreaseProductQuantity(productId, buttonElem) {
+      if ((productQuantities[productId] || 1) > 1) {
         productQuantities[productId]--;
-        updateProductQuantityDisplay(productId);
+        updateProductQuantityDisplay(productId, buttonElem);
       }
     }
     
-    // 商品カードの数量表示を更新
-    function updateProductQuantityDisplay(productId) {
-      const displayElement = document.getElementById(`qty-${productId}`);
+    // 商品カードの数量表示を更新（押されたカードだけを更新）
+    function updateProductQuantityDisplay(productId, buttonElem) {
+      if (!buttonElem) return;
+      const card = buttonElem.closest('.product-card');
+      if (!card) return;
+      const displayElement = card.querySelector('.quantity-display');
       if (displayElement) {
         displayElement.textContent = productQuantities[productId];
       }
@@ -883,7 +886,12 @@
       
       // 商品カードの数量を1にリセット
       productQuantities[productId] = 1;
-      updateProductQuantityDisplay(productId);
+      // 表示もリセット（該当カードだけ）
+      const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+      if (card) {
+        const displayElement = card.querySelector('.quantity-display');
+        if (displayElement) displayElement.textContent = '1';
+      }
       
       updateCartDisplay();
       
@@ -957,8 +965,7 @@
             <p>¥${item.price.toLocaleString()} × ${item.quantity}</p>
           </div>
           <div class="cart-item-controls">
-            <button onclick="decreaseQuantity​​​​​​​​​​​​​​​​
-('${item.productId}')">-</button>
+            <button onclick="decreaseQuantity('${item.productId}')">-</button>
             <span class="quantity">${item.quantity}</span>
             <button onclick="increaseQuantity('${item.productId}')">+</button>
             <button class="remove" onclick="removeFromCart('${item.productId}')">✕</button>
