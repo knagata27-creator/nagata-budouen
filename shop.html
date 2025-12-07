@@ -805,9 +805,8 @@
         return;
       }
       
-      grid.innerHTML = products.map(product => {
-        return `
-        <div class="product-card" data-product-id="${product.productId}">
+      grid.innerHTML = products.map(product => `
+        <div class="product-card">
           <img src="${product.imageUrl}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/280x220?text=No+Image'">
           <div class="product-card-body">
             <h3>${product.name}</h3>
@@ -816,20 +815,19 @@
             <p class="stock-info">残り: ${product.remain}房</p>
             
             <div class="quantity-selector">
-              <button type="button" onclick="decreaseProductQuantity('${product.productId}')">-</button>
+              <button onclick="decreaseProductQuantity('${product.productId}')">-</button>
               <span class="quantity-display" id="qty-${product.productId}">1</span>
-              <button type="button" onclick="increaseProductQuantity('${product.productId}')">+</button>
+              <button onclick="increaseProductQuantity('${product.productId}')">+</button>
             </div>
             
             <div class="product-card-buttons">
-              <button type="button" class="btn-add-cart" onclick="addToCart('${product.productId}')">
+              <button class="btn-add-cart" onclick="addToCart('${product.productId}')">
                 カートに入れる
               </button>
             </div>
           </div>
         </div>
-      `;
-      }).join('');
+      `).join('');
     }
     
     // ========================================
@@ -838,18 +836,12 @@
     
     // 商品カードの数量を増やす
     function increaseProductQuantity(productId) {
-      if (!productQuantities[productId]) {
-        productQuantities[productId] = 1;
-      }
-      productQuantities[productId]++;
+      productQuantities[productId] = (productQuantities[productId] || 1) + 1;
       updateProductQuantityDisplay(productId);
     }
     
     // 商品カードの数量を減らす
     function decreaseProductQuantity(productId) {
-      if (!productQuantities[productId]) {
-        productQuantities[productId] = 1;
-      }
       if (productQuantities[productId] > 1) {
         productQuantities[productId]--;
         updateProductQuantityDisplay(productId);
@@ -858,7 +850,7 @@
     
     // 商品カードの数量表示を更新
     function updateProductQuantityDisplay(productId) {
-      const displayElement = document.getElementById('qty-' + productId);
+      const displayElement = document.getElementById(`qty-${productId}`);
       if (displayElement) {
         displayElement.textContent = productQuantities[productId];
       }
@@ -871,10 +863,7 @@
     // カートに商品を追加
     function addToCart(productId) {
       const product = products.find(p => p.productId === productId);
-      if (!product) {
-        console.error('商品が見つかりません:', productId);
-        return;
-      }
+      if (!product) return;
       
       const quantity = productQuantities[productId] || 1;
       const cartItem = cart.find(item => item.productId === productId);
@@ -903,7 +892,7 @@
     }
     
     // カート内商品の数量を増やす
-    function increaseCartQuantity(productId) {
+    function increaseQuantity(productId) {
       const cartItem = cart.find(item => item.productId === productId);
       if (cartItem) {
         cartItem.quantity++;
@@ -912,7 +901,7 @@
     }
     
     // カート内商品の数量を減らす
-    function decreaseCartQuantity(productId) {
+    function decreaseQuantity(productId) {
       const cartItem = cart.find(item => item.productId === productId);
       if (cartItem && cartItem.quantity > 1) {
         cartItem.quantity--;
@@ -950,7 +939,7 @@
       cartCount.textContent = totalItems;
       
       // カートが空の場合
-      if (​​​​​​​​​​​​​​​​cart.length === 0) {
+      if (cart.length === 0) {
         cartEmpty.style.display = 'block';
         cartContent.style.display = 'none';
         return;
@@ -961,22 +950,21 @@
       cartContent.style.display = 'block';
       
       // カート内商品一覧を表示
-      cartItems.innerHTML = cart.map(item => {
-        return `
+      cartItems.innerHTML = cart.map(item => `
         <div class="cart-item">
           <div class="cart-item-info">
             <h4>${item.name}</h4>
             <p>¥${item.price.toLocaleString()} × ${item.quantity}</p>
           </div>
           <div class="cart-item-controls">
-            <button type="button" onclick="decreaseCartQuantity('${item.productId}')">-</button>
+            <button onclick="decreaseQuantity​​​​​​​​​​​​​​​​
+('${item.productId}')">-</button>
             <span class="quantity">${item.quantity}</span>
-            <button type="button" onclick="increaseCartQuantity('${item.productId}')">+</button>
-            <button type="button" class="remove" onclick="removeFromCart('${item.productId}')">✕</button>
+            <button onclick="increaseQuantity('${item.productId}')">+</button>
+            <button class="remove" onclick="removeFromCart('${item.productId}')">✕</button>
           </div>
         </div>
-      `;
-      }).join('');
+      `).join('');
       
       // 合計金額を計算
       const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
