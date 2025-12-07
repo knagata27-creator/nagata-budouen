@@ -477,6 +477,13 @@
       resize: vertical;
       min-height: 80px;
     }
+
+    .payment-note {
+      font-size: 12px;
+      color: #777;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
     
     .form-submit {
       text-align: center;
@@ -707,17 +714,21 @@
           </div>
           
           <div class="form-group">
-            <label for="paymentMethod">お支払い方法</label>
+            <label for="paymentMethod">
+              お支払い方法
+            </label>
             <select id="paymentMethod" name="paymentMethod">
-              <option value="銀行振込">銀行振込</option>
-              <option value="代金引換">代金引換</option>
-              <option value="BASE決済">BASE決済</option>
+              <option value="クレジットカード（Square決済・前払い）">クレジットカード（Square決済・前払い）</option>
+              <option value="代金引換（ヤマト宅急便コレクト）">代金引換（ヤマト宅急便コレクト）</option>
             </select>
+            <p class="payment-note">
+              ※銀行振込をご希望の場合は備考欄にご記入ください。リピーター様・業者様向けに個別対応いたします。
+            </p>
           </div>
           
           <div class="form-group">
             <label for="note">備考</label>
-            <textarea id="note" name="note" placeholder="その他ご要望がございましたらご記入ください"></textarea>
+            <textarea id="note" name="note" placeholder="熨斗の有無、ご希望などがあればご記入ください（銀行振込ご希望の場合はこちらにご相談内容をご記入ください）"></textarea>
           </div>
           
           <div class="form-submit">
@@ -742,25 +753,20 @@
        ======================================== -->
   <script>
     // ========================================
-    // 設定（ここを編集）
+    // 設定
     // ========================================
-    
-    // GASのウェブアプリURLをここに貼り付けてください
     const API_BASE = 'https://script.google.com/macros/s/AKfycbwUHr1u4JmuZgIzauceC9yalAv0JPIq6iqOFMfVBVIn1W8-RMm_dArcFLX3W60hF6CQ/exec';
     
     // ========================================
     // グローバル変数
     // ========================================
-    
-    let products = []; // 商品データ
-    let cart = []; // カートデータ（{productId, name, price, quantity}）
-    let productQuantities = {}; // 各商品の選択数量を管理
+    let products = [];          // 商品データ
+    let cart = [];              // カートデータ（{productId, name, price, quantity}）
+    let productQuantities = {}; // 各商品の選択数量
     
     // ========================================
     // 初期化
     // ========================================
-    
-    // ページ読み込み時に商品一覧を取得
     window.addEventListener('DOMContentLoaded', () => {
       loadProducts();
       updateCartDisplay();
@@ -769,7 +775,6 @@
     // ========================================
     // 商品一覧の読み込み
     // ========================================
-    
     async function loadProducts() {
       try {
         const response = await fetch(`${API_BASE}?mode=products`);
@@ -777,10 +782,19 @@
         
         if (data.success && data.products) {
           products = data.products;
-          // 各商品の初期数量を1に設定
+          
+          // 初期数量を1に
           products.forEach(product => {
-            productQuantities[product.productId] = 1;
+            if (product.productId) {
+              productQuantities[product.productId] = 1;
+            }
           });
+
+          // デバッグ用：productId が無い商品があれば警告
+          if (products.some(p => !p.productId)) {
+            console.warn('一部 productId が空です。Productsシートの「ProductID」ヘッダー名を確認してください。', products);
+          }
+
           displayProducts();
         } else {
           document.getElementById('products-grid').innerHTML = 
@@ -796,87 +810,94 @@
     // ========================================
     // 商品カードの表示
     // ========================================
-    
     function displayProducts() {
       const grid = document.getElementById('products-grid');
       
-      if (products.length === 0) {
+      if (!products || products.length === 0) {
         grid.innerHTML = '<p style="text-align: center; color: #999;">現在販売中の商品はありません</p>';
         return;
       }
       
-      grid.innerHTML = products.map(product => `
-        <div class="product-card">
-          <img src="${product.imageUrl}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/280x220?text=No+Image'">
-          <div class="product-card-body">
-            <h3>${product.name}</h3>
-            <p class="variety">${product.variety} ${product.weightKg}kg</p>
-            <p class="price">¥${product.price.toLocaleString()}</p>
-            <p class="stock-info">残り: ${product.remain}房</p>
-            
-            <div class="quantity-selector">
-              <button onclick="decreaseProductQuantity('${product.productId}')">-</button>
-              <span class="quantity-display" id="qty-${product.productId}">1</span>
-              <button onclick="increaseProductQuantity('${product.productId}')">+</button>
-            </div>
-            
-            <div class="product-card-buttons">
-              <button class="btn-add-cart" onclick="addToCart('${product.productId}')">
-                カートに入れる
-              </button>
+      grid.innerHTML = products.map(product => {
+        const productId = product.productId;
+        const quantity = productQuantities[productId] || 1;
+        const priceText = product.price != null ? Number(product.price).toLocaleString() : '';
+        
+        return `
+          <div class="product-card">
+            <img src="${product.imageUrl}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/280x220?text=No+Image'">
+            <div class="product-card-body">
+              <h3>${product.name}</h3>
+              <p class="variety">${product.variety} ${product.weightKg}kg</p>
+              <p class="price">¥${priceText}</p>
+              <p class="stock-info">残り: ${product.remain}房</p>
+              
+              <div class="quantity-selector">
+                <button type="button" onclick="decreaseProductQuantity('${productId}')">-</button>
+                <span class="quantity-display" id="qty-${productId}">${quantity}</span>
+                <button type="button" onclick="increaseProductQuantity('${productId}')">+</button>
+              </div>
+              
+              <div class="product-card-buttons">
+                <button type="button" class="btn-add-cart" onclick="addToCart('${productId}')">
+                  カートに入れる
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
     
     // ========================================
     // 商品カードの数量操作
     // ========================================
-    
-    // 商品カードの数量を増やす
     function increaseProductQuantity(productId) {
+      if (!productId) return;
       productQuantities[productId] = (productQuantities[productId] || 1) + 1;
       updateProductQuantityDisplay(productId);
     }
     
-    // 商品カードの数量を減らす
     function decreaseProductQuantity(productId) {
-      if (productQuantities[productId] > 1) {
+      if (!productId) return;
+      if ((productQuantities[productId] || 1) > 1) {
         productQuantities[productId]--;
         updateProductQuantityDisplay(productId);
       }
     }
     
-    // 商品カードの数量表示を更新
     function updateProductQuantityDisplay(productId) {
       const displayElement = document.getElementById(`qty-${productId}`);
       if (displayElement) {
-        displayElement.textContent = productQuantities[productId];
+        displayElement.textContent = productQuantities[productId] || 1;
       }
     }
     
     // ========================================
     // カート操作
     // ========================================
-    
-    // カートに商品を追加
     function addToCart(productId) {
+      if (!productId) {
+        alert('商品IDが取得できていません（Productsシートの「ProductID」列を確認してください）。');
+        return;
+      }
+
       const product = products.find(p => p.productId === productId);
-      if (!product) return;
+      if (!product) {
+        alert('商品情報が取得できませんでした');
+        return;
+      }
       
       const quantity = productQuantities[productId] || 1;
       const cartItem = cart.find(item => item.productId === productId);
       
       if (cartItem) {
-        // 既にカートにある場合は数量を追加
         cartItem.quantity += quantity;
       } else {
-        // 新規追加
         cart.push({
           productId: product.productId,
           name: product.name,
-          price: product.price,
+          price: Number(product.price) || 0,
           quantity: quantity
         });
       }
@@ -891,7 +912,6 @@
       document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
     }
     
-    // カート内商品の数量を増やす
     function increaseQuantity(productId) {
       const cartItem = cart.find(item => item.productId === productId);
       if (cartItem) {
@@ -900,7 +920,6 @@
       }
     }
     
-    // カート内商品の数量を減らす
     function decreaseQuantity(productId) {
       const cartItem = cart.find(item => item.productId === productId);
       if (cartItem && cartItem.quantity > 1) {
@@ -909,13 +928,11 @@
       }
     }
     
-    // カートから商品を削除
     function removeFromCart(productId) {
       cart = cart.filter(item => item.productId !== productId);
       updateCartDisplay();
     }
     
-    // カートをクリア
     function clearCart() {
       if (confirm('カートを空にしますか?')) {
         cart = [];
@@ -926,7 +943,6 @@
     // ========================================
     // カート表示の更新
     // ========================================
-    
     function updateCartDisplay() {
       const cartCount = document.getElementById('cart-count');
       const cartEmpty = document.getElementById('cart-empty');
@@ -934,68 +950,66 @@
       const cartItems = document.getElementById('cart-items');
       const cartTotal = document.getElementById('cart-total');
       
-      // カート内の商品数を更新
       const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      cartCount.textContent = totalItems;
+      if (cartCount) cartCount.textContent = totalItems;
       
-      // カートが空の場合
-      if (cart.length === 0) {
-        cartEmpty.style.display = 'block';
-        cartContent.style.display = 'none';
+      if (!cart || cart.length === 0) {
+        if (cartEmpty) cartEmpty.style.display = 'block';
+        if (cartContent) cartContent.style.display = 'none';
         return;
       }
       
-      // カートに商品がある場合
-      cartEmpty.style.display = 'none';
-      cartContent.style.display = 'block';
+      if (cartEmpty) cartEmpty.style.display = 'none';
+      if (cartContent) cartContent.style.display = 'block';
       
-      // カート内商品一覧を表示
-      cartItems.innerHTML = cart.map(item => `
-        <div class="cart-item">
-          <div class="cart-item-info">
-            <h4>${item.name}</h4>
-            <p>¥${item.price.toLocaleString()} × ${item.quantity}</p>
+      cartItems.innerHTML = cart.map(item => {
+        const priceText = Number(item.price || 0).toLocaleString();
+        return `
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <h4>${item.name}</h4>
+              <p>¥${priceText} × ${item.quantity}</p>
+            </div>
+            <div class="cart-item-controls">
+              <button type="button" onclick="decreaseQuantity('${item.productId}')">-</button>
+              <span class="quantity">${item.quantity}</span>
+              <button type="button" onclick="increaseQuantity('${item.productId}')">+</button>
+              <button type="button" class="remove" onclick="removeFromCart('${item.productId}')">✕</button>
+            </div>
           </div>
-          <div class="cart-item-controls">
-            <button onclick="decreaseQuantity​​​​​​​​​​​​​​​​
-('${item.productId}')">-</button>
-            <span class="quantity">${item.quantity}</span>
-            <button onclick="increaseQuantity('${item.productId}')">+</button>
-            <button class="remove" onclick="removeFromCart('${item.productId}')">✕</button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
       
-      // 合計金額を計算
-      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      cartTotal.textContent = total.toLocaleString();
+      const total = cart.reduce((sum, item) => sum + (Number(item.price || 0) * item.quantity), 0);
+      if (cartTotal) {
+        cartTotal.textContent = total.toLocaleString();
+      }
     }
     
     // ========================================
     // モーダル操作
     // ========================================
-    
-    // 注文フォームモーダルを開く
     function openOrderModal() {
-      if (cart.length === 0) {
+      if (!cart || cart.length === 0) {
         alert('カートに商品を追加してください');
         return;
       }
       const modal = document.getElementById('order-modal');
+      if (!modal) return;
       modal.classList.add('active');
-      document.body.style.overflow = 'hidden'; // 背景のスクロールを防止
+      document.body.style.overflow = 'hidden';
     }
     
-    // 注文フォームモーダルを閉じる
     function closeOrderModal() {
       const modal = document.getElementById('order-modal');
+      if (!modal) return;
       modal.classList.remove('active');
-      document.body.style.overflow = ''; // スクロールを復元
+      document.body.style.overflow = '';
     }
     
-    // モーダルの外側をクリックしたら閉じる
     window.addEventListener('click', (event) => {
       const modal = document.getElementById('order-modal');
+      if (!modal) return;
       if (event.target === modal) {
         closeOrderModal();
       }
@@ -1004,17 +1018,14 @@
     // ========================================
     // 注文送信
     // ========================================
-    
     async function submitOrder(event) {
       event.preventDefault();
       
-      // カートが空の場合
-      if (cart.length === 0) {
+      if (!cart || cart.length === 0) {
         showMessage('カートに商品を追加してください', 'error');
         return;
       }
       
-      // フォームデータを取得
       const formData = {
         cart: cart,
         customer: {
@@ -1030,7 +1041,6 @@
         }
       };
       
-      // 送信ボタンを無効化
       const submitButton = document.getElementById('submit-button');
       submitButton.disabled = true;
       submitButton.textContent = '送信中...';
@@ -1047,28 +1057,23 @@
         const result = await response.json();
         
         if (result.success) {
-          // 成功時
           showMessage(`ご注文ありがとうございます！注文番号: ${result.orderNumber}`, 'success');
           
-          // カートとフォームをリセット
           cart = [];
           updateCartDisplay();
           document.getElementById('order-form').reset();
           
-          // 3秒後にモーダルを閉じてページトップへスクロール
           setTimeout(() => {
             closeOrderModal();
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }, 3000);
         } else {
-          // エラー時
           showMessage(`エラー: ${result.message}`, 'error');
         }
       } catch (error) {
         console.error('注文送信エラー:', error);
         showMessage('注文の送信に失敗しました。もう一度お試しください。', 'error');
       } finally {
-        // 送信ボタンを再有効化
         submitButton.disabled = false;
         submitButton.textContent = '注文を確定する';
       }
@@ -1077,14 +1082,14 @@
     // ========================================
     // メッセージ表示
     // ========================================
-    
     function showMessage(message, type) {
       const messageDiv = document.getElementById('form-message');
+      if (!messageDiv) return;
+      
       messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
       messageDiv.textContent = message;
       messageDiv.style.display = 'block';
       
-      // 5秒後にメッセージを消す
       setTimeout(() => {
         messageDiv.style.display = 'none';
       }, 5000);
@@ -1092,4 +1097,3 @@
   </script>
 </body>
 </html>
-
