@@ -990,7 +990,8 @@
     // 注文フォームモーダルを開く
     function openOrderModal() {
       if (cart.length === 0) {
-        alert('カートに商品を追加してください');
+        cartEmpty.style.display = 'block';
+        cartContent.style.display = 'none';
         return;
       }
       const modal = document.getElementById('order-modal');
