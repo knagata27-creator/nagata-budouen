@@ -4,9 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ながたぶどう園｜信州須坂・日滝原のぶどう直販</title>
+
   <!-- Meta -->
   <meta name="description" content="信州須坂・日滝原の小さなぶどう農園、ながたぶどう園の公式サイト。シャインマスカット・ナガノパープルなど旬を産地直送。ご予約・直販・ギフト承ります。" />
   <meta name="theme-color" content="#5b7a59" />
+
   <!-- OGP -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="ながたぶどう園｜信州須坂・日滝原のぶどう直販" />
@@ -14,15 +16,599 @@
   <meta property="og:url" content="https://example.jp/" />
   <meta property="og:image" content="assets/img/ogp.png" />
   <link rel="icon" href="assets/img/ogp.png" />
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <!-- head 内に1回だけ -->
+
+  <!-- GAS用設定 -->
   <script type="application/json" id="cfg-json">
-  { "webAppUrl": "https://script.google.com/macros/s/AKfycby90f86Y7j5HKtfDOC9aK0iNltN2W_QPg3NVoBG54B3f06L6NlwRKDe6Zy8LiHRB1b0/exec" }
+  {
+    "webAppUrl": "https://script.google.com/macros/s/AKfycby90f86Y7j5HKtfDOC9aK0iNltN2W_QPg3NVoBG54B3f06L6NlwRKDe6Zy8LiHRB1b0/exec"
+  }
   </script>
+
+  <!-- フォント＆スタイル（shop.htmlとトーンを合わせたデザイン） -->
+  <style>
+    /* =========================
+       Reset & Base
+       ========================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      color: #333;
+      background-color: #fafaf8;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 5%;
+    }
+
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-title {
+      font-size: 32px;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #5b7a59;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .section-lead,
+    .section-subtitle {
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 26px;
+      border-radius: 999px;
+      border: 1px solid #5b7a59;
+      color: #5b7a59;
+      font-size: 14px;
+      font-weight: 600;
+      background-color: #fff;
+      transition: background-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #5b7a59;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .btn--fill {
+      background-color: #5b7a59;
+      color: #fff;
+      border-color: #5b7a59;
+    }
+
+    .btn--fill:hover {
+      background-color: #4a6348;
+      border-color: #4a6348;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .card.lift {
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card.lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .grid-2,
+    .grid-3 {
+      display: grid;
+      gap: 24px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 32px;
+      align-items: center;
+    }
+
+    .ratio-3x2 {
+      position: relative;
+      width: 100%;
+      padding-top: calc(2 / 3 * 100%);
+    }
+
+    .ratio-3x2 > img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .muted {
+      color: #777;
+      font-size: 14px;
+    }
+
+    ul.list {
+      list-style: disc;
+      padding-left: 1.5em;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      left: -999px;
+      top: -999px;
+      background: #000;
+      color: #fff;
+      padding: 8px 16px;
+      z-index: 2000;
+      border-radius: 4px;
+    }
+    .skip-link:focus {
+      left: 10px;
+      top: 10px;
+    }
+
+    /* =========================
+       Header
+       ========================= */
+    .site-header {
+      background-color: #fff;
+      padding: 14px 5%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .site-header .bar {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .site-header .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #5b7a59;
+    }
+
+    .brand__logo {
+      width: 32px;
+      height: 32px;
+      background-color: #5b7a59;
+      border-radius: 50%;
+      padding: 4px;
+    }
+
+    .brand__name {
+      letter-spacing: 0.08em;
+    }
+
+    .primary {
+      display: flex;
+      gap: 14px;
+      font-size: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .primary a {
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #555;
+      white-space: nowrap;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .primary a:hover {
+      background-color: #eef1ed;
+      color: #5b7a59;
+    }
+
+    .nav-toggle {
+      display: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #5b7a59;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-toggle__bar {
+      width: 18px;
+      height: 2px;
+      background-color: #fff;
+      position: relative;
+    }
+    .nav-toggle__bar::before,
+    .nav-toggle__bar::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 18px;
+      height: 2px;
+      background-color: #fff;
+    }
+    .nav-toggle__bar::before {
+      top: -6px;
+    }
+    .nav-toggle__bar::after {
+      top: 6px;
+    }
+
+    /* =========================
+       Status bar
+       ========================= */
+    .status {
+      background-color: #f5f5f3;
+      border-bottom: 1px solid #e4e4df;
+      font-size: 13px;
+      color: #555;
+    }
+
+    .status .inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8px 5%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .status .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background-color: #5b7a59;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status .sep {
+      color: #aaa;
+      margin: 0 4px;
+    }
+
+    .status a {
+      color: #5b7a59;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 500;
+    }
+
+    /* =========================
+       Hero
+       ========================= */
+    .hero {
+      background: linear-gradient(135deg, rgba(91,122,89,0.85), rgba(74,108,72,0.85)),
+                  url('https://images.unsplash.com/photo-1599819177489-89c5a7b9d6e5?w=1600') center/cover;
+      color: #fff;
+      padding: 120px 5% 90px;
+      text-align: left;
+    }
+
+    .hero__content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero .kicker {
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .hero h1 {
+      margin-top: 14px;
+      font-size: 40px;
+      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .hero p {
+      margin-top: 18px;
+      font-size: 16px;
+      opacity: 0.96;
+    }
+
+    .hero .cta {
+      margin-top: 26px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero .btn--fill {
+      background-color: #d4af37;
+      border-color: #d4af37;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+    }
+
+    .hero .btn--fill:hover {
+      background-color: #b89121;
+      border-color: #b89121;
+      box-shadow: 0 6px 20px rgba(212,175,55,0.4);
+    }
+
+    /* =========================
+       Product lineup
+       ========================= */
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .product-card .variety__img {
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f7f7f5;
+      padding: 18px;
+    }
+
+    .product-card h3 {
+      font-size: 18px;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .product-card .meta {
+      font-size: 13px;
+      color: #777;
+      margin-bottom: 10px;
+    }
+
+    .product-card .footer {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .product-card .price {
+      font-size: 22px;
+      color: #d4af37;
+      font-weight: 700;
+    }
+
+    /* =========================
+       News
+       ========================= */
+    #news .card.post {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    #news .card.post img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+    }
+
+    #news .card.post > div {
+      padding: 16px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    #news .card.post h4 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    #news .card.post time {
+      font-size: 12px;
+      color: #888;
+    }
+
+    #news .card.post p {
+      font-size: 13px;
+      color: #555;
+      flex: 1;
+    }
+
+    #news .card.post .btn {
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+
+    /* =========================
+       CTA Section
+       ========================= */
+    #cta .card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* =========================
+       Footer
+       ========================= */
+    footer {
+      background-color: #5b7a59;
+      color: #fff;
+      padding: 40px 5% 20px;
+      margin-top: 40px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      font-size: 14px;
+    }
+
+    .footer-title {
+      font-size: 18px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    footer a {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .copyright {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 12px;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+
+    /* =========================
+       Responsive
+       ========================= */
+    @media (max-width: 900px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .site-header .inner {
+        gap: 12px;
+      }
+
+      .nav-toggle {
+        display: inline-flex;
+      }
+
+      .primary {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: #fff;
+        padding: 10px 0 4px;
+      }
+      .primary.open {
+        display: flex;
+      }
+
+      .hero {
+        text-align: left;
+        padding: 90px 5% 60px;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .hero .cta {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+
+      .section-title {
+        font-size: 26px;
+      }
+
+      .footer-inner {
+        text-align: left;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <a class="skip-link" href="#main">本文へスキップ</a>
-  <!-- ============= ヘッダー（グローバルナビ） ============= -->
+
+  <!-- =========================
+       Header
+       ========================= -->
   <header class="site-header" role="banner">
     <div class="bar">
       <div class="inner">
@@ -35,27 +621,29 @@
           </svg>
           <span class="brand__name">ながたぶどう園</span>
         </h1>
-code
-Code
-<button class="nav-toggle" id="navToggle" aria-label="メニュー" aria-controls="primaryNav" aria-expanded="false">
-      <span class="nav-toggle__bar" aria-hidden="true"></span>
-    </button>
 
-    <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
-      <a href="index.html">ホーム</a>
-      <a href="shop.html">注文する</a>
-      <a href="gift.html">ギフト</a>
-      <a href="calendar.html">収穫カレンダー</a>
-      <a href="guide.html">はじめての方</a>
-      <a href="news.html">最新情報</a>
-      <a href="about.html">農園紹介</a>
-      <a href="blog.html">ぶどう日誌</a>
-      <a href="contact.html">お問い合わせ</a>
-    </nav>
-  </div>
-</div>
+        <button class="nav-toggle" id="navToggle" aria-label="メニュー" aria-controls="primaryNav" aria-expanded="false">
+          <span class="nav-toggle__bar" aria-hidden="true"></span>
+        </button>
+
+        <nav class="primary" id="primaryNav" role="navigation" aria-label="主なメニュー">
+          <a href="index.html">ホーム</a>
+          <a href="shop.html">注文する</a>
+          <a href="gift.html">ギフト</a>
+          <a href="calendar.html">収穫カレンダー</a>
+          <a href="guide.html">はじめての方</a>
+          <a href="news.html">最新情報</a>
+          <a href="about.html">農園紹介</a>
+          <a href="blog.html">ぶどう日誌</a>
+          <a href="contact.html">お問い合わせ</a>
+        </nav>
+      </div>
+    </div>
   </header>
-  <!-- ============= ステータスバー（固定） ============= -->
+
+  <!-- =========================
+       Status bar
+       ========================= -->
   <div class="status" role="status" aria-live="polite">
     <div class="inner">
       <span class="pill" id="statusMode">受付状況</span>
@@ -64,201 +652,232 @@ Code
       <a id="statusLink" href="#news">最新のお知らせ</a>
     </div>
   </div>
+
   <main id="main">
-    <!-- ============= 1) ヒーロー（販売状況×最短導線） ============= -->
-    <section id="home" class="hero section reveal" aria-label="メインビジュアル">
-      <div class="container hero__content">
+    <!-- =========================
+         Hero
+         ========================= -->
+    <section id="home" class="hero" aria-label="メインビジュアル">
+      <div class="hero__content">
         <span class="kicker">Nagata Budou-en</span>
         <h1>信州・須坂 日滝原から、旬のぶどうを産地直送。</h1>
         <p id="heroLead">[読み込み中] 出荷目安を取得しています…</p>
         <div class="cta">
-          <a class="btn btn--fill" href="#shop">🍇 注文する</a>
+          <a class="btn btn--fill" href="shop.html">🍇 商品を見る</a>
           <a class="btn" href="gift.html">🎁 ギフトを見る</a>
         </div>
       </div>
     </section>
-code
-Code
-<!-- ============= 3) 商品ラインアップ（カード） ============= -->
-<section id="shop" class="section reveal">
-  <div class="container">
-    <h2 class="section-title deco">商品ラインアップ</h2>
-    <p class="section-lead">代表商品をオンライン直販で承ります。価格はシーズン・規格により変動します。</p>
 
-    <div class="grid grid-3">
-      <!-- シャイン -->
-      <article class="card product-card lift" itemscope itemtype="https://schema.org/Product">
-        <div class="variety__img">
-          <img src="assets/img/grape_shine.svg" alt="シャインマスカットの房" itemprop="image" />
+    <!-- =========================
+         商品ラインアップ
+         ========================= -->
+    <section id="shop" class="section">
+      <div class="container">
+        <h2 class="section-title">商品ラインアップ</h2>
+        <p class="section-lead">代表商品をオンライン直販で承ります。価格はシーズン・規格により変動します。</p>
+
+        <div class="grid-3">
+          <!-- シャイン -->
+          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
+            <div class="variety__img">
+              <img src="assets/img/grape_shine.svg" alt="シャインマスカットの房" itemprop="image" />
+            </div>
+            <h3 itemprop="name">シャインマスカット（2房）</h3>
+            <p class="meta" itemprop="description">クール便｜のし可｜出荷目安：ご注文から2〜4日</p>
+            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+              <span class="price">¥3,980〜</span>
+              <link itemprop="priceCurrency" content="JPY" />
+              <meta itemprop="price" content="3980" />
+              <meta itemprop="availability" content="https://schema.org/InStock" />
+            </div>
+          </article>
+
+          <!-- ナガノパープル -->
+          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
+            <div class="variety__img">
+              <img src="assets/img/grape_nagano.svg" alt="ナガノパープルの房" itemprop="image" />
+            </div>
+            <h3 itemprop="name">ナガノパープル（2房）</h3>
+            <p class="meta" itemprop="description">クール便｜のし可｜出荷目安：ご注文から2〜4日</p>
+            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+              <span class="price">¥4,480〜</span>
+              <link itemprop="priceCurrency" content="JPY" />
+              <meta itemprop="price" content="4480" />
+              <meta itemprop="availability" content="https://schema.org/InStock" />
+            </div>
+          </article>
+
+          <!-- 詰合せギフト -->
+          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
+            <div class="variety__img">
+              <img src="assets/img/gift.svg" alt="詰合せギフトの化粧箱" itemprop="image" />
+            </div>
+            <h3 itemprop="name">詰合せギフト（2〜3房）</h3>
+            <p class="meta" itemprop="description">のし・名入れ無料／化粧箱</p>
+            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+              <span class="price">¥5,980〜</span>
+              <link itemprop="priceCurrency" content="JPY" />
+              <meta itemprop="price" content="5980" />
+              <meta itemprop="availability" content="https://schema.org/InStock" />
+            </div>
+          </article>
         </div>
-        <h3 itemprop="name">シャインマスカット（2房）</h3>
-        <p class="meta" itemprop="description">クール便｜のし可｜出荷目安：ご注文から2–4日</p>
-        <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-          <span class="price">¥3,980〜</span>
-          <link itemprop="priceCurrency" content="JPY" />
-          <meta itemprop="price" content="3980" />
-          <meta itemprop="availability" content="https://schema.org/InStock" />
+
+        <p style="margin-top:16px; text-align:center;">
+          <a class="btn" href="shop.html">すべての商品を見る</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- =========================
+         最新情報
+         ========================= -->
+    <section id="news" class="section">
+      <div class="container">
+        <h2 class="section-title">最新情報</h2>
+        <p class="section-lead">販売状況や収穫の様子などをお知らせします。</p>
+        <div class="grid-3" id="newsGrid">
+          <!-- JSで status + news カードが入る -->
         </div>
-      </article>
+      </div>
+    </section>
 
-      <!-- ナガノパープル -->
-      <article class="card product-card lift" itemscope itemtype="https://schema.org/Product">
-        <div class="variety__img">
-          <img src="assets/img/grape_nagano.svg" alt="ナガノパープルの房" itemprop="image" />
+    <!-- =========================
+         ギフト案内
+         ========================= -->
+    <section id="gift" class="section">
+      <div class="container two-col">
+        <div class="card lift">
+          <h2 class="section-title" style="text-align:left; margin-bottom:10px;">ギフト／のし・包装</h2>
+          <p class="section-lead" style="text-align:left; margin-bottom:18px;">
+            “のし・名入れ”無料。法人の複数配送もご相談ください。最短出荷日をご案内します。
+          </p>
+          <ul class="list muted">
+            <li>のし：蝶結び／結び切り／仏事（名入れ可）</li>
+            <li>化粧箱・手提げ袋（オプション）</li>
+            <li>請求書・領収書：同梱／別送対応</li>
+          </ul>
+          <p style="margin-top:16px;"><a class="btn btn--fill" href="gift.html">ギフト詳細を見る</a></p>
         </div>
-        <h3 itemprop="name">ナガノパープル（2房）</h3>
-        <p class="meta" itemprop="description">クール便｜のし可｜出荷目安：ご注文から2–4日</p>
-        <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-          <span class="price">¥4,480〜</span>
-          <link itemprop="priceCurrency" content="JPY" />
-          <meta itemprop="price" content="4480" />
-          <meta itemprop="availability" content="https://schema.org/InStock" />
+        <div class="ratio-3x2">
+          <img src="assets/img/gift.svg" alt="ギフトボックスのイメージ">
         </div>
-      </article>
+      </div>
+    </section>
 
-      <!-- 詰合せギフト -->
-      <article class="card product-card lift" itemscope itemtype="https://schema.org/Product">
-        <div class="variety__img">
-          <img src="assets/img/gift.svg" alt="詰合せギフトの化粧箱" itemprop="image" />
+    <!-- =========================
+         収穫カレンダー
+         ========================= -->
+    <section id="calendar-digest" class="section">
+      <div class="container">
+        <h2 class="section-title">収穫カレンダー</h2>
+        <p class="section-lead">品種ごとのおおよその時期を掲載しています（天候により前後します）。</p>
+        <div class="card lift" style="overflow:hidden;">
+          <img src="assets/img/calendar.svg" alt="収穫カレンダーのダイジェスト画像">
         </div>
-        <h3 itemprop="name">詰合せギフト（2〜3房）</h3>
-        <p class="meta" itemprop="description">のし・名入れ無料／化粧箱</p>
-        <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-          <span class="price">¥5,980〜</span>
-          <link itemprop="priceCurrency" content="JPY" />
-          <meta itemprop="price" content="5980" />
-          <meta itemprop="availability" content="https://schema.org/InStock" />
+        <p style="margin-top:16px; text-align:center;"><a class="btn" href="calendar.html">詳しく見る</a></p>
+      </div>
+    </section>
+
+    <!-- =========================
+         はじめての方
+         ========================= -->
+    <section id="guide-digest" class="section">
+      <div class="container">
+        <h2 class="section-title">はじめての方へ</h2>
+        <p class="section-lead">ご注文からお届けまでの流れです。</p>
+        <div class="grid-3">
+          <div class="card lift">
+            <h3>1. ご注文</h3>
+            <p class="muted">商品ページから数量・お届け先を入力して送信してください。</p>
+          </div>
+          <div class="card lift">
+            <h3>2. お支払い</h3>
+            <p class="muted">銀行振込／（一部）キャッシュレス決済に対応予定です。ご案内メールをお送りします。</p>
+          </div>
+          <div class="card lift">
+            <h3>3. 収穫・出荷</h3>
+            <p class="muted">収穫後、クール便で発送。出荷予定日と追跡番号をメール/LINEでお知らせします。</p>
+          </div>
         </div>
-      </article>
-    </div>
-
-    <p style="margin-top:16px">
-      <a class="btn" href="shop.html">すべての商品を見る</a>
-    </p>
-  </div>
-</section>   
-
-<!-- ============= 4) 最新情報（お知らせ/日誌） ============= -->
-<section id="news" class="section reveal">
-  <div class="container">
-    <h2 class="section-title deco">最新情報</h2>
-    <div class="grid grid-3" id="newsGrid"><!-- ←空の入れ物だけ残す --></div>
-  </div>
-</section>
-
-<!-- ============= 5) ギフト案内 ============= -->
-<section id="gift" class="section reveal">
-  <div class="container two-col">
-    <div class="card lift">
-      <h2 class="section-title deco">ギフト／のし・包装</h2>
-      <p class="section-lead">“のし・名入れ”無料。法人の複数配送もご相談ください。最短出荷日をご案内します。</p>
-      <ul class="list muted">
-        <li>のし：蝶結び／結び切り／仏事（名入れ可）</li>
-        <li>化粧箱・手提げ袋（オプション）</li>
-        <li>請求書・領収書：同梱／別送対応</li>
-      </ul>
-      <p><a class="btn btn--fill" href="gift.html">ギフト詳細を見る</a></p>
-    </div>
-    <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
-      <img src="assets/img/gift.svg" alt="ギフトボックスのイメージ">
-    </div>
-  </div>
-</section>
-
-<!-- ============= 6) 収穫カレンダー（Digest） ============= -->
-<section id="calendar-digest" class="section reveal">
-  <div class="container">
-    <h2 class="section-title deco">収穫カレンダー</h2>
-    <p class="section-lead">品種ごとのおおよその時期を掲載しています（天候により前後します）。</p>
-    <div class="card lift">
-      <img src="assets/img/calendar.svg" alt="収穫カレンダーのダイジェスト画像">
-    </div>
-    <p style="margin-top:16px"><a class="btn" href="calendar.html">詳しく見る</a></p>
-  </div>
-</section>
-
-<!-- ============= 7) はじめての方（3ステップ） ============= -->
-<section id="guide-digest" class="section reveal">
-  <div class="container">
-    <h2 class="section-title deco">はじめての方へ</h2>
-    <div class="grid grid-3">
-      <div class="card lift">
-        <h3>1. 注文</h3>
-        <p>商品カードの「注文する」からフォームへ。数量・お届け先を入力。</p>
+        <p style="margin-top:16px; text-align:center;"><a class="btn" href="guide.html">送料・お支払い・FAQ</a></p>
       </div>
-      <div class="card lift">
-        <h3>2. お支払い</h3>
-        <p>銀行振込／PayPay（予定）。入金確認後に出荷手配。</p>
-      </div>
-      <div class="card lift">
-        <h3>3. 出荷</h3>
-        <p>収穫後クール便で発送。出荷予定日→出荷完了をメール/LINEでお知らせ。</p>
-      </div>
-    </div>
-    <p style="margin-top:16px"><a class="btn" href="guide.html">送料・お支払い・FAQ</a></p>
-  </div>
-</section>
+    </section>
 
+    <!-- =========================
+         品質・安心
+         ========================= -->
+    <section id="about-digest" class="section">
+      <div class="container two-col">
+        <div class="card lift">
+          <h2 class="section-title" style="text-align:left; margin-bottom:10px;">品質・安心への取り組み</h2>
+          <p class="section-lead" style="text-align:left; margin-bottom:18px;">
+            寒暖差のある気候と清らかな水に恵まれた日滝原。丁寧な房づくりと温度管理で、贈答にも選ばれる品質を目指します。
+          </p>
+          <p class="muted">房ごとのチェックと梱包を一つずつ行い、輸送中のダメージを最小限に抑える工夫をしています。</p>
+          <p style="margin-top:16px;"><a class="btn" href="about.html">農園紹介を読む</a></p>
+        </div>
+        <div class="ratio-3x2">
+          <img src="assets/img/hero.svg" alt="畑の風景（棚仕立てのぶどう）">
+        </div>
+      </div>
+    </section>
 
-<!-- ============= 8) 品質・安心（短い紹介） ============= -->
-<section id="about-digest" class="section reveal">
-  <div class="container two-col">
-    <div class="card lift">
-      <h2 class="section-title deco">品質・安心への取り組み</h2>
-      <p class="section-lead">寒暖差のある気候と清らかな水に恵まれた日滝原。丁寧な房づくりと温度管理で、贈答にも選ばれる品質を目指します。</p>
-      <p><a class="btn" href="about.html">農園紹介を読む</a></p>
-    </div>
-    <div class="ratio-3x2 radius-16 shadow-soft overflow-hidden">
-      <img src="assets/img/hero.svg" alt="畑の風景（棚仕立てのぶどう）">
-    </div>
-  </div>
-</section>
+    <!-- =========================
+         FAQ
+         ========================= -->
+    <section id="faq" class="section">
+      <div class="container">
+        <h2 class="section-title">FAQ</h2>
+        <div class="grid-2">
+          <div class="card lift">
+            <h3>房数と重さの目安は？</h3>
+            <p class="muted">2房で約900g前後が目安です（品種・作柄により差があります）。</p>
+          </div>
+          <div class="card lift">
+            <h3>粒割れ・配送遅延の対応は？</h3>
+            <p class="muted">到着当日の写真とともにご連絡ください。内容確認のうえ再送・返金等で誠実に対応します。</p>
+          </div>
+          <div class="card lift">
+            <h3>納品書/領収書は？</h3>
+            <p class="muted">同梱／別送どちらも可能です。法人様のまとめて精算にも対応します。</p>
+          </div>
+          <div class="card lift">
+            <h3>保存方法は？</h3>
+            <p class="muted">到着後は冷蔵（野菜室）で保管し、お早めにお召し上がりください。</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<!-- ============= 9) FAQ ============= -->
-<section id="faq" class="section reveal">
-  <div class="container">
-    <h2 class="section-title deco">FAQ</h2>
-    <div class="grid grid-2">
-      <div class="card lift">
-        <h3>房数と重さの目安は？</h3>
-        <p>2房で約900g前後が目安です（品種・作柄により差があります）。</p>
+    <!-- =========================
+         CTA
+         ========================= -->
+    <section id="cta" class="section">
+      <div class="container">
+        <div class="card lift">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+            <div>
+              <h2 class="section-title" style="text-align:left; margin-bottom:4px;">ご注文はこちらから</h2>
+              <p class="section-lead" style="text-align:left; margin-bottom:0;">最短の出荷目安を自動でご案内します。</p>
+            </div>
+            <div class="btn-row">
+              <a class="btn btn--fill" href="shop.html">注文する</a>
+              <a class="btn" href="gift.html">ギフトを見る</a>
+              <a class="btn" href="contact.html">LINEで入荷通知</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card lift">
-        <h3>粒割れ・配送遅延の対応は？</h3>
-        <p>到着当日の写真とともにご連絡ください。内容確認のうえ再送・返金等で誠実に対応します。</p>
-      </div>
-      <div class="card lift">
-        <h3>納品書/領収書は？</h3>
-        <p>同梱／別送どちらも可能です。法人様のまとめて精算にも対応します。</p>
-      </div>
-      <div class="card lift">
-        <h3>保存方法は？</h3>
-        <p>到着後は冷蔵（野菜室）で保管し、お早めにお召し上がりください。</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============= 10) CTA再掲 ============= -->
-<section id="cta" class="section reveal">
-  <div class="container">
-    <div class="card lift" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap">
-      <div>
-        <h2 class="section-title" style="margin:0">ご注文はこちらから</h2>
-        <p class="section-lead" style="margin:6px 0 0">最短の出荷目安を自動でご案内します。</p>
-      </div>
-      <div class="btn-row">
-        <a class="btn btn--fill" href="index.html#shop">注文する</a>
-        <a class="btn" href="gift.html">ギフトを見る</a>
-        <a class="btn" href="contact.html">LINEで入荷通知</a>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
   </main>
-  <!-- ============= フッター（法務固定リンク） ============= -->
+
+  <!-- =========================
+       Footer
+       ========================= -->
   <footer role="contentinfo">
-    <div class="container footer-inner">
+    <div class="footer-inner">
       <div>
         <h3 class="footer-title">ながたぶどう園</h3>
         <p>長野県須坂市 日滝原</p>
@@ -273,9 +892,25 @@ Code
       <div class="copyright">© 2025 ながたぶどう園</div>
     </div>
   </footer>
-  <!-- Scripts -->
-  <script src="assets/js/main.js"></script>
-  <!-- ▼▼▼ GAS or ローカルJSONから受付状況を読み込み（統合版） ▼▼▼ -->
+
+  <!-- =========================
+       JS（ナビ開閉）
+       ========================= -->
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const primaryNav = document.getElementById('primaryNav');
+
+    if (navToggle && primaryNav) {
+      navToggle.addEventListener('click', () => {
+        const isOpen = primaryNav.classList.toggle('open');
+        navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    }
+  </script>
+
+  <!-- =========================
+       受付状況＆ニュース（元コードを整理して移植）
+       ========================= -->
   <script>
     (async () => {
       const map = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
@@ -287,96 +922,56 @@ Code
       })();
 
       async function fetchStatus() {
-        // 1) GAS（あれば優先）
         if (cfg.webAppUrl) {
           try {
             const r = await fetch(`${cfg.webAppUrl}?api=status`, { cache:'no-cache' });
             if (r.ok) return await r.json();
           } catch(_) {}
         }
-        // 2) ローカルJSON（フェイルバック）
         const r2 = await fetch('assets/data/status.json', { cache:'no-cache' });
         return await r2.json();
       }
 
       try {
-        // ヒーローは読み込み表示のまま開始（HTML初期値）
         const data = await fetchStatus();
+        const setText = (id, v) => {
+          const el = document.getElementById(id);
+          if (el && v != null) el.textContent = v;
+        };
 
-        // ステータスバー
-        const setText = (id, v) => { const el = document.getElementById(id); if (el && v != null) el.textContent = v; };
         setText('statusMode', (map[data.mode] || '受付状況'));
         setText('statusMsg',  data.message || '');
 
         const link = document.getElementById('statusLink');
         if (link && data.notice_url) link.href = data.notice_url;
 
-        // ヒーロー：一文まるごと上書き（角括弧置換ロジックは廃止）
         const heroLead = document.getElementById('heroLead');
-        const modeTxt = map[data.mode] || '受付状況';
-        const shipTxt = data.ship_eta || '—';
+        const modeTxt  = map[data.mode] || '受付状況';
+        const shipTxt  = data.ship_eta || '—';
         if (heroLead) {
           heroLead.innerHTML = `[${modeTxt}] 本日17時までのご注文は <span id="heroShip">${shipTxt}</span>。`;
         }
       } catch(e) {
-        // 失敗時は既定文言にフォールバック
         const heroLead = document.getElementById('heroLead');
-        if (heroLead) heroLead.innerHTML = `[受付状況] 本日17時までのご注文は <span id="heroShip">2–4日で出荷</span>。`;
+        if (heroLead) {
+          heroLead.innerHTML = `[受付状況] 本日17時までのご注文は <span id="heroShip">2〜4日で出荷</span>。`;
+        }
       }
     })();
   </script>
-  <!-- ▲▲▲ ここだけ差し替え／1本化。重複していた旧スクリプトは削除 ▲▲▲ -->
-  <!-- 構造化データ（LocalBusiness） -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "ながたぶどう園",
-    "address": {"@type":"PostalAddress","addressRegion":"長野県","addressLocality":"須坂市 日滝原"},
-    "image": "assets/img/ogp.png",
-    "url": "https://example.jp/",
-    "description": "信州須坂・日滝原の小さなぶどう農園。シャインマスカット、ナガノパープル等の直販。",
-    "areaServed": "JP"
-  }
-  </script>
-  <!-- 構造化データ（Product抜粋） -->
-  <script type="application/ld+json">
-  [{
-    "@context":"https://schema.org",
-    "@type":"Product",
-    "name":"シャインマスカット（2房）",
-    "image":["assets/img/grape_shine.svg"],
-    "description":"クール便｜のし可｜出荷目安：2–4日",
-    "offers":{"@type":"Offer","priceCurrency":"JPY","price":"3980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=shine_2&qty=1"}
-  },{
-    "@context":"https://schema.org",
-    "@type":"Product",
-    "name":"ナガノパープル（2房）",
-    "image":["assets/img/grape_nagano.svg"],
-    "description":"クール便｜のし可｜出荷目安：2–4日",
-    "offers":{"@type":"Offer","priceCurrency":"JPY","price":"4480","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=nagano_2&qty=1"}
-  },{
-    "@context":"https://schema.org",
-    "@type":"Product",
-    "name":"詰合せギフト（2〜3房）",
-    "image":["assets/img/gift.svg"],
-    "description":"のし・名入れ無料／化粧箱",
-    "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
-  }]
-  </script>
+
   <script>
   (async () => {
     const cfg = (() => { try { return JSON.parse(document.getElementById('cfg-json')?.textContent || '{}'); } catch(_) { return {}; } })();
     if (!cfg.webAppUrl) return;
-  
-    const wrap = document.getElementById('newsGrid') || document.querySelector('#news .grid');
+
+    const wrap = document.getElementById('newsGrid') || document.querySelector('#news .grid-3');
     if (!wrap) return;
-  
+
     const LIMIT = 2;
     const MAX_TITLE = 60;
     const MAX_EXCERPT = 160;
-  
-    // ===== util =====
+
     const nowQs = () => (`_=${Date.now()}`);
     async function fetchJSON_(url){
       const r = await fetch(url + (url.includes('?') ? '&' : '?') + nowQs(), { cache:'no-cache', credentials:'omit' });
@@ -387,11 +982,10 @@ Code
     const norm = (d) => Array.isArray(d?.items) ? d.items : Array.isArray(d?.rows) ? d.rows : (Array.isArray(d) ? d : []);
     const toTs = (v) => { const d = new Date(v); return isNaN(d) ? -Infinity : d.getTime(); };
     const maxTs = (items) => Math.max(...items.map(it => toTs(it.date || it.updated_at || '')), -Infinity);
-  
-    // ===== 受付状況カード（フェイルバック付きに修正） =====
+
+    // ---- 受付状況カード ----
     let statusCardHTML = '';
-    
-    // 使い回す簡易タイムアウト
+
     function withTimeout(p, ms){
       return new Promise((res, rej) => {
         const t = setTimeout(()=>rej(new Error('timeout')), ms);
@@ -399,32 +993,26 @@ Code
          .catch(e => { clearTimeout(t); rej(e); });
       });
     }
-    
+
     let statusData = null;
-    // 1) まずGASを試す（やや長めに待つ）
     try {
       statusData = await withTimeout(
         fetchJSON_(`${cfg.webAppUrl}?api=status`),
         6000
       );
-    } catch(_) { /* ignore */ }
-    
-    // 2) 失敗/タイムアウト時はローカルにフォールバック
+    } catch(_) {}
     if (!statusData) {
       try { statusData = await fetchJSON_('assets/data/status.json'); } catch(_) {}
     }
-    
-    // 3) 取れたらカード化
     if (statusData) {
       statusCardHTML = buildStatusCard_(statusData);
     }
 
-    // ===== ニュース：ローカル即描画 / GASはあとから上書き =====
-    // A) 先にローカル（速い）
+    // ---- News描画 ----
     let localItems = [];
     try { localItems = norm(await fetchJSON_('assets/data/news.json')); } catch(_){}
-  
     let renderedTs = -Infinity;
+
     function render(items){
       if (!items || !items.length) return;
       items.sort((a,b)=>(Date.parse(b.date||'')||-1)-(Date.parse(a.date||'')||-1));
@@ -445,31 +1033,19 @@ Code
             </div>
           </article>`;
       }).join('');
-  
+
       wrap.innerHTML = (statusCardHTML || '') + cards + `
-        <p style="margin-top:16px"><a class="btn" href="news.html">最新情報をすべて見る</a></p>`;
+        <p style="margin-top:16px; text-align:center;"><a class="btn" href="news.html">最新情報をすべて見る</a></p>`;
       renderedTs = maxTs(items);
     }
-  
-    // ローカルが取れたら即描画
+
     if (localItems.length) render(localItems);
-  
-    // B) GAS（遅いことがある）— 早着なら即、遅着でも到着したら上書き
-    const TIMEOUT_MS = 6000; // ← 2.5s は厳しすぎ。やや長めに
-    function withTimeout(p, ms){
-      return new Promise((res, rej) => {
-        const t = setTimeout(()=>rej(new Error('timeout')), ms);
-        p.then(v => { clearTimeout(t); res(v); })
-         .catch(e => { clearTimeout(t); rej(e); });
-      });
-    }
-  
-    // GASフェッチ本体は「1つの Promise」を作り、早着/遅着の両方で使い回す
+
+    const TIMEOUT_MS = 6000;
     const gasPromise = fetchJSON_(`${cfg.webAppUrl}?api=news&limit=${LIMIT}&tail=1`)
       .then(norm)
-      .catch(() => []); // 失敗は空配列に
-  
-    // 1) 早着なら TIMEOUT_MS 内に即反映
+      .catch(() => []);
+
     try {
       const early = await withTimeout(gasPromise, TIMEOUT_MS);
       if (early.length && maxTs(early) > renderedTs) {
@@ -478,21 +1054,18 @@ Code
         wrap.innerHTML = statusCardHTML;
       }
     } catch (_) {
-      // タイムアウト/失敗時：ローカルが無ければ保険の表示
       if (!localItems.length) {
         if (statusCardHTML) wrap.innerHTML = statusCardHTML;
         else wrap.innerHTML = `<div class="card"><p>現在、公開中のお知らせはありません。</p></div>`;
       }
     }
-  
-    // 2) 遅着でも、到着したら“より新しければ”上書き（UIはブロックしない）
+
     gasPromise.then(items => {
       if (items.length && maxTs(items) > renderedTs) {
         render(items);
       }
     });
 
-    // ---- helpers（既存と同等） ----
     function buildStatusCard_(s){
       if (!s || typeof s !== 'object') return '';
       const modeMap = { preorder:'予約受付前', inseason:'受付中', ended:'今季終了' };
@@ -531,6 +1104,46 @@ Code
       return `${y}年${mm}月${dd}日`;
     }
   })();
+  </script>
+
+  <!-- 構造化データ（LocalBusiness） -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "ながたぶどう園",
+    "address": {"@type":"PostalAddress","addressRegion":"長野県","addressLocality":"須坂市 日滝原"},
+    "image": "assets/img/ogp.png",
+    "url": "https://example.jp/",
+    "description": "信州須坂・日滝原の小さなぶどう農園。シャインマスカット、ナガノパープル等の直販。",
+    "areaServed": "JP"
+  }
+  </script>
+
+  <!-- 構造化データ（Product抜粋） -->
+  <script type="application/ld+json">
+  [{
+    "@context":"https://schema.org",
+    "@type":"Product",
+    "name":"シャインマスカット（2房）",
+    "image":["assets/img/grape_shine.svg"],
+    "description":"クール便｜のし可｜出荷目安：2〜4日",
+    "offers":{"@type":"Offer","priceCurrency":"JPY","price":"3980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=shine_2&qty=1"}
+  },{
+    "@context":"https://schema.org",
+    "@type":"Product",
+    "name":"ナガノパープル（2房）",
+    "image":["assets/img/grape_nagano.svg"],
+    "description":"クール便｜のし可｜出荷目安：2〜4日",
+    "offers":{"@type":"Offer","priceCurrency":"JPY","price":"4480","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=nagano_2&qty=1"}
+  },{
+    "@context":"https://schema.org",
+    "@type":"Product",
+    "name":"詰合せギフト（2〜3房）",
+    "image":["assets/img/gift.svg"],
+    "description":"のし・名入れ無料／化粧箱",
+    "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
+  }]
   </script>
 </body>
 </html>
