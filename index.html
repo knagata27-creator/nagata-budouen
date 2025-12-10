@@ -670,58 +670,15 @@
     </section>
 
     <!-- =========================
-         商品ラインアップ
+         商品ラインナップ（shop.htmlの先頭3件を表示）
          ========================= -->
     <section id="shop" class="section">
       <div class="container">
-        <h2 class="section-title">商品ラインアップ</h2>
-        <p class="section-lead">代表商品をオンライン直販で承ります。価格はシーズン・規格により変動します。</p>
+        <h2 class="section-title">商品ラインナップ</h2>
+        <p class="section-lead">オンラインショップで販売中の商品から、代表的な3商品をピックアップしています。</p>
 
-        <div class="grid-3">
-          <!-- シャイン -->
-          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/grape_shine.svg" alt="シャインマスカットの房" itemprop="image" />
-            </div>
-            <h3 itemprop="name">シャインマスカット（2房）</h3>
-            <p class="meta" itemprop="description">クール便｜のし可｜出荷目安：ご注文から2〜4日</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="price">¥3,980〜</span>
-              <link itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="3980" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
-            </div>
-          </article>
-
-          <!-- ナガノパープル -->
-          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/grape_nagano.svg" alt="ナガノパープルの房" itemprop="image" />
-            </div>
-            <h3 itemprop="name">ナガノパープル（2房）</h3>
-            <p class="meta" itemprop="description">クール便｜のし可｜出荷目安：ご注文から2〜4日</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="price">¥4,480〜</span>
-              <link itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="4480" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
-            </div>
-          </article>
-
-          <!-- 詰合せギフト -->
-          <article class="card product-card" itemscope itemtype="https://schema.org/Product">
-            <div class="variety__img">
-              <img src="assets/img/gift.svg" alt="詰合せギフトの化粧箱" itemprop="image" />
-            </div>
-            <h3 itemprop="name">詰合せギフト（2〜3房）</h3>
-            <p class="meta" itemprop="description">のし・名入れ無料／化粧箱</p>
-            <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-              <span class="price">¥5,980〜</span>
-              <link itemprop="priceCurrency" content="JPY" />
-              <meta itemprop="price" content="5980" />
-              <meta itemprop="availability" content="https://schema.org/InStock" />
-            </div>
-          </article>
+        <div class="grid-3" id="home-products">
+          <p class="muted" style="text-align:center;">商品を読み込んでいます...</p>
         </div>
 
         <p style="margin-top:16px; text-align:center;">
@@ -1144,6 +1101,70 @@
     "description":"のし・名入れ無料／化粧箱",
     "offers":{"@type":"Offer","priceCurrency":"JPY","price":"5980","availability":"https://schema.org/InStock","url":"https://script.google.com/macros/s/XXXXX/exec?product=assort_gift&qty=1"}
   }]
+  </script>
+
+  <!-- =========================
+       TOP用：shop.htmlの先頭3商品を表示
+       ========================= -->
+  <script>
+    // shop.html と同じ GAS の URL に合わせてください
+    const HOME_API_BASE = 'https://script.google.com/macros/s/AKfycbyxHrSLuN1Pxq6Wq85zygAuD8xTYSxiHUyV9BuvccmoRYIDdK2f8sR06PTzQE72wbjO/exec';
+
+    async function loadTopProductsForHome() {
+      const wrap = document.getElementById('home-products');
+      if (!wrap) return;
+
+      try {
+        const res = await fetch(`${HOME_API_BASE}?mode=products`, { cache: 'no-cache' });
+        const data = await res.json();
+
+        if (!data.success || !Array.isArray(data.products) || data.products.length === 0) {
+          wrap.innerHTML = '<p class="muted" style="text-align:center;">現在、表示できる商品がありません。</p>';
+          return;
+        }
+
+        // 先頭3件だけピックアップ
+        const items = data.products.slice(0, 3);
+
+        const html = items.map(p => {
+          const name    = p.name || '';
+          const variety = p.variety || '';
+          const weight  = p.weightKg ? `${p.weightKg}kg` : '';
+          const price   = (p.price != null) ? Number(p.price).toLocaleString() : '-';
+          const remain  = (p.remain != null && p.remain !== '') ? p.remain : '-';
+          const img     = p.imageUrl || 'https://via.placeholder.com/400x260?text=Grapes';
+
+          return `
+            <article class="card product-card" itemscope itemtype="https://schema.org/Product">
+              <div class="variety__img">
+                <img src="${img}" alt="${name}" itemprop="image"
+                     onerror="this.src='https://via.placeholder.com/400x260?text=No+Image';">
+              </div>
+              <h3 itemprop="name">${name}</h3>
+              <p class="meta" itemprop="description">${variety} ${weight}</p>
+              <div class="footer" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <span class="price">¥${price}</span>
+                <span class="muted">残り: ${remain}房</span>
+                <link itemprop="priceCurrency" content="JPY" />
+                <meta itemprop="price" content="${p.price || ''}">
+                <meta itemprop="availability" content="https://schema.org/InStock" />
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        wrap.innerHTML = html;
+      } catch (e) {
+        console.error('TOP商品の取得に失敗:', e);
+        const wrap = document.getElementById('home-products');
+        if (wrap) {
+          wrap.innerHTML = '<p class="muted" style="text-align:center;">商品の読み込みに失敗しました。</p>';
+        }
+      }
+    }
+
+    // ページ読み込み後に実行
+    window.addEventListener('DOMContentLoaded', loadTopProductsForHome);
   </script>
 </body>
 </html>
